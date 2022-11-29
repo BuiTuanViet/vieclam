@@ -1,485 +1,225 @@
-<div id="shopify-section-header" class="shopify-section section-header">
-    <link rel="stylesheet"
-          href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-list-menu.css') }}"
-          media="print" onload="this.media='all'">
-    <link rel="stylesheet"
-          href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-search.css') }}" media="print"
-          onload="this.media='all'">
-    <link rel="stylesheet"
-          href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-menu-drawer.css') }}"
-          media="print" onload="this.media='all'">
-    <link rel="stylesheet"
-          href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-cart-notification.css') }}"
-          media="print" onload="this.media='all'">
-    <link rel="stylesheet"
-          href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-cart-items.css') }}"
-          media="print" onload="this.media='all'">
-    <link rel="stylesheet"
-          href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-price.css') }}" media="print"
-          onload="this.media='all'">
-    <link rel="stylesheet"
-          href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-loading-overlay.css') }}"
-          media="print" onload="this.media='all'">
-    <noscript>
-        <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-list-menu.css')}}"
-              rel="stylesheet" type="text/css" media="all"/>
-    </noscript>
-    <noscript>
-        <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-search.css')}}"
-              rel="stylesheet" type="text/css" media="all"/>
-    </noscript>
-    <noscript>
-        <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-menu-drawer.css')}}"
-              rel="stylesheet" type="text/css" media="all"/>
-    </noscript>
-    <noscript>
-        <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-cart-notification.css')}}"
-              rel="stylesheet" type="text/css" media="all"/>
-    </noscript>
-    <noscript>
-        <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-cart-items.css')}}"
-              rel="stylesheet" type="text/css" media="all"/>
-    </noscript>
+<header class="header">
+    <div class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-4 col-md-12 col-sm-12 header-info d-lg-block d-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                         viewBox="0 0 58.153 58.153" style="enable-background:new 0 0 58.153 58.153;"
+                         xml:space="preserve" width="30px" height="30px">
+						<path d="M40.076,29.153h-7.142c-0.364-1.399-1.459-2.494-2.858-2.858V16.153c0-0.553-0.448-1-1-1s-1,0.447-1,1v10.142   c-1.72,0.447-3,1.999-3,3.858c0,2.206,1.794,4,4,4c1.858,0,3.411-1.28,3.858-3h7.142c0.552,0,1-0.447,1-1   S40.629,29.153,40.076,29.153z M29.076,32.153c-1.103,0-2-0.897-2-2s0.897-2,2-2s2,0.897,2,2S30.179,32.153,29.076,32.153z"
+                              data-original="#000000" class="active-path" data-old_color="#000000" fill="#FD6C1E">
+                            <path d="M50.188,9.764l4.096,4.096c0.188,0.188,0.442,0.293,0.707,0.293s0.52-0.105,0.707-0.293c3.167-3.166,3.167-8.319,0-11.485   s-8.319-3.166-11.485,0c-0.188,0.188-0.293,0.441-0.293,0.707s0.105,0.52,0.293,0.707l4.561,4.561l-1.699,1.699   c-4.78-4.284-11.089-6.896-17.998-6.896s-13.218,2.612-17.998,6.896L9.379,8.35l4.561-4.561c0.188-0.188,0.293-0.441,0.293-0.707   s-0.105-0.52-0.293-0.707c-3.166-3.166-8.318-3.166-11.485,0s-3.167,8.319,0,11.485c0.188,0.188,0.442,0.293,0.707,0.293   s0.52-0.105,0.707-0.293l4.096-4.096l1.676,1.676c-4.679,4.857-7.565,11.453-7.565,18.713c0,9.898,5.357,18.564,13.321,23.265   l-3.028,3.028c-0.391,0.391-0.391,1.023,0,1.414c0.195,0.195,0.451,0.293,0.707,0.293s0.512-0.098,0.707-0.293l3.45-3.45   c3.578,1.754,7.597,2.743,11.843,2.743s8.265-0.989,11.843-2.743l3.45,3.45c0.195,0.195,0.451,0.293,0.707,0.293   s0.512-0.098,0.707-0.293c0.391-0.391,0.391-1.023,0-1.414l-3.028-3.028c7.964-4.701,13.321-13.367,13.321-23.265   c0-7.26-2.886-13.856-7.565-18.713L50.188,9.764z M54.283,3.789c2.146,2.146,2.362,5.502,0.649,7.893l-8.541-8.542   C48.781,1.427,52.136,1.642,54.283,3.789z M3.22,11.681C1.507,9.291,1.723,5.935,3.869,3.789s5.502-2.361,7.892-0.649L3.22,11.681z    M29.076,55.153c-13.785,0-25-11.215-25-25s11.215-25,25-25s25,11.215,25,25S42.862,55.153,29.076,55.153z"
+                                  data-original="#000000" class="active-path" data-old_color="#000000" fill="#FD6C1E">
+                                <path d="M29.076,10.032c0.552,0,1-0.447,1-1v-1c0-0.553-0.448-1-1-1s-1,0.447-1,1v1C28.076,9.584,28.524,10.032,29.076,10.032z"
+                                      data-original="#000000" class="active-path" data-old_color="#000000"
+                                      fill="#FD6C1E">
+                                    <path d="M29.076,50.032c-0.552,0-1,0.447-1,1v1c0,0.553,0.448,1,1,1s1-0.447,1-1v-1C30.076,50.479,29.629,50.032,29.076,50.032z"
+                                          data-original="#000000" class="active-path" data-old_color="#000000"
+                                          fill="#FD6C1E">
+                                        <path d="M50.076,31.032h1c0.552,0,1-0.447,1-1s-0.448-1-1-1h-1c-0.552,0-1,0.447-1,1S49.524,31.032,50.076,31.032z"
+                                              data-original="#000000" class="active-path" data-old_color="#000000"
+                                              fill="#FD6C1E">
+                                            <path d="M8.076,29.032h-1c-0.552,0-1,0.447-1,1s0.448,1,1,1h1c0.552,0,1-0.447,1-1S8.629,29.032,8.076,29.032z"
+                                                  data-original="#000000" class="active-path" data-old_color="#000000"
+                                                  fill="#FD6C1E">
+                                                <path d="M43.926,13.768l-0.707,0.707c-0.391,0.391-0.391,1.023,0,1.414c0.195,0.195,0.451,0.293,0.707,0.293   s0.512-0.098,0.707-0.293l0.707-0.707c0.391-0.391,0.391-1.023,0-1.414S44.316,13.377,43.926,13.768z"
+                                                      data-original="#000000" class="active-path"
+                                                      data-old_color="#000000" fill="#FD6C1E">
+                                                    <path d="M13.52,44.174l-0.707,0.707c-0.391,0.391-0.391,1.023,0,1.414c0.195,0.195,0.451,0.293,0.707,0.293   s0.512-0.098,0.707-0.293l0.707-0.707c0.391-0.391,0.391-1.023,0-1.414S13.911,43.784,13.52,44.174z"
+                                                          data-original="#000000" class="active-path"
+                                                          data-old_color="#000000" fill="#FD6C1E">
+                                                        <path d="M44.633,44.174c-0.391-0.391-1.023-0.391-1.414,0s-0.391,1.023,0,1.414l0.707,0.707c0.195,0.195,0.451,0.293,0.707,0.293   s0.512-0.098,0.707-0.293c0.391-0.391,0.391-1.023,0-1.414L44.633,44.174z"
+                                                              data-original="#000000" class="active-path"
+                                                              data-old_color="#000000" fill="#FD6C1E">
+                                                            <path d="M14.227,13.768c-0.391-0.391-1.023-0.391-1.414,0s-0.391,1.023,0,1.414l0.707,0.707c0.195,0.195,0.451,0.293,0.707,0.293   s0.512-0.098,0.707-0.293c0.391-0.391,0.391-1.023,0-1.414L14.227,13.768z"
+                                                                  data-original="#000000" class="active-path"
+                                                                  data-old_color="#000000" fill="#FD6C1E"></svg>
+                    {{ isset($information['thoi-gian-mo-cua']) ? $information['thoi-gian-mo-cua'] : '' }}
+                </div>
+                <div class="col-lg-8 col-md-12 col-sm-12">
+                    <ul class="header-info-right">
 
-    <style>
-        header-drawer {
-            justify-self: start;
-            margin-left: -1.2rem;
-        }
-
-        @media screen and (min-width: 990px) {
-            .header__icons__left {
-                display: none;
-            }
-        }
-
-        .menu-drawer-container {
-            display: inline-block;
-        }
-
-        .list-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        #menu-drawer li.active{
-            background: #fff;
-        }
-
-        #menu-drawer li.active > a{
-            color: #333;
-        }
-        .list-menu--inline {
-            display: inline-flex;
-            flex-wrap: wrap;
-        }
-
-        .list-menu__item {
-            display: flex;
-            align-items: center;
-            line-height: calc(1 + 0.3 / var(--font-body-scale));
-        }
-
-        .list-menu__item--link {
-            text-decoration: none;
-            padding-bottom: 1rem;
-            padding-top: 1rem;
-            line-height: calc(1 + 0.8 / var(--font-body-scale));
-        }
-
-        @media screen and (min-width: 750px) {
-            .list-menu__item--link {
-                padding-bottom: 0.5rem;
-                padding-top: 0.5rem;
-            }
-        }
-    </style>
-    <style data-shopify>.section-header {
-            margin-bottom: 0px;
-        }
-
-        @media screen and (min-width: 750px) {
-            .section-header {
-                margin-bottom: px;
-            }
-        }</style>
-    <script src="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/details-disclosure.js') }}"
-            defer="defer"></script>
-    <script src="{{ asset('s/files/1/0080/9035/3717/t/3/assets/details-modal.js') }}"
-            defer="defer"></script>
-    <script src="{{ asset('s/files/1/0080/9035/3717/t/3/assets/cart-notification.js') }}"
-            defer="defer"></script>
-
-    <svg xmlns="http://www.w3.org/2000/svg" class="hidden">
-        <symbol id="icon-search" viewbox="0 0 18 19" fill="none">
-            <path fill-rule="evenodd" clip-rule="evenodd"
-                  d="M11.03 11.68A5.784 5.784 0 112.85 3.5a5.784 5.784 0 018.18 8.18zm.26 1.12a6.78 6.78 0 11.72-.7l5.4 5.4a.5.5 0 11-.71.7l-5.41-5.4z"
-                  fill="currentColor">
-        </symbol>
-
-        <symbol id="icon-close" class="icon icon-close" fill="none" viewBox="0 0 18 17">
-            <path d="M.865 15.978a.5.5 0 00.707.707l7.433-7.431 7.579 7.282a.501.501 0 00.846-.37.5.5 0 00-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 10-.707-.708L8.991 7.853 1.413.573a.5.5 0 10-.693.72l7.563 7.268-7.418 7.417z"
-                  fill="currentColor">
-        </symbol>
-    </svg>
-    <div class="header-wrapper color-">
-        <header class="header header--middle-left page-width header--has-menu">
-            <div class="header__icons__left" >
-                <header-drawer data-breakpoint="tablet">
-                    <details id="Details-menu-drawer-container header__left" class="menu-drawer-container">
-                        <summary class="header__icon header__icon--menu header__icon--summary link focus-inset open__menu icon__menu" style="margin-top: 5px"
-                                 aria-label="Menu">
-                             <span class="bar_icon">
-
-                            </span>
-                        </summary>
-
-                        <div id="menu-drawer" class="menu-drawer motion-reduce" tabindex="-1">
-                            <div class="menu-drawer__inner-container">
-                                <div class="menu-drawer__navigation-container">
-                                    <nav class="menu-drawer__navigation">
-                                        <ul class="menu-drawer__menu list-menu" role="list">
-                                            @foreach (\App\Entity\Menu::showWithLocation('menu-top-1') as $menu)
-                                                @foreach (\App\Entity\MenuElement::showMenuPageArray($menu->slug) as $id => $menuElement)
-                                                    @if (empty($menuElement['children']))
-                                                        <li class="">
-                                                            <a href="{{ $menuElement['url'] }}"
-                                                               class="menu-drawer__menu-item list-menu__item link link--text focus-inset">
-                                                                <span>{{ $menuElement['title_show'] }}</span>
-                                                            </a>
-                                                        </li>
-                                                    @else
-                                                        <details-disclosure>
-                                                            <details>
-                                                                <summary class="menu-drawer__menu-item list-menu__item link link--text focus-inset">
-                                                                <span>{{ $menuElement['title_show'] }}</span>
-                                                                    <svg viewBox="0 0 14 10" fill="none" aria-hidden="true"
-                                                                         focusable="false" role="presentation" class="icon icon-arrow"
-                                                                         xmlns="http://www.w3.org/2000/svg">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                              d="M8.537.808a.5.5 0 01.817-.162l4 4a.5.5 0 010 .708l-4 4a.5.5 0 11-.708-.708L11.793 5.5H1a.5.5 0 010-1h10.793L8.646 1.354a.5.5 0 01-.109-.546z"
-                                                                              fill="currentColor">
-                                                                    </svg>
-
-                                                                    <svg aria-hidden="true" focusable="false" role="presentation"
-                                                                         class="icon icon-caret" viewBox="0 0 10 6">
-                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                              d="M9.354.646a.5.5 0 00-.708 0L5 4.293 1.354.646a.5.5 0 00-.708.708l4 4a.5.5 0 00.708 0l4-4a.5.5 0 000-.708z"
-                                                                              fill="currentColor">
-                                                                    </svg>
-                                                                </summary>
-                                                                <div id="link-CLOTHING" class="menu-drawer__submenu motion-reduce"
-                                                                     tabindex="-1">
-                                                                    <div class="menu-drawer__inner-submenu">
-                                                                        <button class="menu-drawer__close-button link link--text focus-inset"
-                                                                                aria-expanded="true">
-                                                                            {{ $menuElement['title_show'] }}
-                                                                        </button>
-                                                                        <ul class="menu-drawer__menu list-menu" role="list"
-                                                                            tabindex="-1">
-                                                                            <li class="back link link--text list-menu__item focus-inset title__parrent"
-                                                                                style="text-align: center; padding: 0 15px">
-                                                                                <summary class="menu-drawer__menu-item list-menu__item link link--text focus-inset" style="width: 100%">
-                                                                                    <a class="menu-drawer__menu-item">{{ $menuElement['title_show'] }}</a>
-                                                                                    <svg viewBox="0 0 14 10" fill="none" aria-hidden="true"
-                                                                                         focusable="false" role="presentation" class="icon icon-arrow"
-                                                                                         xmlns="http://www.w3.org/2000/svg">
-                                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                                              d="M8.537.808a.5.5 0 01.817-.162l4 4a.5.5 0 010 .708l-4 4a.5.5 0 11-.708-.708L11.793 5.5H1a.5.5 0 010-1h10.793L8.646 1.354a.5.5 0 01-.109-.546z"
-                                                                                              fill="currentColor">
-                                                                                    </svg>
-
-                                                                                    <svg aria-hidden="true" focusable="false" role="presentation"
-                                                                                         class="icon icon-caret" viewBox="0 0 10 6">
-                                                                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                                                                              d="M9.354.646a.5.5 0 00-.708 0L5 4.293 1.354.646a.5.5 0 00-.708.708l4 4a.5.5 0 00.708 0l4-4a.5.5 0 000-.708z"
-                                                                                              fill="currentColor">
-                                                                                    </svg>
-                                                                                </summary>
-                                                                            </li>
-                                                                            @foreach ($menuElement['children'] as $elementparent)
-                                                                            <li>
-                                                                                <a href="{{ $elementparent['url'] }}"
-                                                                                   class="menu-drawer__menu-item link link--text list-menu__item focus-inset">
-                                                                                    {{ $elementparent['title_show'] }}
-                                                                                </a>
-                                                                            </li>
-                                                                            @endforeach
-                                                                            <div class="menu__block--wide is-visible" style="transition-delay: 160ms;padding: 10px">
-                                                                                <div class="header__dropdown__image palette--contrast--dark" data-stagger-first="">
-                                                                                    <a href="{{ isset($information['link-image-menu']) ? $information['link-image-menu'] : '' }}" class="link-over-image is-not-relative">
-                                                                                        <div class="hero__content__wrapper align--middle-center">
-                                                                                            <div class="hero__content backdrop--radial">
-                                                                                                <h3 class="" style="letter-spacing: 2px; font-weight: 600;">
-                                                                                                    {{ isset($information['title-image-menu']) ? $information['title-image-menu'] : '' }}
-                                                                                                </h3>
-                                                                                                <p class="hero__description" style="letter-spacing: 2px;">
-                                                                                                    Shop Now
-                                                                                                </p>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </a>
-                                                                                    <div class="image__fill fade-in-image" style="padding-top: 80.0%;
-                                                                                        background-image: url('{{ isset($information['image-menu']) ? $information['image-menu'] : '' }}');
-                                                                                            background-size: cover;
-                                                                                            background-repeat: no-repeat;">
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </ul>
-                                                                    </div>
-                                                                </div>
-                                                            </details>
-                                                        </details-disclosure>
-                                                    @endif
-                                                @endforeach
-                                            @endforeach
-                                        </ul>
-                                        <hr style="background-color: #2f2f2f">
-                                        <ul class="menu-drawer__menu list-menu menu-foot" role="list">
-                                            @foreach (\App\Entity\Menu::showWithLocation('menu-footer') as $menu)
-                                                @foreach (\App\Entity\MenuElement::showMenuPageArray($menu->slug) as $id => $menuElement)
-                                                    <li class="">
-                                                        <a href="{{ $menuElement['url'] }}"
-                                                           class="menu-drawer__menu-item list-menu__item link link--text focus-inset">
-                                                            <span>{{ $menuElement['title_show'] }}</span>
-                                                        </a>
-                                                    </li>
-                                                @endforeach
-                                            @endforeach
-                                        </ul>
-
-                                    </nav>
-                                </div>
-                            </div>
-                        </div>
-                    </details>
-                    <div style="display: inline-block; position: absolute; top: 16px" >
-                        @if(\Illuminate\Support\Facades\Auth::user())
-                            <a href="{{ route('dang-xuat', ['languageCurrent' => $languageCurrent]) }}" class="header__icon header__icon--account link focus-inset" title="logout">
-                                <img width="22px" src="{{ asset('site/logout.png') }}" alt="">
-
+                        <li class="d-md-inline-block d-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                 version="1.1" x="0px" y="0px" viewBox="0 0 511.974 511.974"
+                                 style="enable-background:new 0 0 511.974 511.974;" xml:space="preserve" width="30px"
+                                 height="30px" class="hovered-paths">
+								<path d="M511.872,195.725c-0.053-0.588-0.17-1.169-0.35-1.732c-0.117-0.503-0.28-0.994-0.486-1.468     c-0.239-0.463-0.525-0.901-0.853-1.306c-0.329-0.481-0.71-0.924-1.135-1.323c-0.137-0.119-0.196-0.282-0.341-0.401     l-82.065-63.735V59.704c0-14.138-11.462-25.6-25.6-25.6h-92.476L271.539,5.355c-9.147-7.134-21.974-7.134-31.121,0     l-37.035,28.749h-92.476c-14.138,0-25.6,11.461-25.6,25.6v66.057L3.268,189.496c-0.145,0.12-0.205,0.282-0.341,0.401     c-0.425,0.398-0.806,0.842-1.135,1.323c-0.328,0.405-0.614,0.842-0.853,1.306c-0.207,0.473-0.369,0.965-0.486,1.468     c-0.178,0.555-0.295,1.127-0.35,1.707c0,0.179-0.102,0.333-0.102,0.512V486.37c0.012,5.428,1.768,10.708,5.009,15.061     c0.051,0.077,0.06,0.171,0.119,0.239c0.06,0.068,0.188,0.145,0.273,0.239c4.794,6.308,12.25,10.027,20.173,10.061h460.8     c7.954-0.024,15.441-3.761,20.241-10.103c0.068-0.085,0.171-0.111,0.23-0.196c0.06-0.085,0.068-0.162,0.12-0.239     c3.241-4.354,4.997-9.634,5.009-15.061V196.237C511.974,196.058,511.881,195.904,511.872,195.725z M250.854,18.82     c2.98-2.368,7.2-2.368,10.18,0l19.686,15.283h-49.493L250.854,18.82z M27.725,494.904l223.13-173.321     c2.982-2.364,7.199-2.364,10.18,0l223.189,173.321H27.725z M494.908,481.6L271.539,308.117c-9.149-7.128-21.972-7.128-31.121,0     L17.041,481.6V209.233L156.877,317.82c3.726,2.889,9.088,2.211,11.977-1.515c2.889-3.726,2.211-9.088-1.515-11.977     L25.276,194.018l60.032-46.652v65.937c0,4.713,3.821,8.533,8.533,8.533c4.713,0,8.533-3.821,8.533-8.533v-153.6     c0-4.713,3.82-8.533,8.533-8.533h290.133c4.713,0,8.533,3.82,8.533,8.533v153.6c0,4.713,3.82,8.533,8.533,8.533     s8.533-3.821,8.533-8.533v-65.937l60.032,46.652l-142.31,110.507c-2.448,1.855-3.711,4.883-3.305,7.928s2.417,5.637,5.266,6.786     c2.849,1.149,6.096,0.679,8.501-1.232l140.083-108.774V481.6z"
+                                      data-original="#000000" class="active-path" data-old_color="#000000"
+                                      fill="#FD6C1E">
+                                    <path d="M358.374,204.77v-34.133c0-56.554-45.846-102.4-102.4-102.4c-56.554,0-102.4,45.846-102.4,102.4     s45.846,102.4,102.4,102.4c4.713,0,8.533-3.82,8.533-8.533s-3.82-8.533-8.533-8.533c-47.128,0-85.333-38.205-85.333-85.333     s38.205-85.333,85.333-85.333s85.333,38.205,85.333,85.333v34.133c0,9.426-7.641,17.067-17.067,17.067     s-17.067-7.641-17.067-17.067v-34.133c0-4.713-3.82-8.533-8.533-8.533s-8.533,3.82-8.533,8.533     c0,18.851-15.282,34.133-34.133,34.133c-18.851,0-34.133-15.282-34.133-34.133s15.282-34.133,34.133-34.133     c4.713,0,8.533-3.82,8.533-8.533s-3.82-8.533-8.533-8.533c-22.915-0.051-43.074,15.13-49.354,37.168     c-6.28,22.038,2.847,45.565,22.347,57.601c19.5,12.036,44.622,9.65,61.507-5.843c1.858,18.046,17.543,31.464,35.659,30.505     C344.25,237.91,358.431,222.912,358.374,204.77z"
+                                          data-original="#000000" class="active-path" data-old_color="#000000"
+                                          fill="#FD6C1E">
+							</svg>
+                            <a href="mailto:{{ isset($information['email']) ? $information['email'] : '' }}"
+                               title="{{ isset($information['email']) ? $information['email'] : '' }}">
+                                {{ isset($information['email']) ? $information['email'] : '' }}
                             </a>
-                        @else
-                            <a href="{{ route('login-site', ['languageCurrent' => $languageCurrent]) }}" class="header__icon header__icon--account link focus-inset">
-                                <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="presentation"
-                                     class="icon icon-account" fill="none" viewBox="0 0 18 19">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                          d="M6 4.5a3 3 0 116 0 3 3 0 01-6 0zm3-4a4 4 0 100 8 4 4 0 000-8zm5.58 12.15c1.12.82 1.83 2.24 1.91 4.85H1.51c.08-2.6.79-4.03 1.9-4.85C4.66 11.75 6.5 11.5 9 11.5s4.35.26 5.58 1.15zM9 10.5c-2.5 0-4.65.24-6.17 1.35C1.27 12.98.5 14.93.5 18v.5h17V18c0-3.07-.77-5.02-2.33-6.15-1.52-1.1-3.67-1.35-6.17-1.35z"
-                                          fill="currentColor">
-                                </svg>
-
-                                <span class="visually-hidden">Log in</span>
+                        </li>
+                        <li>
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"
+                                 y="0px" viewBox="0 0 60 60" style="enable-background:new 0 0 60 60;"
+                                 xml:space="preserve" width="30px" height="30px">
+								<path d="M42.595,0H17.405C14.977,0,13,1.977,13,4.405v51.189C13,58.023,14.977,60,17.405,60h25.189C45.023,60,47,58.023,47,55.595   V4.405C47,1.977,45.023,0,42.595,0z M15,8h30v38H15V8z M17.405,2h25.189C43.921,2,45,3.079,45,4.405V6H15V4.405   C15,3.079,16.079,2,17.405,2z M42.595,58H17.405C16.079,58,15,56.921,15,55.595V48h30v7.595C45,56.921,43.921,58,42.595,58z"
+                                      data-original="#000000" class="active-path" data-old_color="#000000"
+                                      fill="#FD6C1E">
+                                    <path d="M30,49c-2.206,0-4,1.794-4,4s1.794,4,4,4s4-1.794,4-4S32.206,49,30,49z M30,55c-1.103,0-2-0.897-2-2s0.897-2,2-2   s2,0.897,2,2S31.103,55,30,55z"
+                                          data-original="#000000" class="active-path" data-old_color="#000000"
+                                          fill="#FD6C1E">
+                                        <path d="M26,5h4c0.553,0,1-0.447,1-1s-0.447-1-1-1h-4c-0.553,0-1,0.447-1,1S25.447,5,26,5z"
+                                              data-original="#000000" class="active-path" data-old_color="#000000"
+                                              fill="#FD6C1E">
+                                            <path d="M33,5h1c0.553,0,1-0.447,1-1s-0.447-1-1-1h-1c-0.553,0-1,0.447-1,1S32.447,5,33,5z"
+                                                  data-original="#000000" class="active-path" data-old_color="#000000"
+                                                  fill="#FD6C1E">
+                                                <path d="M56.612,4.569c-0.391-0.391-1.023-0.391-1.414,0s-0.391,1.023,0,1.414c3.736,3.736,3.736,9.815,0,13.552   c-0.391,0.391-0.391,1.023,0,1.414c0.195,0.195,0.451,0.293,0.707,0.293s0.512-0.098,0.707-0.293   C61.128,16.434,61.128,9.085,56.612,4.569z"
+                                                      data-original="#000000" class="active-path"
+                                                      data-old_color="#000000" fill="#FD6C1E">
+                                                    <path d="M52.401,6.845c-0.391-0.391-1.023-0.391-1.414,0s-0.391,1.023,0,1.414c1.237,1.237,1.918,2.885,1.918,4.639   s-0.681,3.401-1.918,4.638c-0.391,0.391-0.391,1.023,0,1.414c0.195,0.195,0.451,0.293,0.707,0.293s0.512-0.098,0.707-0.293   c1.615-1.614,2.504-3.764,2.504-6.052S54.017,8.459,52.401,6.845z"
+                                                          data-original="#000000" class="active-path"
+                                                          data-old_color="#000000" fill="#FD6C1E">
+                                                        <path d="M4.802,5.983c0.391-0.391,0.391-1.023,0-1.414s-1.023-0.391-1.414,0c-4.516,4.516-4.516,11.864,0,16.38   c0.195,0.195,0.451,0.293,0.707,0.293s0.512-0.098,0.707-0.293c0.391-0.391,0.391-1.023,0-1.414   C1.065,15.799,1.065,9.72,4.802,5.983z"
+                                                              data-original="#000000" class="active-path"
+                                                              data-old_color="#000000" fill="#FD6C1E">
+                                                            <path d="M9.013,6.569c-0.391-0.391-1.023-0.391-1.414,0c-1.615,1.614-2.504,3.764-2.504,6.052s0.889,4.438,2.504,6.053   c0.195,0.195,0.451,0.293,0.707,0.293s0.512-0.098,0.707-0.293c0.391-0.391,0.391-1.023,0-1.414   c-1.237-1.237-1.918-2.885-1.918-4.639S7.775,9.22,9.013,7.983C9.403,7.593,9.403,6.96,9.013,6.569z"
+                                                                  data-original="#000000" class="active-path"
+                                                                  data-old_color="#000000" fill="#FD6C1E">
+							</svg>
+                            <a href="tel:{{ isset($information['hotline']) ? $information['hotline'] : '' }}" title="{{ isset($information['hotline']) ? $information['hotline'] : '' }}">
+                                {{ isset($information['hotline']) ? $information['hotline'] : '' }}
                             </a>
-                    @endif
-                    </div>
+                        </li>
 
-                </header-drawer>
 
-            </div>
-            <h1 class="header__heading mobile-hidden">
-                <a href="/" class="header__heading-link link link--text focus-inset">
-                    <img width="90" src="{{ asset('site/cacParis.png') }}" alt="">
-                </a>
-            </h1>
-            <h1 class="header__heading mobile-show"><a href="/" class="header__heading-link link link--text focus-inset">
-                    <img width="90" src="{{ asset('site/cactrang.png') }}" alt="">
-                </a>
-            </h1>
-            <nav class="header__inline-menu">
-                <ul class="list-menu list-menu--inline" role="list">
-                    @foreach (\App\Entity\Menu::showWithLocation('menu-chinh') as $menu)
-                        @foreach (\App\Entity\MenuElement::showMenuPageArray($menu->slug) as $id => $menuElement)
-                            @if (empty($menuElement['children']))
-                            <li>
-                                <a href="{{ $menuElement['url'] }}"
-                                   class="header__menu-item header__menu-item list-menu__item link link--text focus-inset">
-                                    <span>{{ $menuElement['title_show'] }}</span>
-                                </a>
-                            </li>
-                            @else
-                                <details-disclosure>
-                                    <details id="Details-HeaderMenu-2">
-                                        <summary class="header__menu-item list-menu__item link focus-inset">
-                                            <span>CLOTHING</span>
-                                        </summary>
-                                        <ul id="HeaderMenu-MenuList-2"
-                                            class="header__submenu list-menu list-menu--disclosure caption-large motion-reduce"
-                                            role="list" tabindex="-1">
-                                            @foreach ($menuElement['children'] as $elementparent)
-                                                <li >
-                                                    <a href="{{ $elementparent['url'] }}"
-                                                       class="header__menu-item list-menu__item link link--text focus-inset caption-large">
-                                                        {{ $elementparent['title_show'] }}</a>
-                                                </li>
-                                            @endforeach
-                                        </ul>
-                                    </details>
-                                </details-disclosure>
-                            @endif
-                        @endforeach
-                    @endforeach
-                </ul>
-            </nav>
-            <div class="header__icons">
-                <details-modal class="header__search">
-                    <details>
-                        <summary
-                                class="header__icon header__icon--search header__icon--summary link focus-inset modal__toggle"
-                                aria-haspopup="dialog" aria-label="Search">
-                        <span>
-                          <svg class="modal__toggle-open icon icon-search" aria-hidden="true" focusable="false" role="presentation">
-                            <use href="#icon-search">
-                          </svg>
-                          <svg class="modal__toggle-close icon icon-close" aria-hidden="true" focusable="false" role="presentation">
-                            <use href="#icon-close">
-                          </svg>
-                        </span>
-                        </summary>
-                        <div class="search-modal modal__content" role="dialog" aria-modal="true" aria-label="Search">
-                            <div class="modal-overlay"></div>
-                            <div class="search-modal__content search-modal__content-bottom" tabindex="-1">
-                                <predictive-search class="search-modal__form" data-loading-text="Loading...">
-                                    <form action="{{ route('search', [ 'languageCurrent' => $languageCurrent] ) }}" method="get" role="search" class="search search-modal__form">
-                                        <div class="field">
-                                            <input class="search__input field__input"
-                                                   id="Search-In-Modal"
-                                                   type="search"
-                                                   name="word"
-                                                   value=""
-                                                   placeholder="Search" role="combobox"
-                                                   aria-expanded="false"
-                                                   aria-owns="predictive-search-results-list"
-                                                   aria-controls="predictive-search-results-list"
-                                                   aria-haspopup="listbox"
-                                                   aria-autocomplete="list"
-                                                   autocorrect="off"
-                                                   autocomplete="off"
-                                                   autocapitalize="off"
-                                                   spellcheck="false">
-                                            <label class="field__label" for="Search-In-Modal">Search</label>
-                                            <input type="hidden" name="options[prefix]" value="last">
-                                            <button class="search__button field__button" aria-label="Search">
-                                                <svg class="icon icon-search" aria-hidden="true" focusable="false"
-                                                     role="presentation">
-                                                    <use href="#icon-search">
-                                                </svg>
-                                            </button>
-                                        </div>
-                                        <div class="predictive-search predictive-search--header" tabindex="-1"
-                                             data-predictive-search>
-                                            <div class="predictive-search__loading-state">
-                                                <svg aria-hidden="true" focusable="false" role="presentation"
-                                                     class="spinner" viewBox="0 0 66 66"
-                                                     xmlns="http://www.w3.org/2000/svg">
-                                                    <circle class="path" fill="none" stroke-width="6" cx="33" cy="33"
-                                                            r="30"></circle>
-                                                </svg>
-                                            </div>
-                                        </div>
+                        <li class="d-md-inline-block d-none">
+                            <a href="lien-he" class="btn btn-primary" title="Liên hệ"
+                            >Liên
+                                hệ</a></li>
 
-                                        <span class="predictive-search-status visually-hidden" role="status"
-                                              aria-hidden="true"></span></form>
-                                </predictive-search>
-                                <button type="button"
-                                        class="search-modal__close-button modal__close-button link link--text focus-inset"
-                                        aria-label="Close">
-                                    <svg class="icon icon-close" aria-hidden="true" focusable="false"
-                                         role="presentation">
-                                        <use href="#icon-close">
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-                    </details>
-                </details-modal>
-                <div class="login__desktop">
-                @if(\Illuminate\Support\Facades\Auth::user())
-                    <a href="{{ route('dang-xuat', ['languageCurrent' => $languageCurrent]) }}" class="header__icon header__icon--account link focus-inset" title="logout">
-                        <img width="22px" src="{{ asset('site/logout.png') }}" alt="">
-
-                    </a>
-                @else
-                <a href="{{ route('login-site', ['languageCurrent' => $languageCurrent]) }}" class="header__icon header__icon--account link focus-inset">
-                    <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="presentation"
-                         class="icon icon-account" fill="none" viewBox="0 0 18 19">
-                        <path fill-rule="evenodd" clip-rule="evenodd"
-                              d="M6 4.5a3 3 0 116 0 3 3 0 01-6 0zm3-4a4 4 0 100 8 4 4 0 000-8zm5.58 12.15c1.12.82 1.83 2.24 1.91 4.85H1.51c.08-2.6.79-4.03 1.9-4.85C4.66 11.75 6.5 11.5 9 11.5s4.35.26 5.58 1.15zM9 10.5c-2.5 0-4.65.24-6.17 1.35C1.27 12.98.5 14.93.5 18v.5h17V18c0-3.07-.77-5.02-2.33-6.15-1.52-1.1-3.67-1.35-6.17-1.35z"
-                              fill="currentColor">
-                    </svg>
-
-                    <span class="visually-hidden">Log in</span>
-                </a>
-                @endif
-                </div>
-                <a href="{{ route('order', ['languageCurrent' => $languageCurrent]) }}" class="header__icon header__icon--cart link focus-inset" id="cart-icon-bubble">
-                    <svg class="icon icon-cart" aria-hidden="true" focusable="false" role="presentation"
-                         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
-                        <polygon fill="currentColor" fill-rule="evenodd"
-                                 points="18.95 16.86 18.95 21.15 20.81 21.15 20.81 23.6 22.05 21.15 22.05 16.86 20.81 16.86 20.81 19.93 20.19 19.93 20.19 16.86 18.95 16.86"></polygon>
-                        <path fill="currentColor" fill-rule="evenodd"
-                              d="M28.09,11.88h-3.7a3.91,3.91,0,0,0-7.77,0h-3.7l-.45,11.91a4.63,4.63,0,0,0,4.61,4.79h6.85a4.63,4.63,0,0,0,4.61-4.79ZM20.5,9.44a2.94,2.94,0,0,1,2.89,2.44H17.62A2.94,2.94,0,0,1,20.5,9.44Zm6,17a3.6,3.6,0,0,1-2.6,1.11H17.08a3.6,3.6,0,0,1-2.6-1.11,3.55,3.55,0,0,1-1-2.64l.41-10.95H27.13l.41,10.95A3.55,3.55,0,0,1,26.53,26.47Z"></path>
-                    </svg>
-                    <span class="visually-hidden">Cart</span>
-                        <?php $countOrder = \App\Entity\Order::countOrder();?>
-                        @if($countOrder > 0)
-                            <div class="cart-count-bubble">
-                                <span aria-hidden="true" id="countOrder">
-                                    {{ $countOrder }}
-                                </span>
-                            </div>
-                        @else
-                        <div class="cart-count-bubble">
-                            <span aria-hidden="true" id="countOrder">
-                                0
-                            </span>
-                        </div>
-                        @endif
-                </a>
-            </div>
-        </header>
-    </div>
-
-    <cart-notification>
-        <div class="cart-notification-wrapper page-width">
-            <div id="cart-notification" class="cart-notification focus-inset animate" aria-modal="true" aria-label="Item added to your cart" role="dialog" tabindex="-1">
-                <div class="cart-notification__header">
-                    <h2 class="cart-notification__heading caption-large text-body">
-                        <svg class="icon icon-checkmark color-foreground-text" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 9" fill="none">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M11.35.643a.5.5 0 01.006.707l-6.77 6.886a.5.5 0 01-.719-.006L.638 4.845a.5.5 0 11.724-.69l2.872 3.011 6.41-6.517a.5.5 0 01.707-.006h-.001z" fill="currentColor"></path>
-                        </svg>
-                        Item added to your cart
-                    </h2>
-                    <button type="button" onclick="return closeCart();" class="cart-notification__close modal__close-button link link--text focus-inset" aria-label="Close" style="display: flex">
-                        <svg class="icon icon-close" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg>
-                    </button>
-                </div>
-                <div id="cart-notification-product" class="cart-notification-product">
-                    <div class="cart-notification-product__image global-media-settings">
-                        <img src="" alt="" width="70" height="70" loading="lazy">
-                    </div><div>
-                        <h3 class="cart-notification-product__name h4"></h3>
-                        <dl>
-                            <div class="product-option">
-                                <dt>SIZE: </dt>
-                                <dd class="cart-notification-product__size">
-                                </dd>
-                            </div></dl></div>
-                </div>
-                <div class="cart-notification__links">
-                    <a href="{{ route('order', ['languageCurrent' => $languageCurrent]) }}" id="cart-notification-button" class="button button--secondary button--full-width">
-                        View my cart
-                    </a>
-                    <button type="button" class="button link button-label" onclick="return closeCart();" >
-                        Continue shopping
-                    </button>
+                    </ul>
                 </div>
             </div>
         </div>
-    </cart-notification>
-    <script>
-        function closeCart() {
-            $('#cart-notification').removeClass('active')
-        }
-    </script>
-</div>
+    </div>
+    <div class="evo-main-nav">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-5 logo evo-header-mobile">
+                    <a href="" class="logo-wrapper"
+                       title="{{ isset($information['ten-cong-ty']) ? $information['ten-cong-ty'] : '' }}">
+                        <img src="{{ isset($information['logo']) ? $information['logo'] : '' }}"
+                             alt="{{ isset($information['ten-cong-ty']) ? $information['ten-cong-ty'] : '' }}"
+                             class="lazy img-responsive center-block"/>
+                    </a>
+                </div>
+                <div class="col-md-9 col-7">
+                    <div class="header-right">
+                        <div class="evo-search">
+                            <a href="javascript:void(0);" class="site-header-search" rel="nofollow"
+                               aria-label="Tìm kiếm" title="Tìm kiếm">
+                                <svg viewBox="0 0 451 451" style="width:25px;">
+                                    <g fill="#fff">
+                                        <path d="M447.05,428l-109.6-109.6c29.4-33.8,47.2-77.9,47.2-126.1C384.65,86.2,298.35,0,192.35,0C86.25,0,0.05,86.3,0.05,192.3
+									s86.3,192.3,192.3,192.3c48.2,0,92.3-17.8,126.1-47.2L428.05,447c2.6,2.6,6.1,4,9.5,4s6.9-1.3,9.5-4
+									C452.25,441.8,452.25,433.2,447.05,428z M26.95,192.3c0-91.2,74.2-165.3,165.3-165.3c91.2,0,165.3,74.2,165.3,165.3
+									s-74.1,165.4-165.3,165.4C101.15,357.7,26.95,283.5,26.95,192.3z">
+                                    </g>
+                                </svg>
+                            </a>
+                        </div>
+                        <div class="evo-account d-lg-inline-block d-none">
+                            <a href="javascript:void(0);" title="Tài khoản" aria-label="Tài khoản" rel="nofollow">
+                                <svg viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" width="25px"
+                                     height="25px">
+                                    <g>
+                                        <path d="M437.02,330.98c-27.883-27.882-61.071-48.523-97.281-61.018C378.521,243.251,404,198.548,404,148    C404,66.393,337.607,0,256,0S108,66.393,108,148c0,50.548,25.479,95.251,64.262,121.962    c-36.21,12.495-69.398,33.136-97.281,61.018C26.629,379.333,0,443.62,0,512h40c0-119.103,96.897-216,216-216s216,96.897,216,216    h40C512,443.62,485.371,379.333,437.02,330.98z M256,256c-59.551,0-108-48.448-108-108S196.449,40,256,40    c59.551,0,108,48.448,108,108S315.551,256,256,256z"
+                                              data-original="#000000" class="active-path" data-old_color="#000000"
+                                              fill="#FFFFFF">
+                                    </g>
+                                </svg>
+                            </a>
+                            <ul>
+                                <li><a rel="nofollow" href="account/login" title="Đăng nhập">Đăng nhập</a></li>
+                                <li><a rel="nofollow" href="account/register" title="Đăng ký">Đăng ký</a></li>
+                            </ul>
+                        </div>
+
+                        <button type="button" class="evo-flexitem evo-flexitem-fill d-sm-inline-block d-lg-none"
+                                id="trigger-mobile" aria-label="Menu Mobile">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+
+                    <ul id="nav" class="nav">
+                        <li class="nav-item active"><a class="nav-link" href="" title="Trang chủ">Trang chủ</a></li>
+                        <li class="nav-item "><a class="nav-link" href="gioi-thieu" title="Giới thiệu">Giới thiệu</a>
+                        </li>
+                        <li class=" nav-item has-childs ">
+                            <a href="collections/all" class="nav-link" title="Dịch vụ">Dịch vụ
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                     x="0px" y="0px" viewBox="0 0 490.656 490.656"
+                                     style="enable-background:new 0 0 490.656 490.656;" xml:space="preserve"
+                                     width="25px" height="25px">
+			<path d="M487.536,120.445c-4.16-4.16-10.923-4.16-15.083,0L245.339,347.581L18.203,120.467c-4.16-4.16-10.923-4.16-15.083,0    c-4.16,4.16-4.16,10.923,0,15.083l234.667,234.667c2.091,2.069,4.821,3.115,7.552,3.115s5.461-1.045,7.531-3.136l234.667-234.667    C491.696,131.368,491.696,124.605,487.536,120.445z"
+                  data-original="#000000" class="active-path" data-old_color="#000000" fill="#141414">
+			</svg>
+                            </a>
+                            <ul class="dropdown-menu">
+
+
+                                <li class="nav-item-lv2"><a class="nav-link" href="gv-gia-dinh"
+                                                            title="Giúp việc gia đình">Giúp việc gia đình</a></li>
+
+
+                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-cham-em-be"
+                                                            title="Giúp việc chăm bé">Giúp việc chăm bé</a></li>
+
+
+                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-theo-gio-hanh-chinh"
+                                                            title="Giúp việc hành chính">Giúp việc hành chính</a></li>
+
+
+                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-cham-nguoi-gia"
+                                                            title="Giúp việc chăm người già">Giúp việc chăm người
+                                        già</a></li>
+
+
+                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-cham-nguoi-benh"
+                                                            title="Giúp việc chăm người bệnh">Giúp việc chăm người
+                                        bệnh</a></li>
+
+
+                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-lao-dong-pho-thong"
+                                                            title="Cung cấp lao động phổ thông">Cung cấp lao động phổ
+                                        thông</a></li>
+
+
+                                <li class="nav-item-lv2"><a class="nav-link" href="dich-vu-ve-sinh-cong-nghiep"
+                                                            title="Dịch vụ vệ sinh công nghiệp">Dịch vụ vệ sinh công
+                                        nghiệp</a></li>
+
+
+                            </ul>
+                        </li>
+
+
+                        <li class="nav-item "><a class="nav-link" href="nguoi-giup-viec" title="Người Giúp Việc">Người
+                                Giúp Việc</a></li>
+
+
+                        <li class="nav-item "><a class="nav-link" href="bang-bao-gia-giup-viec" title="Báo giá">Báo
+                                giá</a></li>
+
+
+                        <li class="nav-item "><a class="nav-link" href="tin-tuc" title="Tin tức">Tin tức</a></li>
+
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</header>

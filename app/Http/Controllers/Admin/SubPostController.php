@@ -284,12 +284,12 @@ class SubPostController extends AdminController
                         $input = new Input();
                         $input->insert([
                             'type_input_slug' => $typeInput->slug,
-                            'content' => (count($contentInputs) > 1) ? $contentInputs[$id] : $contentInputs,
+                            'content' => (count($contentInputs) >= 1) ? $contentInputs[$id] : $contentInputs,
                             'post_id' => $post->post_id
                         ]);
                     } else {
                         $input->update([
-                            'content' => (count($contentInputs) > 1) ? $contentInputs[$id] : $contentInputs,
+                            'content' => (count($contentInputs) >= 1) ? $contentInputs[$id] : $contentInputs,
                         ]);
                     }
 
@@ -460,16 +460,19 @@ class SubPostController extends AdminController
         // insert input
         $input = new Input();
         $typeInputDatabase = TypeInput::orderBy('type_input_id')->get();
+
         foreach($typeInputDatabase as $typeInput) {
             $token = explode(',', $typeInput->post_used);
             if (in_array($typePost, $token)) {
                 $contentInputs =  $request->input($typeInput->slug);
                 foreach($postIds as $id => $postId) {
-                    $input->insert([
+                    $data = [
                         'type_input_slug' => $typeInput->slug,
-                        'content' => (count($contentInputs) > 1) ? $contentInputs[$id] : $contentInputs,
+                        'content' => (count($contentInputs) >= 1) ? $contentInputs[$id] : $contentInputs,
                         'post_id' => $postId
-                    ]);
+                    ];
+
+                    $input->insert($data);
                 }
 
             }
