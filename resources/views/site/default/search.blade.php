@@ -5,209 +5,137 @@
 @section('keywords', isset($information['meta_keyword']) ? $information['meta_keyword'] : '')
 
 @section('content')
-    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+    <div class="evo-themes">
+        <section class="bread-crumb margin-bottom-10"
+                 style="background-image:url({{ isset($category->image) ? $category->image : '/site/image/image.jpg' }}); background-size: cover;
+                         background-repeat: no-repeat;
+                         background-position: center;">
+            <div class="container">
+                <ul class="breadcrumb" itemscope itemtype="https://schema.org/BreadcrumbList">
+                    <li class="home" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <a itemprop="item" href="" title="Trang chủ">
+                            <span itemprop="name">Trang chủ</span>
+                            <meta itemprop="position" content="1"/>
+                        </a>
+                    </li>
 
-        <div id="shopify-section-template--15590144049331__product-grid" class="shopify-section section">
-            <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/template-collection.css') }}"
-                  rel="stylesheet" type="text/css" media="all"/>
-            <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-loading-overlay.css') }}"
-                  rel="stylesheet" type="text/css" media="all"/>
-            <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-card.css') }}"
-                  rel="stylesheet" type="text/css" media="all"/>
-            <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-price.css') }}"
-                  rel="stylesheet" type="text/css" media="all"/>
-
-            <link rel="preload"
-                  href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-rte.css') }}"
-                  as="style" onload="this.onload=null;this.rel='stylesheet'">
-
-            <noscript>
-                <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-rte.css') }}"
-                      rel="stylesheet" type="text/css" media="all"/>
-            </noscript>
-            <style data-shopify>.section-template--15590144049331__product-grid-padding {
-                    padding-top: 0px;
-                    padding-bottom: 27px;
-                }
-
-                @media screen and (min-width: 750px) {
-                    .section-template--15590144049331__product-grid-padding {
-                        padding-top: 0px;
-                        padding-bottom: 36px;
-                    }
-                }</style>
-            <div class="section-template--15590144049331__product-grid-padding">
-                <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-facets.css') }}"
-                      rel="stylesheet" type="text/css" media="all"/>
-                <script src="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/facets.js') }}"
-                        defer="defer"></script>
-
-                <div class="page-width" id="main-collection-filters" data-id="template--15590144049331__product-grid">
-                    <div class="facets-container">
-                        {{--filter desktop--}}
-                        <facet-filters-form class="facets small-hide">
-                            Search : {{ $word }}
-                        </facet-filters-form>
+                    <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                        <strong itemprop="name">{{ request()->input('word') }}</strong>
+                        <meta itemprop="position" content="2"/>
+                    </li>
 
 
-                        <menu-drawer class="mobile-facets__wrapper  medium-hide large-up-hide" data-breakpoint="mobile">
-                            <details class="mobile-facets__disclosure disclosure-has-popup">
-                                <summary class="mobile-facets__open-wrapper focus-offset">
-                                            <span class="mobile-facets__open">
-                                              <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" role="presentation"
-                                                   class="icon icon-filter" fill="none" viewBox="0 11 20 20">
-                                      <line x1="16.5" y1="17.5" x2="3.5" y2="17.5" stroke="#3F7972" stroke-linecap="round"/>
-                                      <line x1="16.5" y1="24.5" x2="3.5" y2="24.5" stroke="#3F7972" stroke-linecap="round"/>
-                                      <circle cx="13" cy="24.5" r="2" fill="white" stroke="#3F7972"/>
-                                      <circle cx="7" cy="17.5" r="2" fill="white" stroke="#3F7972"/>
-                                    </svg>
+                </ul>
+            </div>
+        </section>
+        <div class="container padding-top-10">
+            <div class="row">
+                <section class="main_container collection col-md-12 col-lg-12">
 
-                                              <span class="mobile-facets__open-label button-label">Filter
-                                    </span>
-                                    </span>
-                                    <span tabindex="0" class="mobile-facets__close mobile-facets__close--no-js">
-                                        <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
-                                             role="presentation" class="icon icon-close" fill="none" viewBox="0 0 18 17">
-                                            <path d="M.865 15.978a.5.5 0 00.707.707l7.433-7.431 7.579 7.282a.501.501 0 00.846-.37.5.5 0 00-.153-.351L9.712 8.546l7.417-7.416a.5.5 0 10-.707-.708L8.991 7.853 1.413.573a.5.5 0 10-.693.72l7.563 7.268-7.418 7.417z"
-                                                  fill="currentColor">
-                                        </svg>
-                                    </span>
-                                </summary>
-                            </details>
-                        </menu-drawer>
-                        <div class="active-facets active-facets-mobile  medium-hide large-up-hide">
-                            <facet-remove class="active-facets__button-wrapper">
-                                <a href="/collections/latest-products" class="active-facets__button-remove">
-                                    <span>Clear all</span>
-                                </a>
-                            </facet-remove>
-                        </div>
-                        <div class="product-count light medium-hide large-up-hide" role="status">
-                            <h2 class="product-count__text text-body">
-                                  <span id="ProductCount">{{ $count }} products
-                            </span>
-                            </h2>
-                            <div class="loading-overlay__spinner">
-                                <svg aria-hidden="true" focusable="false" role="presentation" class="spinner"
-                                     viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-                                    <circle class="path" fill="none" stroke-width="6" cx="33" cy="33" r="30"></circle>
-                                </svg>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    <div class="category-products products category-products-grids clearfix">
 
+                        <section class="products-view products-view-grid row">
+                            @if(count($products) > 1)
+                                <div class="col-12">
+                                    <h1 class="title-head text-center margin-bottom-20 margin-top-0">
+                                        Tìm kiếm : {{ request()->input('word') }}
+                                    </h1>
+                                </div>
+                            @foreach($products as $item)
+                                <div class="col-6 col-sm-3 col-lg-3">
+                                    <div class="evo-product-block-item">
+                                        <div class="image">
+                                            <a class="primary_img"
+                                               href="{{ route('product', ['post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                               title="{{ isset($item['title']) ? $item['title'] : '' }}">
+                                                <img class="img-responsive center-block lazy loaded"
+                                                     src="{{ isset($item['image']) ? $item['image'] : '' }}"
+                                                     data-src="{{ isset($item['image']) ? $item['image'] : '' }}"
+                                                     alt="{{ isset($item['title']) ? $item['title'] : '' }}"/>
+                                            </a>
 
-                <div id="ProductGridContainer">
-                    <div class="collection page-width">
-                        <div class="loading-overlay"></div>
-
-                        <ul id="product-grid" data-id="template--15590144049331__product-grid" class="grid grid--2-col product-grid grid--3-col-tablet grid--one-third-max grid--4-col-desktop grid--quarter-max">
-                            @foreach ($products as $id => $product)
-                                <li class="grid__item">
-                                    <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-rating.css') }}"
-                                          rel="stylesheet" type="text/css" media="all"/>
-                                    <div class="card-wrapper underline-links-hover">
-                                        <div class="card card--standard card--media card--extend-height">
-                                            <div class="card__inner ratio">
-                                                <div class="card__media">
-                                                    <a href="{{ route('product', ['post_slug' => $product->slug, 'languageCurrent' => $languageCurrent]) }}">
-                                                        <div class="media media--transparent media--hover-effect">
-                                                            <img src="{{ isset($product['image']) ? $product['image'] : '' }}"
-                                                                 alt="{{ isset($product['title']) ? $product['title'] : '' }}"
-                                                                 class="motion-reduce"
-                                                                 loading="lazy"
-                                                                 width="4000"
-                                                                 height="4000"
-                                                            ><img src="{{ \App\Entity\Input::getPostMeta('anh-2', $product->post_id) }}"
-                                                                  alt="{{ isset($product['title']) ? $product['title'] : '' }}"
-                                                                  class="motion-reduce image_2"
-                                                                  loading="lazy"
-                                                                  width="1363"
-                                                                  height="2048"
-                                                            ></div>
-                                                    </a>
-                                                </div>
+                                        </div>
+                                        <div class="product-meta">
+                                            <h3>
+                                                <a href="{{ route('product', ['post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                                   title="{{ isset($item['title']) ? $item['title'] : '' }}">
+                                                    {{ isset($item['title']) ? $item['title'] : '' }}
+                                                </a>
+                                            </h3>
+                                            <div class="content_price">
+                                                <strong>Liên hệ</strong>
                                             </div>
-                                            <div class="card__content">
-                                                <div class="card__information">
-                                                    <h3 class="card__heading h5">
-                                                        <a href="{{ route('product', ['post_slug' => $product->slug, 'languageCurrent' => $languageCurrent]) }}"
-                                                           class="full-unstyled-link">
-                                                            {{ isset($product['title']) ? $product['title'] : '' }}
-                                                        </a>
-                                                    </h3>
-                                                    <div class="card-information">
-                                                        <span class="caption-large light"></span>
+                                            <form action="" method="post" enctype="multipart/form-data"
+                                                  class="hidden-md variants form-nut-grid form-ajaxtocart"
+                                                  data-id="product-actions-19879232">
 
-                                                        <div class="price  price--sold-out ">
-                                                            <div class="price__container">
-                                                                <div class="price__regular">
-                                                                    <span class="visually-hidden visually-hidden--inline">Regular price</span>
-                                                                    <span class="price-item price-item--regular">
-                                                                   {{ isset($product['price']) ? $product['price'] : '' }} {{ isset($information['currency']) ? $information['currency'] : \App\Entity\Input::getPostMeta('currency', $product->post_id)  }}
-                                                                </span>
-                                                                </div>
+                                                <a class="button ajax_addtocart"
+                                                   href="{{ route('product', ['post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                                   title="Chi tiết">Chi tiết</a>
 
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            </form>
                                         </div>
                                     </div>
-                                </li>
+                                </div>
                             @endforeach
-                        </ul>
-
-                        <link rel="stylesheet"
-                              href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-pagination.css') }}"
-                              media="print" onload="this.media='all'">
-                        <noscript>
-                            <link href="{{ asset('site/s/files/1/0080/9035/3717/t/3/assets/component-pagination.css') }}"
-                                  rel="stylesheet" type="text/css" media="all"/>
-                        </noscript>
-                        <div class="pagination-wrapper">
-                            <nav class="pagination" role="navigation" aria-label="Pagination">
-
-                                <ul class="pagination__list list-unstyled" role="list">
-                                    @if ($products->lastPage() > 1)
-                                        @for ($i = 1; $i <= $products->lastPage(); $i++)
-                                            @if($products->currentPage() == $i )
-                                                <li>
-                                                <span class="pagination__item pagination__item--current" aria-current="page"
-                                                      aria-label="Page {{ $i }}">
-                                                    {{ $i }}
-                                                </span>
+                            <div class="clearfix"></div>
+                            <div class="col-md-12 col-sm-12 col-xs-12">
+                                <div class="text-xs-right text-center pagging-css">
+                                    <nav class="text-center">
+                                        <ul class="pagination clearfix">
+                                            @if ($products->lastPage() > 1)
+                                                <li class="page-item"><a class="page-link" href="{{ $products->url(1) }}">
+                                                        <svg viewBox="0 0 100 100" data-radium="true" style="width: 14px;">
+                                                            <g stroke="none" stroke-width="1" fill="none"
+                                                               fill-rule="evenodd">
+                                                                <g transform="translate(-645.000000, -879.000000)"
+                                                                   fill="#000">
+                                                                    <path d="M743.998989,926.504303 L697.512507,880.032702 C696.909905,879.430293 695.962958,879 695.016011,879 C694.069064,879 693.122117,879.430293 692.519515,880.032702 L646.033033,926.504303 C644.655656,927.881239 644.655656,930.118761 646.033033,931.495697 C646.721722,932.184165 647.582582,932.528399 648.529529,932.528399 C649.476476,932.528399 650.337337,932.184165 651.026025,931.495697 L691.486482,891.048193 L691.486482,975.471601 C691.486482,977.450947 693.036031,979 695.016011,979 C696.995991,979 698.54554,977.450947 698.54554,975.471601 L698.54554,891.048193 L739.005997,931.495697 C740.383374,932.872633 742.621612,932.872633 743.998989,931.495697 C745.376366,930.118761 745.29028,927.881239 743.998989,926.504303 L743.998989,926.504303 Z"
+                                                                          transform="translate(695.000000, 929.000000) rotate(-90.000000) translate(-695.000000, -929.000000) "></path>
+                                                                </g>
+                                                            </g>
+                                                        </svg>
+                                                    </a>
                                                 </li>
-                                            @else
-                                                <li>
-                                                    <a href="{{ $products->url($i) }}" class="pagination__item link"
-                                                       aria-label="Page {{ $i }}">{{ $i }}</a>
+                                                @for ($i = 1; $i <= $products->lastPage(); $i++)
+
+                                                    <li class="{{ ($products->currentPage() == $i) ? ' active disabled ' : '' }} page-item ">
+                                                        <a class="page-link" href="{{ $products->url($i) }}" title="{{ $i }}">
+                                                            {{ $i }}
+                                                        </a>
+                                                    </li>
+                                                @endfor
+                                                <li class="page-item"><a class="page-link" href="{{ $products->url($products->currentPage()+1) }}">
+                                                        <svg viewBox="0 0 100 100" data-radium="true" style="width: 14px;">
+                                                            <g stroke="none" stroke-width="1" fill="none"
+                                                               fill-rule="evenodd">
+                                                                <g transform="translate(-463.000000, -879.000000)"
+                                                                   fill="#000">
+                                                                    <path d="M561.998989,926.504303 L515.512507,880.032702 C514.909905,879.430293 513.962958,879 513.016011,879 C512.069064,879 511.122117,879.430293 510.519515,880.032702 L464.033033,926.504303 C462.655656,927.881239 462.655656,930.118761 464.033033,931.495697 C464.721722,932.184165 465.582582,932.528399 466.529529,932.528399 C467.476476,932.528399 468.337337,932.184165 469.026025,931.495697 L509.486482,891.048193 L509.486482,975.471601 C509.486482,977.450947 511.036031,979 513.016011,979 C514.995991,979 516.54554,977.450947 516.54554,975.471601 L516.54554,891.048193 L557.005997,931.495697 C558.383374,932.872633 560.621612,932.872633 561.998989,931.495697 C563.376366,930.118761 563.29028,927.881239 561.998989,926.504303 L561.998989,926.504303 Z"
+                                                                          id="up-arrow-copy-2"
+                                                                          transform="translate(513.000000, 929.000000) rotate(-270.000000) translate(-513.000000, -929.000000) "></path>
+                                                                </g>
+                                                            </g>
+                                                        </svg>
+                                                    </a>
                                                 </li>
                                             @endif
-                                        @endfor
-                                        <li>
-                                            <a href="{{ $products->url($products->currentPage()+1) }}"
-                                               class="pagination__item pagination__item--prev pagination__item-arrow link motion-reduce"
-                                               aria-label="Next page">
-                                                <svg aria-hidden="true" focusable="false" role="presentation"
-                                                     class="icon icon-caret" viewBox="0 0 10 6">
-                                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                                          d="M9.354.646a.5.5 0 00-.708 0L5 4.293 1.354.646a.5.5 0 00-.708.708l4 4a.5.5 0 00.708 0l4-4a.5.5 0 000-.708z"
-                                                          fill="currentColor">
-                                                </svg>
-                                            </a>
-                                        </li>
-                                    @endif
-                                </ul>
-                            </nav>
-                        </div>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            </div>
+                            @else
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <h1 class="title-head text-center margin-bottom-20 margin-top-0">
+                                        Không tìm thấy bất kỳ kết quả nào với từ khóa trên.
+                                    </h1>
+                                    <div class="text-center margin-bottom-10">Vui lòng nhập từ khóa tìm kiếm khác</div>
+                                </div>
+                            @endif
+                        </section>
                     </div>
-                </div>
+                </section>
             </div>
-
         </div>
-    </main>
+    </div>
 @endsection

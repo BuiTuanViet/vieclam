@@ -15,7 +15,7 @@
 
     <section class="content">
         <div class="row">
-            <div class="col-xs-12 col-md-8">
+            <div class="col-xs-12 col-md-6">
                 <div class="box box-primary boxMenuSource">
                     <div class="box-body">
                         <!-- category post -->
@@ -223,7 +223,7 @@
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
 
-                <div class="col-xs-12 col-md-4">
+                <div class="col-xs-12 col-md-6">
                     <!-- Nội dung thêm mới -->
                     <div class="box box-primary">
                         <div class="box-header with-border">

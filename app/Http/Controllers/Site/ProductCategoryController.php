@@ -169,24 +169,38 @@ class ProductCategoryController extends SiteController
     }
 
     public function search(Request $request) {
-        $word = $request->input('word');
 
-		$products = Post::join('products', 'products.post_id', '=', 'posts.post_id')
-			->select(
-				'posts.*',
-				'products.price',
-				'products.discount',
-				'products.discount_start',
-				'products.discount_end'
-			)
-			->where('posts.post_type', 'product')
-			->where('posts.slug', 'like', '%'.Ultility::createSlug($word).'%')
-			->where('language', session('languageCurrent', 'vn'));
-            $count = $products->count();
+        $word = $request->input('word');
+        $type = $request->input('type') ?? 'product';
+
+        if ($type == "product"){
+            $products = Post::join('products', 'products.post_id', '=', 'posts.post_id')
+                ->select(
+                    'posts.*',
+                    'products.price',
+                    'products.discount',
+                    'products.discount_start',
+                    'products.discount_end'
+                )
+                ->where('posts.post_type',  $type)
+                ->where('posts.title', 'like', '%'. $word .'%')
+    			->where('language', session('languageCurrent', 'vn'));
+
+                $count = $products->count();
 
 			$products = $products->paginate(16);
 
-		return view('site.default.search', compact('products', 'word', 'count'));
+            return view('site.default.search', compact('products', 'word', 'count'));
+        }else{
+
+            $products = Post::where('post_type',  $type)
+                ->where('title', 'like', '%'. $word .'%')
+                ->where('language', session('languageCurrent', 'vn'));
+                $count = $products->count();
+                $products = $products->paginate(16);
+
+            return view('site.default.search-post', compact('products', 'word', 'count'));
+        }
     }
 
     public function searchAjax(Request $request) {

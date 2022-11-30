@@ -35,13 +35,16 @@ class ContactController extends SiteController
 
     public function submit(Request $request) {
         $languageCurrent = session('languageCurrent', 'vn');
-        
+
         $validation = Validator::make($request->all(), [
             'name' => 'required',
             'phone' => 'required',
-            'email' => 'required|email',
+//            'address' => 'required',
         ]);
-
+        $message = $request->input('message');
+        if ($request->input('service')){
+            $message = $request->input('service'). " - " . $request->input('message');
+        }
         // if validation fail return error
         if ($validation->fails()) {
             return redirect(route('contact', ['languageCurrent' => $languageCurrent]))
@@ -56,7 +59,7 @@ class ContactController extends SiteController
             'phone' => $request->input('phone'),
             'email' => $request->input('email'),
             'address' => $request->input('address'),
-            'message' => $request->input('message'),
+            'message' => $message,
             'created_at' => new \DateTime(),
             'updated_at' => new \DateTime()
         ]);
@@ -66,9 +69,16 @@ class ContactController extends SiteController
         } else {
             $activeMenu = route('contact', ['languageCurrent' => $languageCurrent]);
         }
+
         $success = 1;
         $this->sendMainContact($request);
-        
+
+        if($request->type == 'ajax'){
+            return response()->json([
+                'status' => 200,
+                'message' => "Gửi thông tin liên hệ thành công."
+            ], 200);
+        }
         return view('site.default.contact', compact('activeMenu', 'success'));
 
     }

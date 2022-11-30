@@ -32,7 +32,8 @@ class ProductController extends SiteController
                 'posts.*'
             )
             ->where('posts.slug', $slug_post)
-            ->where('language', $languageCurrent)->first();
+            ->where('language', $languageCurrent)
+            ->first();
 
         $languages = Language::orderBy('language_id', 'asc')->get();
         $indexLangCurrent = 0;
@@ -41,6 +42,7 @@ class ProductController extends SiteController
                 $indexLangCurrent = $id;
             }
         }
+
         $mainId = $product->post_id - $indexLangCurrent;
         $nameRoute = 'product';
         

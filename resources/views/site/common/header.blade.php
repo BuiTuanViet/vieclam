@@ -92,10 +92,8 @@
 
 
                         <li class="d-md-inline-block d-none">
-                            <a href="lien-he" class="btn btn-primary" title="Liên hệ"
-                            >Liên
-                                hệ</a></li>
-
+                            <a href="{{ route('contact', ['language' => $languageCurrent]) }}" class="btn btn-primary" title="Liên hệ"
+                            >Liên hệ</a></li>
                     </ul>
                 </div>
             </div>
@@ -153,69 +151,42 @@
                     </div>
 
                     <ul id="nav" class="nav">
-                        <li class="nav-item active"><a class="nav-link" href="" title="Trang chủ">Trang chủ</a></li>
-                        <li class="nav-item "><a class="nav-link" href="gioi-thieu" title="Giới thiệu">Giới thiệu</a>
-                        </li>
-                        <li class=" nav-item has-childs ">
-                            <a href="collections/all" class="nav-link" title="Dịch vụ">Dịch vụ
-                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                                     x="0px" y="0px" viewBox="0 0 490.656 490.656"
-                                     style="enable-background:new 0 0 490.656 490.656;" xml:space="preserve"
-                                     width="25px" height="25px">
-			<path d="M487.536,120.445c-4.16-4.16-10.923-4.16-15.083,0L245.339,347.581L18.203,120.467c-4.16-4.16-10.923-4.16-15.083,0    c-4.16,4.16-4.16,10.923,0,15.083l234.667,234.667c2.091,2.069,4.821,3.115,7.552,3.115s5.461-1.045,7.531-3.136l234.667-234.667    C491.696,131.368,491.696,124.605,487.536,120.445z"
-                  data-original="#000000" class="active-path" data-old_color="#000000" fill="#141414">
-			</svg>
-                            </a>
-                            <ul class="dropdown-menu">
+                        @foreach (\App\Entity\Menu::showWithLocation('menu-chinh') as $menu)
+                            @foreach (\App\Entity\MenuElement::showMenuPageArray($menu->slug) as $id => $menuElement)
+                                @if (!empty($menuElement['children']))
+                                    <li class=" nav-item has-childs ">
+                                        <a href="{{ $menuElement['url'] }}" class="nav-link" title="{{ $menuElement['title_show'] }}">
+                                            {{ $menuElement['title_show'] }}
+                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                                                 x="0px" y="0px" viewBox="0 0 490.656 490.656"
+                                                 style="enable-background:new 0 0 490.656 490.656;" xml:space="preserve"
+                                                 width="25px" height="25px">
+                                            <path d="M487.536,120.445c-4.16-4.16-10.923-4.16-15.083,0L245.339,347.581L18.203,120.467c-4.16-4.16-10.923-4.16-15.083,0    c-4.16,4.16-4.16,10.923,0,15.083l234.667,234.667c2.091,2.069,4.821,3.115,7.552,3.115s5.461-1.045,7.531-3.136l234.667-234.667    C491.696,131.368,491.696,124.605,487.536,120.445z"
+                                                  data-original="#000000" class="active-path" data-old_color="#000000" fill="#141414">
+                                            </svg>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @foreach ($menuElement['children'] as $elementparent)
+                                                <li class="nav-item-lv2">
+                                                    <a class="nav-link" href="{{ $elementparent['url'] }}"
+                                                                            title="{{ $elementparent['title_show'] }}">
+                                                        {{ $elementparent['title_show'] }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
 
+                                        </ul>
+                                    </li>
+                                @else
+                                    <li class="nav-item ">
+                                        <a class="nav-link" href="{{ $menuElement['url'] }}" title="{{ $menuElement['title_show'] }}">
+                                            {{ $menuElement['title_show'] }}
+                                        </a>
+                                    </li>
+                                @endif
 
-                                <li class="nav-item-lv2"><a class="nav-link" href="gv-gia-dinh"
-                                                            title="Giúp việc gia đình">Giúp việc gia đình</a></li>
-
-
-                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-cham-em-be"
-                                                            title="Giúp việc chăm bé">Giúp việc chăm bé</a></li>
-
-
-                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-theo-gio-hanh-chinh"
-                                                            title="Giúp việc hành chính">Giúp việc hành chính</a></li>
-
-
-                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-cham-nguoi-gia"
-                                                            title="Giúp việc chăm người già">Giúp việc chăm người
-                                        già</a></li>
-
-
-                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-cham-nguoi-benh"
-                                                            title="Giúp việc chăm người bệnh">Giúp việc chăm người
-                                        bệnh</a></li>
-
-
-                                <li class="nav-item-lv2"><a class="nav-link" href="giup-viec-lao-dong-pho-thong"
-                                                            title="Cung cấp lao động phổ thông">Cung cấp lao động phổ
-                                        thông</a></li>
-
-
-                                <li class="nav-item-lv2"><a class="nav-link" href="dich-vu-ve-sinh-cong-nghiep"
-                                                            title="Dịch vụ vệ sinh công nghiệp">Dịch vụ vệ sinh công
-                                        nghiệp</a></li>
-
-
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-item "><a class="nav-link" href="nguoi-giup-viec" title="Người Giúp Việc">Người
-                                Giúp Việc</a></li>
-
-
-                        <li class="nav-item "><a class="nav-link" href="bang-bao-gia-giup-viec" title="Báo giá">Báo
-                                giá</a></li>
-
-
-                        <li class="nav-item "><a class="nav-link" href="tin-tuc" title="Tin tức">Tin tức</a></li>
-
-
+                            @endforeach
+                        @endforeach
                     </ul>
                 </div>
             </div>

@@ -28,36 +28,42 @@
                 Vui lòng để lại thông tin đăng ký, chúng tôi sẽ liên hệ với bạn
             </h4>
             <div id="getfly-optin-form">
-                <div id="getfly-form" class="getfly-form">
-                    <div class="getfly-row">
-                        <label class="getfly-label getfly-label-c">Mã KH + Tên KH + Công việc<span
-                                    class="getfly-span getfly-span-c">*</span></label>
-                        <input type="text"
-                                                                                             class="getfly-input getfly-margin"
-                                                                                             name="account_name"
-                                                                                             placeholder="Họ và tên *">
+                <form method="post" action="" onSubmit="return contact(this);">
+                    {!! csrf_field() !!}
+                    <div id="getfly-form" class="getfly-form">
+                        <div class="getfly-row">
+                            <label class="getfly-label getfly-label-c">Mã KH + Tên KH + Công việc<span
+                                        class="getfly-span getfly-span-c">*</span></label>
+                            <input type="text"
+                                 class="getfly-input getfly-margin"
+                                 name="name"
+                                 placeholder="Họ và tên *" required>
+                        </div>
+                        <div class="getfly-row">
+                            <label class="getfly-label getfly-label-c">Điện thoại<span
+                                        class="getfly-span getfly-span-c">*</span></label>
+                            <input type="text"
+                                 name="phone"
+                                 id="phone"
+                                 class="getfly-input phone getfly-margin"
+                                 placeholder="SĐT: 0123456789 *" required>
+                        </div>
+                        <div class="getfly-row">
+                            <label class="getfly-label getfly-label-c">Địa chỉ<span
+                                        class="getfly-span getfly-span-c">*</span></label>
+                            <input type="text"
+                                 class="getfly-input getfly-margin"
+                                 name="address"
+                                 placeholder="Địa chỉ *" required>
+                        </div>
+                        <input type="hidden" name="type" value="ajax" >
+                        <div class=" getfly-btn">
+                            <button class="getfly-button getfly-button-bg getfly-margin">
+                                Đăng ký
+                            </button>
+                        </div>
                     </div>
-                    <div class="getfly-row">
-                        <label class="getfly-label getfly-label-c">Điện thoại<span
-                                    class="getfly-span getfly-span-c">*</span></label>
-                        <input type="text"
-                                                                                             name="account_phone"
-                                                                                             id="account_phone"
-                                                                                             class="getfly-input phone getfly-margin"
-                                                                                             placeholder="SĐT: 0123456789 *">
-                    </div>
-                    <div class="getfly-row">
-                        <label class="getfly-label getfly-label-c">Địa chỉ<span
-                                    class="getfly-span getfly-span-c">*</span></label>
-                        <input type="text"
-                                                                                             class="getfly-input getfly-margin"
-                                                                                             name="account_address"
-                                                                                             placeholder="Địa chỉ *">
-                    </div>
-                    <div class=" getfly-btn">
-                        <button class="getfly-button getfly-button-bg getfly-margin">Đăng ký</button>
-                    </div>
-                </div>
+                </form>
             </div>
 
         </section>
@@ -148,167 +154,41 @@
                         @endforeach
                     </div>
                 </div>
+            </div>
         </section>
 
 
         <section class="awe-section-4">
-            <div class="section_service lazy" data-src="100/302/581/themes/798703/assets/service_bg.png?1668669091843">
+            <div class="section_service lazy" data-src="{{ asset('site/100/302/581/themes/798703/assets/service_bg.png') }}">
                 <div class="container">
                     <div class="section_service_title text-center">
                         <span></span>
-                        <h3>Dịch vụ của GIÚP VIỆC HỒNG PHÚC</h3>
+                        <h3>{{ isset($information['title-block-dich-vu']) ? $information['title-block-dich-vu'] : '' }}</h3>
                         <p></p>
                     </div>
                     <div class="row">
-
-
+                        @foreach(\App\Entity\Post::newPost('dich-vu', 6) as $id => $item)
                         <div class="col-lg-4 col-md-6 col-6 p-xs-min">
                             <div class="services-box">
                                 <div class="icon">
                                     <img class="lazy"
-                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                         data-src="100/302/581/themes/798703/assets/service_img_1.svg?1668669091843"
-                                         alt="Giúp việc gia đình "/>
+                                         src="{{ isset($item['image']) ? $item['image'] : '' }}"
+                                         data-src="{{ isset($item['image']) ? $item['image'] : '' }}"
+                                         alt="{{ isset($item['title']) ? $item['title'] : '' }}"/>
                                 </div>
-                                <a href="gv-gia-dinh" title="Giúp việc gia đình ">
-                                    <h3>Giúp việc gia đình </h3>
+                                <a href="{{ route('post', ['cate_slug' => 'dich-vu', 'post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}" title="{{ isset($item['title']) ? $item['title'] : '' }}">
+                                    <h3>{{ isset($item['title']) ? $item['title'] : '' }}</h3>
                                 </a>
-                                <p class="d-none d-lg-block d-xl-block d-md-block">Trong những ngày đầu năm bận rộn,
-                                    thuê
-                                    giúp việc là giải pháp lý tưởng được rất nhiều gia đình hiện đại lựa chọn để cả nhà
-                                    có
-                                    thể thảnh thơi mà nhà cửa vẫn được tranh hoàng, sạch bóng tinh tươm.</p>
-                                <a class="d-none d-lg-block d-xl-block d-md-block" href="gv-gia-dinh"
-                                   title="Xem chi tiết">Xem
-                                    chi tiết</a>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-6 col-6 p-xs-min">
-                            <div class="services-box">
-                                <div class="icon">
-                                    <img class="lazy"
-                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                         data-src="100/302/581/themes/798703/assets/service_img_2.svg?1668669091843"
-                                         alt="Giúp việc chăm bé"/>
-                                </div>
-                                <a href="giup-viec-cham-em-be" title="Giúp việc chăm bé">
-                                    <h3>Giúp việc chăm bé</h3>
-                                </a>
-                                <p class="d-none d-lg-block d-xl-block d-md-block">Trẻ em luôn cần sự yêu thương, chăm
-                                    sóc .
-                                    Bố mẹ đã dành cho các bé tình yêu thương nhưng đôi khi do quá bận rộn, họ không có
-                                    nhiều
-                                    thời gian chăm sóc cho bé. Thấu hiểu điều này, Vạn Phúc cung cấp dịch vụ giúp việc
-                                    chăm
-                                    bé, để các bé luôn được chăm sóc tốt nhất, để bố mẹ bé yên tâm đi làm.</p>
-                                <a class="d-none d-lg-block d-xl-block d-md-block" href="giup-viec-cham-em-be"
-                                   title="Xem chi tiết">Xem chi tiết</a>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-6 col-6 p-xs-min">
-                            <div class="services-box">
-                                <div class="icon">
-                                    <img class="lazy"
-                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                         data-src="100/302/581/themes/798703/assets/service_img_3.svg?1668669091843"
-                                         alt="Giúp việc hành chính"/>
-                                </div>
-                                <a href="giup-viec-theo-gio-hanh-chinh" title="Giúp việc hành chính">
-                                    <h3>Giúp việc hành chính</h3>
-                                </a>
-                                <p class="d-none d-lg-block d-xl-block d-md-block">Cuộc sống hiện đại khiến cho bạn
-                                    không có
-                                    nhiều thời gian để chăm sóc cho tổ ấm. Với những gia đình đang sống ở chung cư, nhà
-                                    riêng vừa muốn có giúp việc vừa muốn tiết kiệm được chi phí thì dịch vụ giúp việc
-                                    theo
-                                    giờ của Hồng Phúc sẽ là sự lựa chọn hoàn hảo nhất.
+                                <p class="d-none d-lg-block d-xl-block d-md-block">
+                                    {{ \App\Ultility\Ultility::textLimit($item['description'], 20) }}
                                 </p>
-                                <a class="d-none d-lg-block d-xl-block d-md-block" href="giup-viec-theo-gio-hanh-chinh"
+
+                                <a class="d-none d-lg-block d-xl-block d-md-block"
+                                   href="{{ route('post', ['cate_slug' => 'dich-vu', 'post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
                                    title="Xem chi tiết">Xem chi tiết</a>
                             </div>
                         </div>
-
-
-                        <div class="col-lg-4 col-md-6 col-6 p-xs-min">
-                            <div class="services-box">
-                                <div class="icon">
-                                    <img class="lazy"
-                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                         data-src="100/302/581/themes/798703/assets/service_img_4.svg?1668669091843"
-                                         alt="Giúp việc chăm người già"/>
-                                </div>
-                                <a href="giup-viec-cham-nguoi-gia" title="Giúp việc chăm người già">
-                                    <h3>Giúp việc chăm người già</h3>
-                                </a>
-                                <p class="d-none d-lg-block d-xl-block d-md-block">Người già thường rất nhạy cảm, cần
-                                    được
-                                    được quan tâm và chăm sóc nhiều hơn. Nhưng làm sao để giữ trọn đạo Hiếu khi mà ngoài
-                                    kia
-                                    còn bao nhiêu bọn bề cuộc sống. Thấu hiểu được nỗi lòng của con cháu nên Hồng Phúc
-                                    đã
-                                    mang đến dịch vụ giúp việc chăm người già để có thể giúp bạn san sẻ được phần nào
-                                    những
-                                    khó khăn đấy.</p>
-                                <a class="d-none d-lg-block d-xl-block d-md-block" href="giup-viec-cham-nguoi-gia"
-                                   title="Xem chi tiết">Xem chi tiết</a>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-6 col-6 p-xs-min">
-                            <div class="services-box">
-                                <div class="icon">
-                                    <img class="lazy"
-                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                         data-src="100/302/581/themes/798703/assets/service_img_5.svg?1668669091843"
-                                         alt="Giúp việc chăm người bệnh"/>
-                                </div>
-                                <a href="giup-viec-cham-nguoi-benh" title="Giúp việc chăm người bệnh">
-                                    <h3>Giúp việc chăm người bệnh</h3>
-                                </a>
-                                <p class="d-none d-lg-block d-xl-block d-md-block">Cuộc sống hiện đại, mọi người đều lo
-                                    làm
-                                    việc mà không có thời gian chăm sóc người trong gia đình của mình không may bị bệnh.
-                                    Đến
-                                    với Trung tâm giúp việc Hồng Phúc chúng tôi các bạn sẽ được cung cấp Dịch vụ chăm
-                                    sóc
-                                    người bệnh tại bệnh viện và tại các gia đình đáp ứng mọi nhu cầu của bạn.</p>
-                                <a class="d-none d-lg-block d-xl-block d-md-block" href="giup-viec-cham-nguoi-benh"
-                                   title="Xem chi tiết">Xem chi tiết</a>
-                            </div>
-                        </div>
-
-
-                        <div class="col-lg-4 col-md-6 col-6 p-xs-min">
-                            <div class="services-box">
-                                <div class="icon">
-                                    <img class="lazy"
-                                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                         data-src="100/302/581/themes/798703/assets/service_img_6.svg?1668669091843"
-                                         alt="Cung cấp lao động phổ thông"/>
-                                </div>
-                                <a href="giup-viec-lao-dong-pho-thong" title="Cung cấp lao động phổ thông">
-                                    <h3>Cung cấp lao động phổ thông</h3>
-                                </a>
-                                <p class="d-none d-lg-block d-xl-block d-md-block"> Kinh tế phát triển nhu cầu sử dụng
-                                    lao
-                                    động phổ thông tăng cao. Do đó trên thị trường có không ít công ty hoạt động trong
-                                    lĩnh
-                                    vực này. Trung tâm giúp việc Hồng Phúc vẫn lấy được sự tin yêu lựa chọn của khách
-                                    hàng.
-                                    Chúng tôi luôn phấn đấu để trở thành một công ty hàng đầu trong lĩnh vực cung cấp
-                                    giúp
-                                    việc lao động phổ thông.</p>
-                                <a class="d-none d-lg-block d-xl-block d-md-block" href="giup-viec-lao-dong-pho-thong"
-                                   title="Xem chi tiết">Xem chi tiết</a>
-                            </div>
-                        </div>
-
-
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -320,276 +200,43 @@
                 <div class="container">
                     <div class="section_service_title text-center">
                         <span>Thông tin nhân sự</span>
-                        <h3><a href="nguoi-giup-viec" title="DANH SÁCH NGƯỜI GIÚP VIỆC">DANH SÁCH NGƯỜI GIÚP VIỆC</a>
+                        <h3>
+                            <a href="/vn/menus/dich-vu" title="DANH SÁCH NGƯỜI GIÚP VIỆC">
+                                DANH SÁCH NGƯỜI GIÚP VIỆC
+                            </a>
                         </h3>
                         <p></p>
                     </div>
                     <div class="row">
-
-
+                        @foreach(\App\Entity\Product::showProduct('dich-vu', 8) as $id => $item)
                         <div class="col-lg-3 col-md-3 col-6">
-
                             <div class="evo-product-block-item">
                                 <div class="image">
-                                    <a class="primary_img" href="nguyen-thi-oanh" title="Nguy&#7877;n Th&#7883; Oanh">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv2.jpg?v=1606449152550"
-                                             alt="Nguy&#7877;n Th&#7883; Oanh"/>
+                                    <a class="primary_img"
+                                       href="{{ route('product', ['post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                       title="{{ isset($item['title']) ? $item['title'] : '' }}">
+                                        <img class="img-responsive center-block lazy loaded"
+                                             src="{{ isset($item['image']) ? $item['image'] : '' }}"
+                                             data-src="{{ isset($item['image']) ? $item['image'] : '' }}"
+                                             alt="{{ isset($item['title']) ? $item['title'] : '' }}"/>
                                     </a>
 
                                 </div>
                                 <div class="product-meta">
-                                    <h3><a href="nguyen-thi-oanh" title="Nguy&#7877;n Th&#7883; Oanh">Nguy&#7877;n Th&#7883;
-                                            Oanh</a></h3>
+                                    <h3><a href="{{ route('product', ['post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                           title="{{ isset($item['title']) ? $item['title'] : '' }}">{{ isset($item['title']) ? $item['title'] : '' }}</a></h3>
                                     <div class="content_price">
-
                                         <strong>Liên hệ</strong>
-
                                     </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-19879015">
-
-                                        <a class="button ajax_addtocart" href="nguyen-thi-oanh" title="Chi tiết">Chi
-                                            tiết</a>
-
+                                    <form action="cart/add" method="post" enctype="multipart/form-data" class="hidden-md variants form-nut-grid form-ajaxtocart" data-id="product-actions-19880398">
+                                    <a class="button ajax_addtocart"
+                                       href="{{ route('product', ['post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                       title="Chi tiết">Chi tiết</a>
                                     </form>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="col-lg-3 col-md-3 col-6">
-
-                            <div class="evo-product-block-item">
-                                <div class="image">
-                                    <a class="primary_img" href="tran-thi-minh" title="Vũ Th&#7883; B&#7897;">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv3.jpg?v=1606304823547"
-                                             alt="Vũ Th&#7883; B&#7897;"/>
-                                    </a>
-
-                                </div>
-                                <div class="product-meta">
-                                    <h3><a href="tran-thi-minh" title="Vũ Th&#7883; B&#7897;">Vũ Th&#7883; B&#7897;</a>
-                                    </h3>
-                                    <div class="content_price">
-
-                                        <strong>Liên hệ</strong>
-
-                                    </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-11732690">
-
-                                        <a class="button ajax_addtocart" href="tran-thi-minh" title="Chi tiết">Chi
-                                            tiết</a>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-3 col-6">
-
-                            <div class="evo-product-block-item">
-                                <div class="image">
-                                    <a class="primary_img" href="chi-nguyen-thi-hang-1"
-                                       title="Nguy&#7877;n Th&#7883; Hà">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv4.jpg?v=1606304820357"
-                                             alt="Nguy&#7877;n Th&#7883; Hà"/>
-                                    </a>
-
-                                </div>
-                                <div class="product-meta">
-                                    <h3><a href="chi-nguyen-thi-hang-1" title="Nguy&#7877;n Th&#7883; Hà">Nguy&#7877;n
-                                            Th&#7883;
-                                            Hà</a></h3>
-                                    <div class="content_price">
-
-                                        <strong>Liên hệ</strong>
-
-                                    </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-11477743">
-
-                                        <a class="button ajax_addtocart" href="chi-nguyen-thi-hang-1" title="Chi tiết">Chi
-                                            tiết</a>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-3 col-6">
-
-                            <div class="evo-product-block-item">
-                                <div class="image">
-                                    <a class="primary_img" href="chi-nguyen-thi-hang" title="Hoàng Th&#7883; Hóa">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv7.jpg?v=1606304847823"
-                                             alt="Hoàng Th&#7883; Hóa"/>
-                                    </a>
-
-                                </div>
-                                <div class="product-meta">
-                                    <h3><a href="chi-nguyen-thi-hang" title="Hoàng Th&#7883; Hóa">Hoàng Th&#7883;
-                                            Hóa</a>
-                                    </h3>
-                                    <div class="content_price">
-
-                                        <strong>Liên hệ</strong>
-
-                                    </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-11334068">
-
-                                        <a class="button ajax_addtocart" href="chi-nguyen-thi-hang" title="Chi tiết">Chi
-                                            tiết</a>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-3 col-6">
-
-                            <div class="evo-product-block-item">
-                                <div class="image">
-                                    <a class="primary_img" href="chi-phung-thi-huyen" title="Đinh Th&#7883; Dinh">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv8.jpg?v=1606304875400"
-                                             alt="Đinh Th&#7883; Dinh"/>
-                                    </a>
-
-                                </div>
-                                <div class="product-meta">
-                                    <h3><a href="chi-phung-thi-huyen" title="Đinh Th&#7883; Dinh">Đinh Th&#7883;
-                                            Dinh</a>
-                                    </h3>
-                                    <div class="content_price">
-
-                                        <strong>Liên hệ</strong>
-
-                                    </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-11334066">
-
-                                        <a class="button ajax_addtocart" href="chi-phung-thi-huyen" title="Chi tiết">Chi
-                                            tiết</a>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-3 col-6">
-
-                            <div class="evo-product-block-item">
-                                <div class="image">
-                                    <a class="primary_img" href="tran-duc-thuan"
-                                       title="Tr&#7847;n Đ&#7913;c Thu&#7853;n">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv9.jpg?v=1606304886777"
-                                             alt="Tr&#7847;n Đ&#7913;c Thu&#7853;n"/>
-                                    </a>
-
-                                </div>
-                                <div class="product-meta">
-                                    <h3><a href="tran-duc-thuan" title="Tr&#7847;n Đ&#7913;c Thu&#7853;n">Tr&#7847;n Đ&#7913;c
-                                            Thu&#7853;n</a></h3>
-                                    <div class="content_price">
-
-                                        <strong>Liên hệ</strong>
-
-                                    </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-11334065">
-
-                                        <a class="button ajax_addtocart" href="tran-duc-thuan" title="Chi tiết">Chi
-                                            tiết</a>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-3 col-6">
-
-                            <div class="evo-product-block-item">
-                                <div class="image">
-                                    <a class="primary_img" href="thiet-ke-do-hoa-adobe-photoshop"
-                                       title="Tôn Th&#7883; Thanh Hà">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv10.jpg?v=1606304894623"
-                                             alt="Tôn Th&#7883; Thanh Hà"/>
-                                    </a>
-
-                                </div>
-                                <div class="product-meta">
-                                    <h3><a href="thiet-ke-do-hoa-adobe-photoshop" title="Tôn Th&#7883; Thanh Hà">Tôn Th&#7883;
-                                            Thanh Hà</a></h3>
-                                    <div class="content_price">
-
-                                        <strong>Liên hệ</strong>
-
-                                    </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-10191184">
-
-                                        <a class="button ajax_addtocart" href="thiet-ke-do-hoa-adobe-photoshop"
-                                           title="Chi tiết">Chi tiết</a>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-3 col-md-3 col-6">
-
-                            <div class="evo-product-block-item">
-                                <div class="image">
-                                    <a class="primary_img" href="le-thi-lan-anh" title="Lê Th&#7883; Lan Anh">
-                                        <img class="img-responsive center-block lazy"
-                                             src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"
-                                             data-src="thumb/large/100/302/581/products/0nv4-1f06db1e-228a-4917-8411-84646d1db904.jpg?v=1606450400160"
-                                             alt="Lê Th&#7883; Lan Anh"/>
-                                    </a>
-
-                                </div>
-                                <div class="product-meta">
-                                    <h3><a href="le-thi-lan-anh" title="Lê Th&#7883; Lan Anh">Lê Th&#7883; Lan Anh</a>
-                                    </h3>
-                                    <div class="content_price">
-
-                                        <strong>Liên hệ</strong>
-
-                                    </div>
-                                    <form action="cart/add" method="post" enctype="multipart/form-data"
-                                          class="hidden-md variants form-nut-grid form-ajaxtocart"
-                                          data-id="product-actions-19879232">
-
-                                        <a class="button ajax_addtocart" href="le-thi-lan-anh" title="Chi tiết">Chi
-                                            tiết</a>
-
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -647,83 +294,35 @@
                         <p></p>
                     </div>
                     <div class="row">
-
-
+                        @foreach(\App\Entity\Post::newPost('tin-tuc', 3) as $id => $item)
                         <div class="col-lg-4 col-md-4">
                             <div class="evo-item-blogs">
                                 <div class="evo-article-image">
-                                    <a href="thue-giup-viec-nha-gio-hanh-chinh-o-dau-uy-tin"
-                                       title="Thuê giúp vi&#7879;c nhà gi&#7901; hành chính &#7903; đâu uy tín?">
+                                    <a href="{{ route('post', ['cate_slug' => 'tin-tuc', 'post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                       title="{{ isset($item['title']) ? $item['title'] : '' }}">
 
-                                        <img src="thumb/large/100/302/581/articles/thue-giup-viec-nha-gio-hanh-chinh-o-dau-uy-tin-2.jpg?v=1668653732177"
-                                             alt="Thuê giúp vi&#7879;c nhà gi&#7901; hành chính &#7903; đâu uy tín?"
-                                             class="lazy img-responsive mx-auto d-block"/>
-
-                                    </a>
-                                </div>
-                                <h3 class="line-clamp"><a href="thue-giup-viec-nha-gio-hanh-chinh-o-dau-uy-tin"
-                                                          title="Thuê giúp vi&#7879;c nhà gi&#7901; hành chính &#7903; đâu uy tín?">Thuê
-                                        giúp vi&#7879;c nhà gi&#7901; hành chính &#7903; đâu uy tín?</a></h3>
-                                <p> So với việc phải thuê người giúp việc ăn ở tại nhà thì giúp việc nhà giờ hành chính
-                                    sẽ
-                                    giúp bạn tiết kiệm c...</p>
-                                <a class="readmore" href="thue-giup-viec-nha-gio-hanh-chinh-o-dau-uy-tin"
-                                   title="Đọc tiếp">Đọc
-                                    tiếp</a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-4">
-                            <div class="evo-item-blogs">
-                                <div class="evo-article-image">
-                                    <a href="tai-sao-nen-chon-dich-vu-trong-tre-tai-nha-uy-tin-hong-phuc"
-                                       title="T&#7841;i sao nên ch&#7885;n d&#7883;ch v&#7909; trông tr&#7867; t&#7841;i nhà uy tín H&#7891;ng Phúc?">
-
-                                        <img src="thumb/large/100/302/581/articles/trong-tre-tai-nha.jpg?v=1668415436153"
-                                             alt="T&#7841;i sao nên ch&#7885;n d&#7883;ch v&#7909; trông tr&#7867; t&#7841;i nhà uy tín H&#7891;ng Phúc?"
-                                             class="lazy img-responsive mx-auto d-block"/>
+                                        <img src="{{ isset($item['image']) ? $item['image'] : '' }}"
+                                             alt="{{ isset($item['title']) ? $item['title'] : '' }}"
+                                             class="lazy img-responsive mx-auto d-block loaded"/>
 
                                     </a>
                                 </div>
-                                <h3 class="line-clamp"><a
-                                            href="tai-sao-nen-chon-dich-vu-trong-tre-tai-nha-uy-tin-hong-phuc"
-                                            title="T&#7841;i sao nên ch&#7885;n d&#7883;ch v&#7909; trông tr&#7867; t&#7841;i nhà uy tín H&#7891;ng Phúc?">T&#7841;i
-                                        sao nên ch&#7885;n d&#7883;ch v&#7909; trông tr&#7867; t&#7841;i nhà uy tín H&#7891;ng
-                                        Phúc?</a></h3>
-                                <p> Hồng Phúc là đơn vị chuyên cung cấp dịch vụ giúp việc trông trẻ tại nhà uy tín , có
-                                    trách nhiệm cao luôn đặt...</p>
-                                <a class="readmore" href="tai-sao-nen-chon-dich-vu-trong-tre-tai-nha-uy-tin-hong-phuc"
-                                   title="Đọc tiếp">Đọc tiếp</a>
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4 col-md-4">
-                            <div class="evo-item-blogs">
-                                <div class="evo-article-image">
-                                    <a href="loi-ich-khi-tim-viec-lam-pho-thong-chuyen-nghiep-tai-hong-phuc"
-                                       title="L&#7907;i ích khi tìm vi&#7879;c làm ph&#7893; thông chuyên nghi&#7879;p t&#7841;i H&#7891;ng Phúc">
-
-                                        <img src="thumb/large/100/302/581/articles/viec-lam-pho-thong-luong-cao.jpg?v=1668137698317"
-                                             alt="L&#7907;i ích khi tìm vi&#7879;c làm ph&#7893; thông chuyên nghi&#7879;p t&#7841;i H&#7891;ng Phúc"
-                                             class="lazy img-responsive mx-auto d-block"/>
-
+                                <h3 class="line-clamp">
+                                    <a href="{{ route('post', ['cate_slug' => 'tin-tuc', 'post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                       title="{{ isset($item['title']) ? $item['title'] : '' }}">
+                                        {{ isset($item['title']) ? $item['title'] : '' }}
                                     </a>
-                                </div>
-                                <h3 class="line-clamp"><a
-                                            href="loi-ich-khi-tim-viec-lam-pho-thong-chuyen-nghiep-tai-hong-phuc"
-                                            title="L&#7907;i ích khi tìm vi&#7879;c làm ph&#7893; thông chuyên nghi&#7879;p t&#7841;i H&#7891;ng Phúc">L&#7907;i
-                                        ích khi tìm vi&#7879;c làm ph&#7893; thông chuyên nghi&#7879;p t&#7841;i H&#7891;ng
-                                        Phúc</a></h3>
-                                <p> Hiện nay, nhu cầu tuyển dụng của các doanh nghiệp, đơn vị đang rất lớn. Vậy nên nhu
-                                    cầu
-                                    của người lao động về ...</p>
-                                <a class="readmore"
-                                   href="loi-ich-khi-tim-viec-lam-pho-thong-chuyen-nghiep-tai-hong-phuc"
-                                   title="Đọc tiếp">Đọc tiếp</a>
+                                </h3>
+                                <p>
+                                   {{ \App\Ultility\Ultility::textLimit($item['description'], 20) }}
+                                </p>
+                                <a class="readmore" href="{{ route('post', ['cate_slug' => 'tin-tuc', 'post_slug' => $item['slug'], 'languageCurrent' => $languageCurrent]) }}"
+                                   title="Đọc tiếp">
+                                    Đọc tiếp
+                                </a>
                             </div>
                         </div>
-
-
+                        @endforeach
                     </div>
                 </div>
             </div>

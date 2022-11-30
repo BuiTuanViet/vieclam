@@ -29,6 +29,16 @@
 
     <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-main.scss.css') }}" rel="stylesheet"
           type="text/css"/>
+    <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-article.scss.css') }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-collections.scss.css') }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-blogs.scss.css') }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-contacts.scss.css') }}" rel="stylesheet"
+          type="text/css"/>
+    <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-products.scss.css') }}" rel="stylesheet"
+          type="text/css"/>
     <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-index.scss.css') }}" rel="stylesheet"
           type="text/css"/>
 
@@ -167,6 +177,89 @@
             }
         });
     });
+</script>
+<script type="text/javascript">
+    function subcribeEmailSubmit(e) {
+        var email = $(e).find('.emailSubmit').val();
+        var token =  $(e).find('input[name=_token]').val();
+
+        $.ajax({
+            type: "POST",
+            url: '{{ route('subcribe_email', ['languageCurrent' => $languageCurrent]) }}',
+            data: {
+                email: email,
+                _token: token
+            },
+            success: function(data) {
+                var obj = jQuery.parseJSON(data);
+
+                alert(obj.message);
+            }
+        });
+        return false;
+    }
+
+    function addToOrder(e) {
+        var data = $('#add-to-cart-form').serialize();
+        console.log(data);
+        $.ajax({
+            type: "POST",
+            url: '{{ route('addToCart', ['languageCurrent' => $languageCurrent]) }}',
+            data: data,
+            success: function(result){
+                // var obj = jQuery.parseJSON( result);
+                //
+                // var num = +$("#countOrder").text() + 1;
+                //
+                // $("#countOrder").text(num);
+                //
+                // $('#cart-notification').addClass('active');
+                // $('.cart-notification-product__image img').attr('src', obj.orderItems[0].image);
+                // $('.cart-notification-product__name').text(obj.orderItems[0].title);
+                // $('.cart-notification-product__name').text(obj.orderItems[0].title);
+                // $('.cart-notification-product__size').text(obj.size);
+                alert('Đặt hàng thành công');
+                location.reload();
+            },
+            error: function(error) {
+                alert('Lỗi đặt hàng');
+            }
+
+        });
+
+        return false;
+    }
+    function contact(e) {
+        var $btn = $(e).find('button').text('Đang tải ...');
+        var data = $(e).serialize();
+
+        $.ajax({
+            type: "POST",
+            url: '{{ route('sub_contact', ['languageCurrent' => $languageCurrent]) }} ',
+            data: data,
+            success: function(obj){
+                // gửi thành công
+                if (obj.status == 200) {
+                    alert(obj.message);
+                    $btn.text('Đăng ký ngay');
+
+                    return;
+                }
+
+                // gửi thất bại
+                if (obj.status == 500) {
+                    alert(obj.message);
+                    $btn.text('Đăng ký ngay');
+
+                    return;
+                }
+            },
+            error: function(error) {
+                //alert('Lỗi gì đó đã xảy ra!')
+            }
+        });
+        return false;
+    }
 </script>
 <style>
     .f-nav {

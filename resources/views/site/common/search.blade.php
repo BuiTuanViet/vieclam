@@ -1,12 +1,12 @@
 
 <div class="evo-search-bar">
-    <form action="search" method="get">
+    <form method="get" action="{{ route('search', [ 'languageCurrent' => $languageCurrent] ) }}">
         <div class="input-group">
-            <input type="text" name="query" class="search-auto form-control" aria-label="Bạn cần tìm gì hôm nay?"
-                   placeholder="Bạn cần tìm gì hôm nay?"/>
+            <input type="text" name="word" class="search-auto form-control" aria-label="Bạn cần tìm gì hôm nay?"
+                   placeholder="Bạn cần tìm gì hôm nay?" value="{{ request()->input('word') }}"/>
             <select class="form-control" name="type">
-                <option value="product">Sản phẩm</option>
-                <option value="article">Tin tức</option>
+                <option value="product" {{ request()->input('type') == "product" ? "selected" : ''}}>Sản phẩm</option>
+                <option value="post" {{ request()->input('type') == "post" ? "selected" : ''}}>Tin tức</option>
             </select>
             <span class="input-group-append">
 				<button class="btn btn-default" type="submit" aria-label="Tìm kiếm">
@@ -19,6 +19,7 @@
 			</span>
         </div>
     </form>
+
     <button class="site-header__search" title="Đóng tìm kiếm">
         <svg xmlns="http://www.w3.org/2000/svg" width="26.045" height="26.044">
             <g data-name="Group 470">

@@ -116,8 +116,8 @@ Route::group(['prefix'=> '{languageCurrent}', 'namespace'=>'Site'], function( $l
     Route::post('submit/contact','ContactController@submit')->name('sub_contact');
     Route::post('submit/book','ContactController@submitBook')->name('sub_book');
 
-//    Route::post('/binh-luan', 'CommentController@index')->name('comment');
-//    Route::post('/xoa-binh-luan', 'CommentController@delete');
+    Route::post('/binh-luan', 'CommentController@index')->name('comment');
+    Route::post('/xoa-binh-luan', 'CommentController@delete');
 
 //    Route::get('loc-san-pham', 'ProductCategoryController@filter');
 
