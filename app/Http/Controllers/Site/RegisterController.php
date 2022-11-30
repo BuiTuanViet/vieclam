@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Site;
 
 use App\Entity\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -38,11 +39,13 @@ class RegisterController extends SiteController
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('guest');
+//        $this->middleware('guest');
     }
 
     public function showRegistrationForm() {
-
+        if (Auth::user()){
+            return view('site.default.user');
+        }
         return view('site.default.register');
     }
     /**
@@ -80,7 +83,7 @@ class RegisterController extends SiteController
 
     public function register(Request $request)
     {
-        $this->validator($request->all())->validate();
+//        $this->validator($request->all())->validate();
 
         event(new Registered($user = $this->create($request->all())));
 

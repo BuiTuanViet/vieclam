@@ -137,8 +137,15 @@
                                 </svg>
                             </a>
                             <ul>
-                                <li><a rel="nofollow" href="account/login" title="Đăng nhập">Đăng nhập</a></li>
-                                <li><a rel="nofollow" href="account/register" title="Đăng ký">Đăng ký</a></li>
+
+                                <li><a rel="nofollow" href="{{ route('login-site', ['language' => $languageCurrent]) }}"
+                                       title="Đăng nhập">
+                                        Đăng nhập
+                                    </a></li>
+                                <li><a rel="nofollow" href="{{ route('register', ['language' => $languageCurrent]) }}"
+                                       title="Đăng ký">
+                                        Đăng ký
+                                    </a></li>
                             </ul>
                         </div>
 

@@ -56,7 +56,7 @@ return [
     */
 
     'from' => [
-        'address' => "info3ae@gmail.com",
+        'address' => "admin@gmail.com",
         'name' => "3AE GROUP",
     ],
 

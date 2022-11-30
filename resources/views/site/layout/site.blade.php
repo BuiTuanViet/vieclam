@@ -39,6 +39,8 @@
           type="text/css"/>
     <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-products.scss.css') }}" rel="stylesheet"
           type="text/css"/>
+    <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-accounts.scss.css') }}" rel="stylesheet"
+          type="text/css"/>
     <link href="{{ asset('site/100/302/581/themes/798703/assets/evo-index.scss.css') }}" rel="stylesheet"
           type="text/css"/>
 

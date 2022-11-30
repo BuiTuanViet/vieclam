@@ -179,27 +179,35 @@ class PersonController extends SiteController
     }
 
     private function sendMailForget($email, $user, $newPassword) {
-        $mailConfig = Post::join('sub_post', 'sub_post.post_id', '=', 'posts.post_id')
-            ->select('posts.*')
-            ->where('type_sub_post_slug', 'cau-hinh-email')
-            ->where('posts.slug', 'quen-mat-khau')
-            ->first();
-        // config content
-        $mailConfig->content = str_replace('[user-name]', $user->name, $mailConfig->content);
-        $mailConfig->content = str_replace('[email]', $email, $mailConfig->content);
-        $mailConfig->content = str_replace('[password]', $newPassword, $mailConfig->content);
+//        $mailConfig = Post::join('sub_post', 'sub_post.post_id', '=', 'posts.post_id')
+//            ->select('posts.*')
+//            ->where('type_sub_post_slug', 'cau-hinh-email')
+//            ->where('posts.slug', 'quen-mat-khau')
+//            ->first();
 
-        $inputs = Input::where('post_id', $mailConfig->post_id)->get();
-        foreach ($inputs as $input) {
-            $mailConfig[$input->type_input_slug] = $input->content;
-            // config to, from, subject
-            $mailConfig[$input->type_input_slug] = str_replace('[email]', $email, $mailConfig[$input->type_input_slug]);
-        }
+        // config content
+//        $mailConfig->content = str_replace('[user-name]', $user->name, $mailConfig->content);
+//        $mailConfig->content = str_replace('[email]', $email, $mailConfig->content);
+//        $mailConfig->content = str_replace('[password]', $newPassword, $mailConfig->contentt);
+
+        $mailConfig = [
+           'content' => "Mật khẩu mới của bạn là: $newPassword",
+           'to' => $email,
+           'from' => "",
+           'subject' => "",
+        ];
+
+//        $inputs = Input::where('post_id', $mailConfig->post_id)->get();
+//        foreach ($inputs as $input) {
+//            $mailConfig[$input->type_input_slug] = $input->content;
+//            // config to, from, subject
+//            $mailConfig[$input->type_input_slug] = str_replace('[email]', $email, $mailConfig[$input->type_input_slug]);
+//        }
 
         $to =  $mailConfig['to'];
         $from = $mailConfig['from'];
-        $subject = $mailConfig['chu-de-(subject)'];
-        $content = $mailConfig->content;
+        $subject = $mailConfig['subject'];
+        $content = $mailConfig['content'];
         $mail = new Mail(
             $content
         );

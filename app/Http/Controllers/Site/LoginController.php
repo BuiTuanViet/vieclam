@@ -49,7 +49,7 @@ class LoginController extends SiteController
     public function getLogin()
     {
         if (Auth::user()){
-            return;
+            return view('site.default.user');
         }
         return view('site.default.login');
     }
@@ -57,7 +57,6 @@ class LoginController extends SiteController
     public function login(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
         if (Auth::attempt($credentials)) {
             // Authentication passed...
             return redirect('/');

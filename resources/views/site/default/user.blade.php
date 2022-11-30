@@ -1,88 +1,98 @@
 @extends('site.layout.site')
 
 @section('title','Thông tin tài khoản')
-@section('meta_description', $information['meta_description'])
-@section('keywords', $information['meta_keyword'])
 
 @section('content')
-    @include('site.partials.menu_main', ['classHome' => ''])
-      <section class="user">
-          <div class="container">
-              <div class="row">
-                  <div class="col-xs-12 col-md-3">
-                        @include('site.partials.side_bar_user', ['active' => 'inforUser'])
-                  </div>
+    <div class="evo-themes">
+        <section class="bread-crumb margin-bottom-10" style="background-image:url({{ isset($category->image) ? $category->image : '/site/image/image.jpg' }}); background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;">
+            <div class="container">
+                <ul class="breadcrumb" itemscope="" itemtype="https://schema.org/BreadcrumbList">
+                    <li class="home" itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+                        <a itemprop="item" href="/" title="Trang chủ">
+                            <span itemprop="name">Trang chủ</span>
+                            <meta itemprop="position" content="1">
+                        </a>
+                    </li>
 
-                  <div class="col-xs-12 col-md-9">
-                      <div class="breadrum mb20">
-                          <a href="/">Trang chủ</a> <i class="fa fa-angle-double-right" aria-hidden="true"></i>
-                          <a href="/thong-tin-ca-nhan"> Trang cá nhân</a>
-                      </div>
+                    <li itemprop="itemListElement" itemscope="" itemtype="https://schema.org/ListItem">
+                        <strong itemprop="name">Trang khách hàng</strong>
+                        <meta itemprop="position" content="2">
+                    </li>
 
-                      <div class="InformationPerson clearfix">
-						<div class="mainTitle lineblue">
-							<h3 class="titleV bgblue"><i class="fa fa-newspaper-o" aria-hidden="true"></i>Thông tin cá nhân</h3>
-						</div>
-                          <div class="underline"></div>
-                          <form action="/thong-tin-ca-nhan" method="post" enctype="multipart/form-data">
-                              {!! csrf_field() !!}
-                          <div class="col-xs-6 col-md-4">
-                              <div class="userAvatar boxH5">
-                                  <img id="blah" src="{{ (!empty($user->image)) ? $user->image : asset('site/images/no_person.png') }}" alt="trang cá nhân" width="150"/>
-                                  <button class="btn btn-default addAvatar">TẢI LÊN AVATAR</button>
-                                  <input type='file' id="imgInp" name="image" onchange="readURL(this)" style="display: none"/>
-                                  <input type="hidden" value="{{ $user->image }}" name="avatar" />
-                                  <script>
-                                      function readURL(input) {
-                                          if (input.files && input.files[0]) {
-                                              var reader = new FileReader();
+                </ul>
+            </div>
+        </section>
+        <section class="signup account-page margin-bottom-20 margin-top-30">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-lg-12">
+                        <div class="page-title">
+                            <h1 class="title-head widget-title">Thông tin tài khoản</h1>
+                        </div>
+                        <div class="form-signup">
+                            <p><i>Xin chào, {{ \Illuminate\Support\Facades\Auth::user()->name }}</i></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 col-lg-3 order-lg-last order-md-first">
+                        <div class="block block-account margin-bottom-20">
+                            <div class="block-title"><h2 class="widget-title">Thông tin khách hàng</h2></div>
+                            <div class="divider-full-1"></div>
+                            <div class="block-content form-signup block-edit-padding">
+                                <p><strong>Tài khoản:</strong> {{ \Illuminate\Support\Facades\Auth::user()->name }}</p>
+                                <div class="margin-top-20">
+                                <a href="{{ route('dang-xuat', ['language' => $languageCurrent]) }}"
+                                       class="btn btn-blues btn-full"
+                                       title="Sổ địa chỉ">Đăng xuất</a>
+                                </div>
+{{--                                <p><strong>Địa chỉ:</strong>--}}
+{{--                                </p>--}}
+{{--                                <div class="margin-top-20">--}}
+{{--                                    <a href="/account/addresses" class="btn btn-blues btn-full"--}}
+{{--                                       title="Sổ địa chỉ">Sổ địa chỉ (0)</a>--}}
+{{--                                </div>--}}
+                            </div>
 
-                                              reader.onload = function(e) {
-                                                  $('#blah').attr('src', e.target.result);
-                                              }
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-9 order-lg-first order-md-last">
+                        <div class="form-signup"><h2 class="widget-title">Đơn hàng gần nhất</h2></div>
 
-                                              reader.readAsDataURL(input.files[0]);
-                                          }
-                                      }
-                                      $('.addAvatar').click(function() {
-                                          $('#imgInp').click();
-                                          return false;
-                                      });
-                                  </script>
-                              </div>
-                          </div>
-                          <div class="col-xs-6 col-md-8">
-                              <div class="formInformation boxH5">
-                                  <div class="form-group">
-                                      <input type="text" name="name" class="form-control" placeholder="Họ và tên: " value="{{ $user->name }}" />
-                                  </div>
-                                  <div class="form-group">
-                                      <input type="text" name="phone" class="form-control" placeholder="Số điện thoại:"  value="{{ $user->phone }}" />
-                                  </div>
-                                  <div class="form-group">
-                                      <input type="text" name="address" class="form-control" placeholder="Địa chỉ:" value="{{ $user->address }}" />
-                                  </div>
-                                  <div class="form-group">
-                                      <input type="text" name="age" class="form-control" placeholder="Giới tính:" value="{{ $user->age }}" />
-                                  </div>
-                                  <div class="form-group">
-                                      <input type="email" name="email" class="form-control" placeholder="Email:" value="{{ $user->email }}" />
-                                  </div>
-                                  <div class="form-group">
-                                      <button type="submit" class="btn btn-danger">ĐỔI THÔNG TIN</button>
-                                  </div>
-                              </div>
-                          </div>
-                          </form>
-                      </div>
-                      <script>
-						//Đồng bộ chiều cao các div
-						$(function() {
-							$('.boxH5').matchHeight();
-						});
-						</script>
-                  </div>
-              </div>
-          </div>
-      </section>
+                        <div class="my-account">
+                            <div class="dashboard">
+                                <div class="recent-orders collections-container">
+                                    <div class="table-order table-responsive">
+                                        <table class="table table-cart" id="my-orders-table">
+                                            <thead class="thead-default">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Ngày</th>
+                                                <th>Chuyển đến</th>
+                                                <th>Địa chỉ</th>
+                                                <th>Giá trị</th>
+                                                <th>TT Thanh toán</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+
+                                            <tr>
+                                                <td colspan="7"><p>Không có đơn hàng nào.</p></td></tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 @endsection
