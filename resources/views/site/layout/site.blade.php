@@ -142,7 +142,7 @@
     }
 </style>
 
-<a href="tel:1900636008">
+<a href="tel:{{ isset($information['hotline']) ? $information['hotline'] :''}}">
     <div class="hotline">
         <span class="before-hotline">Hotline:</span>
         <span class="hotline-number">{{ isset($information['hotline']) ? $information['hotline'] :''}}</span>
