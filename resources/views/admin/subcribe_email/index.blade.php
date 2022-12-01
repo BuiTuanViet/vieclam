@@ -85,7 +85,7 @@
                             <!-- /.box-body -->
                             <div class="box-body">
                                 <h4 class="box-title">Thêm mới phí ship</h4>
-                                <form action="{{ route('group_mail.create') }}" method="post">
+                                <form action="{{ route('group_mail.create') }}" method="POST" enctype="multipart/form-data">
                                     {!! csrf_field() !!}
                                     <div class="form-group">
                                         <label>Tên group</label>
@@ -113,7 +113,7 @@
                             <!-- tools box -->
                             <!-- /. tools -->
                         </div>
-                        <form action="{{ route('subcribe-email_send') }}" method="post">
+                        <form action="{{ route('subcribe-email_send') }}" method="POST" enctype="multipart/form-data">
                             {!! csrf_field() !!}
                             <div class="box-body">
                                 <div class="form-group">

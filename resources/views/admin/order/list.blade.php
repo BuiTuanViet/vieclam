@@ -72,7 +72,7 @@
                             </a>
                         </div>
                         <div class="box-tools">
-                            <form action="{{ route('orderUpdateStatus') }}" method="post">
+                            <form action="{{ route('orderUpdateStatus') }}" method="POST" enctype="multipart/form-data">
                                 {!! csrf_field() !!}
                                 <select name="status" class="
                                 <?php switch ($order->status) {

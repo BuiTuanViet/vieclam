@@ -18,7 +18,7 @@
                         <a href="/dat-hang"> Giỏ hàng</a>
                     </div>
 
-{{--                    <form action="{{ route('information_receiver') }}" method="post">--}}
+{{--                    <form action="{{ route('information_receiver') }}" method="POST" enctype="multipart/form-data">--}}
 {{--                        {{ csrf_field() }}--}}
                         <div class="InformationPerson informationOrder clearfix">
                             <h3><i class="fa fa-newspaper-o" aria-hidden="true"></i>Hình thức thanh toán</h3>

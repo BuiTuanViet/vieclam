@@ -15,7 +15,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('information.store') }}" method="POST">
+            <form role="form" action="{{ route('information.store') }}" method="POST" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
 
@@ -61,11 +61,13 @@
 
                                                 @if ($typeinformation->type_input == 'image')
                                                     <div>
-                                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                                        <input type="file" name="{{ $language->acronym }}[]"
                                                                size="20"/>
+{{--                                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"--}}
+{{--                                                               size="20"/>--}}
                                                         <img src="{{ $typeinformation['information'.$language->acronym] }}" width="80" height="70"/>
-                                                        <input name="content{{ $language->acronym }}[]" type="hidden"
-                                                               value="{{ $typeinformation['information'.$language->acronym] }}"/>
+{{--                                                        <input name="content{{ $language->acronym }}[]" type="hidden"--}}
+{{--                                                               value="{{ $typeinformation['information'.$language->acronym] }}"/>--}}
                                                     </div>
                                                 @endif
                                             </div>

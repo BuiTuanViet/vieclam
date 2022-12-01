@@ -16,7 +16,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('posts.update', ['post_id' => $post->post_id]) }}" method="POST">
+            <form role="form" action="{{ route('posts.update', ['post_id' => $post->post_id]) }}" method="POST" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">
@@ -117,16 +117,20 @@
                                     @endif
 
                                     @if($typeInput->type_input == 'image')
-                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                        <input type="file" name="{{$typeInput->slug}}"
                                                size="20"/>
+{{--                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"--}}
+{{--                                               size="20"/>--}}
                                         <img src="{{ $post[$typeInput->slug] }}" width="80" height="70"/>
-                                        <input name="{{$typeInput->slug}}" type="hidden" value="{{ $post[$typeInput->slug] }}"/>
+{{--                                        <input name="{{$typeInput->slug}}" type="hidden" value="{{ $post[$typeInput->slug] }}"/>--}}
                                     @endif
 
                                     @if($typeInput->type_input == 'image_list')
                                         <div class="form-group">
-                                            <input type="button" onclick="return openKCFinder(this);" value="Chọn ảnh"
+                                            <input type="file" name="{{$typeInput->slug}}"
                                                    size="20"/>
+{{--                                            <input type="button" onclick="return openKCFinder(this);" value="Chọn ảnh"--}}
+{{--                                                   size="20"/>--}}
                                             <div class="imageList">
                                                 @if(!empty($post[$typeInput->slug]))
                                                     @foreach(explode(',',$post[$typeInput->slug]) as $image)
@@ -134,7 +138,7 @@
                                                     @endforeach
                                                 @endif
                                             </div>
-                                            <input name="{{$typeInput->slug}}" type="hidden" value="{{ $post[$typeInput->slug] }}"/>
+{{--                                            <input name="{{$typeInput->slug}}" type="hidden" value="{{ $post[$typeInput->slug] }}"/>--}}
                                         </div>
                                     @endif
 
@@ -226,10 +230,12 @@
                                                         </div>
 
                                                         <div class="form-group">
-                                                            <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh {{ $language->language }}"
+                                                            <input type="file" name="image[]" accept="image/*" sub=multiple value="Chọn ảnh" multiple
                                                                    size="20"/>
+{{--                                                            <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh {{ $language->language }}"--}}
+{{--                                                                   size="20"/>--}}
                                                             <img src="{{ $postLanguage->image }}" width="80" height="70"/>
-                                                            <input name="image[]" type="hidden" value="{{ $postLanguage->image }}"/>
+{{--                                                            <input name="image[]" type="hidden" value="{{ $postLanguage->image }}"/>--}}
                                                         </div>
 
                                                         <div class="form-group">
@@ -248,16 +254,20 @@
                                                                 @endif
 
                                                                 @if($typeInput->type_input == 'image')
-                                                                    <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                                                    <input type="file" name="{{$typeInput->slug}}[]" accept="image/*" sub=multiple value="Chọn ảnh" multiple
                                                                            size="20"/>
+{{--                                                                    <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"--}}
+{{--                                                                           size="20"/>--}}
                                                                     <img src="{{ $postLanguage[$typeInput->slug] }}" width="80" height="70"/>
-                                                                    <input name="{{$typeInput->slug}}[]" type="hidden" value="{{ $postLanguage[$typeInput->slug] }}"/>
+{{--                                                                    <input name="{{$typeInput->slug}}[]" type="hidden" value="{{ $postLanguage[$typeInput->slug] }}"/>--}}
                                                                 @endif
 
                                                                 @if($typeInput->type_input == 'image_list')
                                                                     <div class="form-group">
-                                                                        <input type="button" onclick="return openKCFinder(this);" value="Chọn ảnh"
+                                                                        <input type="file" name="{{$typeInput->slug}}[]" accept="image/*" sub=multiple value="Chọn ảnh" multiple
                                                                                size="20"/>
+{{--                                                                        <input type="button" onclick="return openKCFinder(this);" value="Chọn ảnh"--}}
+{{--                                                                               size="20"/>--}}
                                                                         <div class="imageList">
                                                                             @if(!empty($postLanguage[$typeInput->slug]))
                                                                                 @foreach(explode(',',$postLanguage[$typeInput->slug]) as $image)
@@ -265,7 +275,7 @@
                                                                                 @endforeach
                                                                             @endif
                                                                         </div>
-                                                                        <input name="{{$typeInput->slug}}[]" type="hidden" value="{{ $postLanguage[$typeInput->slug] }}"/>
+{{--                                                                        <input name="{{$typeInput->slug}}[]" type="hidden" value="{{ $postLanguage[$typeInput->slug] }}"/>--}}
                                                                     </div>
                                                                 @endif
 

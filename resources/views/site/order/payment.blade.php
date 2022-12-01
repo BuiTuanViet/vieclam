@@ -3,7 +3,7 @@
 <script type="text/javascript" src="{{ asset('site/countries.js') }}"></script>
 <div class="content" data-content="" aria-hidden="false">
     <div class="wrap">
-        <form action="{{ route('send',['languageCurrent' => $languageCurrent]) }}" method="post">
+        <form action="{{ route('send',['languageCurrent' => $languageCurrent]) }}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="main">
                 <header class="main__header" role="banner">

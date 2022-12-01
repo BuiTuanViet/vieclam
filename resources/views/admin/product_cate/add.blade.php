@@ -16,7 +16,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('category-products.store') }}" method="POST">
+            <form role="form" action="{{ route('category-products.store') }}" method="POST" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
                 <div class="col-xs-12 col-md-12">
@@ -88,10 +88,12 @@
                                             </div>
 
                                             <div class="form-group">
-                                                <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh {{ $language->language }}"
+                                                <input type="file" name="image[]" accept="image/*" sub=multiple value="Chọn ảnh" multiple
                                                        size="20"/>
+{{--                                                <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh {{ $language->language }}"--}}
+{{--                                                       size="20"/>--}}
                                                 <img src="" width="80" height="70"/>
-                                                <input name="image[]" type="hidden" value=""/>
+{{--                                                <input name="image[]" type="hidden" value=""/>--}}
                                             </div>
                                         </div>
                                     @endforeach

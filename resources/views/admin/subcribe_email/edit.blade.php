@@ -16,7 +16,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('subcribe-email.update', ['subcribe_email_id' => $subcribeEmail->subcribe_email_id]) }}" method="POST">
+            <form role="form" action="{{ route('subcribe-email.update', ['subcribe_email_id' => $subcribeEmail->subcribe_email_id]) }}" method="POST" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-8">

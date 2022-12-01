@@ -18,7 +18,7 @@
                         <a href="/">Trang chủ</a> <i class="fa fa-angle-double-right" aria-hidden="true"></i>
                         <a href="/dat-hang"> Giỏ hàng</a>
                     </div>
-                    <form action="{{ route('send') }}" method="post">
+                    <form action="{{ route('send') }}" method="POST" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="InformationPerson informationOrder clearfix">
                             <div class="mainTitle lineorange">

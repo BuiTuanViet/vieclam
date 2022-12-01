@@ -135,7 +135,7 @@
 <<<<<<< HEAD
 		<form {{-- action="{{ route('sub_contact') }}" --}} onSubmit="return contact(this);" method="post">
 =======
-		<form action="{{ route('sub_contact', [ 'languageCurrent' => $languageCurrent]) }}" method="post">
+		<form action="{{ route('sub_contact', [ 'languageCurrent' => $languageCurrent]) }}" method="POST" enctype="multipart/form-data">
 >>>>>>> 94b6f9fb1110bef9f5feb0003caa08f6d6863581
 		 {!! csrf_field() !!}
              <input type="hidden" name="is_json" class="form-control captcha" value="1" placeholder="">

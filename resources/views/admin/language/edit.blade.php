@@ -16,7 +16,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('languages.update', ['language_id' => $language->language_id]) }}" method="POST">
+            <form role="form" action="{{ route('languages.update', ['language_id' => $language->language_id]) }}" method="POST" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">
@@ -76,10 +76,12 @@
                                     @endif
 
                                     @if($typeInput->type_input == 'image')
-                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                        <input type="file" name="{{$typeInput->slug}}"
                                                size="20"/>
+{{--                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"--}}
+{{--                                               size="20"/>--}}
                                         <img src="{{ $language[$typeInput->slug] }}" width="80" height="70"/>
-                                        <input name="{{$typeInput->slug}}" type="hidden" value="{{ $language[$typeInput->slug] }}"/>
+{{--                                        <input name="{{$typeInput->slug}}" type="hidden" value="{{ $language[$typeInput->slug] }}"/>--}}
                                     @endif
 
                                     @if($typeInput->type_input == 'editor')

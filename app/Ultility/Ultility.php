@@ -95,4 +95,43 @@ class Ultility
         return $_SERVER['REQUEST_URI'];
     }
 
+    public static function saveFile($request, $name)
+    {
+        if ($request->hasFile($name) && $request->file($name)->isValid()) {
+            $file = $request->file($name);
+            $file_name = str_random(30) . '.' . $file->getClientOriginalExtension();
+            $path = '/upload/img/';
+            $file->move(public_path() . $path, $file_name);
+
+            return $path.$file_name;
+        }
+    }
+
+    public static function saveFileInformation($file)
+    {
+        $file_name = str_random(30) . '.' . $file->getClientOriginalExtension();
+        $path = '/upload/img/';
+        $file->move(public_path() . $path, $file_name);
+
+        return $path.$file_name;
+    }
+
+    public static function saveMoreFile($request, $name)
+    {
+        if ($request->hasFile($name)) {
+            $files = $request->file($name);
+            $data = [];
+            foreach ($files as $file) {
+                $file_name = str_random(30) . '.' . $file->getClientOriginalExtension();
+                $path = '/upload/img/';
+                $file->move(public_path() . $path, $file_name);
+                array_push($data, $path.$file_name);
+            }
+            if(count($data) > 0){
+                return implode(',', $data);
+            }
+            return null;
+        }
+    }
+
 }

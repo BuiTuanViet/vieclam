@@ -25,7 +25,7 @@
  <div class="clear"></div>
 			<div class="withFromContac">
 
-		<form action="{{ route('sub_contact', [ 'languageCurrent' => $languageCurrent]) }}" method="post">
+		<form action="{{ route('sub_contact', [ 'languageCurrent' => $languageCurrent]) }}" method="POST" enctype="multipart/form-data">
 		 {!! csrf_field() !!}
              <input type="hidden" name="is_json" class="form-control captcha" value="1" placeholder="">
 	<div class="form-row">

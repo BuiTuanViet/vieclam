@@ -16,7 +16,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('users.update', ['id' => $user->id]) }}" method="POST">
+            <form role="form" action="{{ route('users.update', ['id' => $user->id]) }}" method="POST" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">
@@ -66,10 +66,12 @@
                             </div>
 
                             <div class="form-group">
-                                <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                <input type="file" name="image"
                                        size="20"/>
+{{--                                <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"--}}
+{{--                                       size="20"/>--}}
                                 <img src="{{ $user->image }}" width="80" height="70"/>
-                                <input name="image" type="hidden" value="{{ $user->image }}"/>
+{{--                                <input name="image" type="hidden" value="{{ $user->image }}"/>--}}
                             </div>
 
                             <div class="form-group" style="color: red;">

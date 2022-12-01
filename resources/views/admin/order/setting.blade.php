@@ -61,7 +61,7 @@
                     <!-- /.box-body -->
                     <div class="box-body">
                         <h4 class="box-title">Thêm mới phí ship</h4>
-                        <form action="{{ route('cost_ship') }}" method="post">
+                        <form action="{{ route('cost_ship') }}" method="POST" enctype="multipart/form-data">
                             {!! csrf_field() !!}
                             <div class="form-group">
                                 <label>Hình thức ship</label>
@@ -133,7 +133,7 @@
 
                     <div class="box-body">
                         <h4 class="box-title">Thêm mới ngân hàng</h4>
-                        <form action="{{ route('bank') }}" method="post">
+                        <form action="{{ route('bank') }}" method="POST" enctype="multipart/form-data">
                             {!! csrf_field() !!}
                             <div class="form-group">
                                 <label>Tên ngân hàng</label>
@@ -172,7 +172,7 @@
                     <!-- /.box-header -->
 
                     <div class="box-body">
-                        <form action="{{ route('updateSetting') }}" method="post">
+                        <form action="{{ route('updateSetting') }}" method="POST" enctype="multipart/form-data">
                             {!! csrf_field() !!}
                             <div class="form-group">
                                 <label>Một điểm tương ứng bao nhiêu tiền</label>
@@ -251,7 +251,7 @@
 
                     <div class="box-body">
                         <h4 class="box-title">Thêm mới mã giảm giá</h4>
-                        <form action="{{ route('code_sale') }}" method="post">
+                        <form action="{{ route('code_sale') }}" method="POST" enctype="multipart/form-data">
                             {!! csrf_field() !!}
                             <div class="form-group">
                                 <label>Mã giảm giá</label>

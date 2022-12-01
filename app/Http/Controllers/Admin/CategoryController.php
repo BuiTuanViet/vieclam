@@ -74,6 +74,7 @@ class CategoryController extends AdminController
     private function insertCategory($request) {
         $titles = $request->input('title');
         $images = $request->input('image');
+        dd($request->input('image'));
         $slugs = $request->input('slug');
         $descripsions = $request->input('description');
 
@@ -87,16 +88,21 @@ class CategoryController extends AdminController
             if (empty($slug)) {
                 $slug = Ultility::createSlug($titles[$id]);
             }
-            $categoryId = $category->insertGetId([
+            $data = [
                 'title' => $titles[$id],
                 'slug' => $slug,
                 'parent' => $request->input('parent'),
                 'post_type' => 'post',
                 'template' =>  $request->input('template'),
                 'description' =>$descripsions[$id],
-                'image' =>  $images[$id],
                 'language' => $language->acronym
-            ]);
+            ];
+
+            if ($request->hasFile('image')){
+                $data['image'] = Ultility::saveFile($request, 'image');
+            }
+
+            $categoryId = $category->insertGetId($data);
             $categoryIds[] = $categoryId;
             if ($id == 0) {
                 $mainId = $categoryId;

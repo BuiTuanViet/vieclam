@@ -36,7 +36,7 @@
     <div class="login-box-body">
         <p class="login-box-msg">Đăng nhập để bắt đầu phiên làm việc của bạn</p>
 
-        <form action="{{ route('login') }}" method="post">
+        <form action="{{ route('login') }}" method="POST" enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group has-feedback">
                 <input type="email" class="form-control" name="email" placeholder="Email" value="{{ old('email') }}" required autofocus />
