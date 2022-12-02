@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách menu')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -41,9 +43,9 @@
                                         <a href="{{ route('menus.edit', ['menu_id' => $menu->menu_id]) }}">
                                             <button class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></button>
                                         </a>
-                                        <a  href="{{ route('menus.destroy', ['menu_id' => $menu->menu_id]) }}" class="btn btn-danger btnDelete" data-toggle="modal" data-target="#myModalDelete" onclick="return submitDelete(this);">
+                                       <!-- <a  href="{{ route('menus.destroy', ['menu_id' => $menu->menu_id]) }}" class="btn btn-danger btnDelete" data-toggle="modal" data-target="#myModalDelete" onclick="return submitDelete(this);">
                                             <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                        </a>
+                                        </a> -->
                                     </td>
                                 </tr>
                             @endforeach
@@ -62,7 +64,6 @@
                     <!-- /.box-body -->
                 </div>
                 <!-- /.box -->
-                <p style="font-size: 16px;"><i>Ghi chú: Để tạo menu thực đơn cho thương hiệu nhà hàng. Vui lòng tạo menu có tên trùng với tiêu đề của thương hiệu nhà hàng!</i></p>
             </div>
         </div>
     </section>

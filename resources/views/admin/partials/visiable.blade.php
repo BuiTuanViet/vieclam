@@ -15,7 +15,7 @@
     function visiablePost(e) {
         var postId = $(e).val();
         var visiable = 1;
-        if ($(e).prop('checked')) {
+        if ($(e).is(':checked')) {
             visiable = 0;
         }
         $.ajax({

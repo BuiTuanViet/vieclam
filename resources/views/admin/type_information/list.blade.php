@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách trường thông tin' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -8,7 +10,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#">Danh sách thuộc tính thông tin</a></li>
+            <li><a href="#">Danh sách trường dữ liệu</a></li>
         </ol>
     </section>
     <section class="content">

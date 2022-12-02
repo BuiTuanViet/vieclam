@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chỉnh sửa liên hệ')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('contact.update', ['contact_id' => $contact->contact_id]) }}" method="POST">
+            <form role="form" action="{{ route('contact.update', ['contact_id' => $contact->contact_id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">
@@ -50,6 +52,21 @@
                                 <input type="text" class="form-control" name="address" placeholder="Địa chỉ" value="{{ $contact->address }}" required>
                             </div>
 
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Trạng thái</label>
+                                <select class="form-control" name="status">
+                                    <option value="1" {{ $contact->status==1 ? 'selected' : '' }}>Đã tư vấn</option>
+                                    <option value="0" {{ $contact->status==0 ? 'selected' : '' }}>Chưa tư vấn</option>
+                                </select>
+                            </div>
+
+							<div class="form-group">
+                                <label for="exampleInputEmail1">hình ảnh</label>
+								@foreach (explode('-', $contact->images) as $image) 
+									<img src="{{ $image }}" />
+								@endforeach
+                            </div>
+							
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Message</label>
                                 <textarea rows="4" class="form-control" name="message"

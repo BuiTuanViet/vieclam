@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Thông tin website')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -15,66 +17,54 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('information.store') }}" method="POST">
+            <form role="form" action="{{ route('information.store') }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
 
                 <div class="col-xs-12 col-md-8">
 
                     <!-- Nội dung thêm mới -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        @foreach ($languages as $id => $language)
-                            <li role="presentation" class="{{ ($id == 0) ? 'active' : '' }}">
-                                <a href="#{{ $language->acronym }}" aria-controls="{{ $language->acronym }}" role="tab" data-toggle="tab">{{ $language->language }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
+
                     <!-- /.box-header -->
-                    <div class="tab-content clearfix">
-                        @foreach ($languages as $id => $language)
-                            <div role="tabpanel" class="tab-pane {{ ($id == 0) ? 'active' : '' }}" id="{{ $language->acronym }}">
-                                @foreach($typeInformations as $typeinformation)
-                                    <div class="box box-primary">
-                                        <div class="box-header with-border">
-                                            <h3 class="box-title">{{ $typeinformation->title }}</h3>
-                                        </div>
-                                        <div class="box-body">
-                                            <div class="form-group">
-                                                <input type="hidden" value="{{ $typeinformation->slug }}" name="slug_type_input[]"/>
-
-                                                @if ($typeinformation->type_input == 'one_line')
-                                                    <input type="text" class="form-control" name="content{{ $language->acronym }}[]"
-                                                           placeholder="{{ $typeinformation->placeholder }}"
-                                                           value="{{ $typeinformation['information'.$language->acronym] }}"/>
-                                                @endif
-
-                                                @if ($typeinformation->type_input == 'multi_line')
-                                                    <textarea rows="4" class="form-control" name="content{{ $language->acronym }}[]"
-                                                              placeholder="{{ $typeinformation->placeholder }}">{{ $typeinformation['information'.$language->acronym] }}</textarea>
-                                                @endif
-
-                                                @if ($typeinformation->type_input == 'editor')
-                                                    <textarea class="editor" id="{{$typeinformation->slug.$language->acronym}}" name="content{{ $language->acronym }}[]"
-                                                              rows="10" cols="80"
-                                                              placeholder="{{ $typeinformation->placeholder }}"/>{{ $typeinformation['information'.$language->acronym] }}</textarea>
-                                                @endif
-
-                                                @if ($typeinformation->type_input == 'image')
-                                                    <div>
-                                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
-                                                               size="20"/>
-                                                        <img src="{{ $typeinformation['information'.$language->acronym] }}" width="80" height="70"/>
-                                                        <input name="content{{ $language->acronym }}[]" type="hidden"
-                                                               value="{{ $typeinformation['information'.$language->acronym] }}"/>
-                                                    </div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endforeach
+                    @foreach($typeInformations as $typeinformation)
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">{{ $typeinformation->title }}</h3>
                             </div>
-                        @endforeach
-                    </div>
+                            <div class="box-body">
+                                <div class="form-group">
+
+                                    @if ($typeinformation->type_input == 'one_line')
+                                        <input type="hidden" value="{{ $typeinformation->slug }}" name="slug_type_input[]"/>
+                                        <input type="text" class="form-control" name="content[]"
+                                               placeholder="{{ $typeinformation->placeholder }}"
+                                               value="{{ $typeinformation->information }}"/>
+                                    @endif
+
+                                    @if ($typeinformation->type_input == 'multi_line')
+                                            <input type="hidden" value="{{ $typeinformation->slug }}" name="slug_type_input[]"/>
+                                        <textarea rows="4" class="form-control" name="content[]"
+                                                  placeholder="{{ $typeinformation->placeholder }}">{{ $typeinformation->information }}</textarea>
+                                    @endif
+
+                                    @if ($typeinformation->type_input == 'editor')
+                                            <input type="hidden" value="{{ $typeinformation->slug }}" name="slug_type_input[]"/>
+                                            <textarea class="editor" id="{{$typeinformation->slug}}" name="content[]" rows="10" cols="80" placeholder="{{ $typeinformation->placeholder }}"/>{{ $typeinformation->information }}</textarea>
+                                    @endif
+
+                                    @if ($typeinformation->type_input == 'image')
+                                        <div>
+                                            <input type="file" sub="image" name="image[{{$typeinformation->slug}}]" accept="image/*"
+                                                   size="20"/>
+                                            <img src="{{ $typeinformation->information }}" width="80" height="70"/>
+{{--                                            <input name="content[]" type="hidden"--}}
+{{--                                                   value="{{ $typeinformation->information }}"/>--}}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                @endforeach
 
                 <!-- /.box-body -->
 

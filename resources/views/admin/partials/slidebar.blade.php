@@ -5,7 +5,7 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="{{ asset(Auth::user()->image) }}" class="img-circle" alt="User Image">
+                <img src="{{ (isset(Auth::user()->image) && !empty(Auth::user()->image)) ? asset(Auth::user()->image) : asset('image/avatar_admin.png') }}" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
                 <p>{{Auth::user()->name}}</p>
@@ -15,8 +15,8 @@
         @if(!\App\Entity\User::isMember(\Illuminate\Support\Facades\Auth::user()->role))
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">Menu Chính</li>{{ Request::is('admin/posts', 'admin/posts/create', 'admin/categories') ? 'active' : null }}
-            <li class=" treeview">
+            <li class="header">Menu Chính</li>
+            <li class="{{ Request::is('admin/posts', 'admin/posts/create', 'admin/categories') ? 'active' : null }} treeview">
                 <a href="{{ route('posts.index') }}">
                     <i class="fa fa-newspaper-o" aria-hidden="true"></i> <span>Bài viết</span>
                     <span class="pull-right-container">
@@ -55,8 +55,24 @@
                     </li>
                 </ul>
             </li>
+            <li class="{{ Request::is('admin/pages', 'admin/pages/create') ? 'active' : null }} treeview">
+                <a href="{{ route('pages.index') }}">
+                    <i class="fa fa-file-o" aria-hidden="true"></i> <span>Trang</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{{ Request::is('admin/pages') ? 'active' : null }}">
+                        <a href="{{ route('pages.index') }}"><i class="fa fa-circle-o"></i>Tất cả trang</a>
+                    </li>
+                    <li class="{{ Request::is('admin/pages/create') ? 'active' : null }}">
+                        <a href="{{ route('pages.create') }}"><i class="fa fa-circle-o"></i>Thêm mới trang</a>
+                    </li>
+                </ul>
+            </li>
 
-            <li class="header">Quản lý nội dung</li>
+            <li class="header">Bổ sung</li>
             @foreach($typeSubPostsAdmin as $typeSubPost)
                 <li class="{{ Request::is('admin/'.$typeSubPost->slug.'/sub-posts', 'admin/'.$typeSubPost->slug.'/sub-posts/create') ? 'active' : null }} treeview">
                     <a href="{{$typeSubPost->slug.'/sub-posts' }} ">
@@ -76,41 +92,7 @@
                 </li>
             @endforeach
 
-            <li class="header">Thanh toán và đơn hàng</li>
-{{--            <li class="{{ Request::is('/hinh-thuc-thanh-toan') ? 'active' : null }} ">--}}
-{{--                <a href="{{ route('method_payment') }}">--}}
-{{--                    <i class="fa fa-info-circle" aria-hidden="true"></i> <span>Cài đặt thanh toán</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
-            <li class="{{ Request::is('/don-hang') ? 'active' : null }} ">
-                <a href="{{ route('orderAdmin') }}">
-                    <i class="fa fa-shopping-basket" aria-hidden="true"></i> <span>Đơn hàng</span>
-                </a>
-            </li>
-
-            <li class="header">ĐK email và bình luận</li>
-{{--            <li class="{{ Request::is(route('book.index')) ? 'active' : null }} ">--}}
-{{--                <a href="{{ route('book.index') }}">--}}
-{{--                    <i class="fa fa-bookmark" aria-hidden="true"></i> <span>Quản lý đặt bàn</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
-            <li class="{{ Request::is('/subcribe-email') ? 'active' : null }} ">
-                <a href="{{ route('subcribe-email.index') }}">
-                    <i class="fa fa-envelope-o" aria-hidden="true"></i> <span>Đăng ký nhận email</span>
-                </a>
-            </li>
-{{--            <li class="{{ Request::is('/comments') ? 'active' : null }} ">--}}
-{{--                <a href="{{ route('comments.index') }}">--}}
-{{--                    <i class="fa fa-comments" aria-hidden="true"></i> <span>Quản lý bình luận</span>--}}
-{{--                </a>--}}
-{{--            </li>--}}
-            <li class="{{ Request::is(route('contact.index')) ? 'active' : null }} ">
-                <a href="{{ route('contact.index') }}">
-                    <i class="fa fa-paper-plane" aria-hidden="true"></i> <span>Quản lý Liên hệ</span>
-                </a>
-            </li>
-            
-            <li class="header">Giao diện</li>
+            <li class="header">Thông tin trang và menu</li>
             <li class="{{ Request::is('admin/menus', 'admin/menus/create') ? 'active' : null }} treeview">
                 <a href="{{ route('menus.index') }}">
                     <i class="fa fa-bars" aria-hidden="true"></i> <span>Menu</span>
@@ -127,104 +109,34 @@
                     </li>
                 </ul>
             </li>
-            <li class="{{ Request::is( route('languages.index'), route('languages.create')) ? 'active' : null }} treeview">
-                <a href="{{ route('languages.index') }}">
-                    <i class="fa fa-language" aria-hidden="true"></i> <span>Ngôn ngữ</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="{{ Request::is( route('languages.index')) ? 'active' : null }}">
-                        <a href="{{ route('languages.index') }}"><i class="fa fa-circle-o"></i>Tất cả ngôn ngữ</a>
-                    </li>
-                    <li class="{{ Request::is( route('languages.create')) ? 'active' : null }}">
-                        <a href="{{ route('languages.create') }}"><i class="fa fa-circle-o"></i>Thêm mới ngôn ngữ</a>
-                    </li>
-                </ul>
-            </li>
-            <li class="{{ Request::is('admin/templates', 'admin/templates/create') ? 'active' : null }} treeview">
-                <a href="{{ route('templates.index') }}">
-                    <i class="fa fa-desktop" aria-hidden="true"></i> <span>Template</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="{{ Request::is( 'admin/templates' ) ? 'active' : null }}">
-                        <a href="{{ route('templates.index') }}"><i class="fa fa-circle-o"></i>Tất cả Template</a>
-                    </li>
-                    <li class="{{ Request::is('admin/templates/create') ? 'active' : null }}">
-                        <a href="{{ route('templates.create') }}"><i class="fa fa-circle-o"></i>Thêm mới Template</a>
-                    </li>
-                </ul>
-            </li>
-
-
-            <li class="header">Cài đặt dữ liệu</li>
-            <li class="{{ Request::is('admin/type-sub-post', 'admin/type-sub-post/create') ? 'active' : null }} treeview">
-                <a href="{{ route('type-sub-post.index') }}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i> <span>Dạng bài viết</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="{{ Request::is( 'admin/type-sub-post' ) ? 'active' : null }}">
-                        <a href="{{ route('type-sub-post.index') }}"><i class="fa fa-circle-o"></i>Tất cả dạng bài viết</a>
-                    </li>
-                    <li class="{{ Request::is('admin/type-sub-post/create') ? 'active' : null }}">
-                        <a href="{{ route('type-sub-post.create') }}"><i class="fa fa-circle-o"></i>Thêm mới dạng bài viết</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="{{ Request::is('admin/type-input', 'admin/type-input/create') ? 'active' : null }} treeview">
-                <a href="{{ route('type-input.index') }}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i> <span>Trường dữ liệu</span>
-                    <span class="pull-right-container">
-                      <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                    <li class="{{ Request::is( 'admin/type-input' ) ? 'active' : null }}">
-                        <a href="{{ route('type-input.index') }}"><i class="fa fa-circle-o"></i>Tất cả trường dữ liệu</a>
-                    </li>
-                    <li class="{{ Request::is('admin/type-input/create') ? 'active' : null }}">
-                        <a href="{{ route('type-input.create') }}"><i class="fa fa-circle-o"></i>Thêm mới trường dữ liệu</a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="header">Thông tin trang web</li>
-            <li class="{{ Request::is('admin/information') ? 'active' : null }} ">
+            <li class="{{ Request::is('admin/information', 'admin/information/create') ? 'active' : null }} treeview">
                 <a href="{{ route('information.index') }}">
                     <i class="fa fa-info-circle" aria-hidden="true"></i> <span>Thông tin trang</span>
-                </a>
-            </li>
-
-            <li class="{{ Request::is('admin/type-information', 'admin/type-information/create') ? 'active' : null }} treeview">
-                <a href="{{ route('type-information.index') }}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i> <span>Cài đặt Thông tin</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li class="{{ Request::is( 'admin/type-information' ) ? 'active' : null }}">
-                        <a href="{{ route('type-information.index') }}"><i class="fa fa-circle-o"></i>Tất cả Thông tin</a>
+                    <li class="{{ Request::is( 'admin/information' ) ? 'active' : null }}">
+                        <a href="{{ route('information.index') }}"><i class="fa fa-circle-o"></i>Thông tin trang</a>
                     </li>
-                    <li class="{{ Request::is('admin/type-information/create') ? 'active' : null }}">
-                        <a href="{{ route('type-information.create') }}"><i class="fa fa-circle-o"></i>Thêm mới thông tin</a>
+                    <li class="{{ Request::is('admin/information/create_general') ? 'active' : null }}">
+                        <a href="{{ 'information/general' }}"><i class="fa fa-circle-o"></i>Thông tin trang chung</a>
                     </li>
                 </ul>
             </li>
+            <li class="{{ Request::is('/don-hang') ? 'active' : null }} ">
+                <a href="{{ route('orderAdmin') }}">
+                    <i class="fa fa-shopping-basket" aria-hidden="true"></i> <span>Đơn hàng</span>
+                </a>
+            </li>
             @endif
+
             @if(\App\Entity\User::isManager(\Illuminate\Support\Facades\Auth::user()->role))
             <li class="header">Thành viên</li>
             <li class="{{ Request::is('admin/users', 'admin/users/create') ? 'active' : null }} treeview">
                 <a href="{{ route('users.index') }}">
-                    <i class="fa fa-wrench" aria-hidden="true"></i> <span>Quản lý thành viên</span>
+                    <i class="fa fa-users" aria-hidden="true"></i> <span>Quản lý thành viên</span>
                     <span class="pull-right-container">
                       <i class="fa fa-angle-left pull-right"></i>
                     </span>
@@ -239,7 +151,104 @@
                 </ul>
             </li>
             @endif
+
+            <li class="header" title="Cài đặt thanh toán, liên hệ, đăng ký nhận mail, bình luận">Thông tin mở rộng website</li>
+            <li class="{{ Request::is('admin/hinh-thuc-thanh-toan', 'admin/contact', 'admin/subcribe-email', 'admin/comments') ? 'active' : null }} treeview">
+                <a>
+                    <i class="fa fa-info" aria-hidden="true"></i> <span>Thông tin mở rộng</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li class="{{ Request::is('admin/hinh-thuc-thanh-toan') ? 'active' : null }} ">
+                        <a href="{{ route('method_payment') }}">
+                            <i class="fa fa-info-circle" aria-hidden="true"></i> <span>Cài đặt chung</span>
+                        </a>
+                    </li>
+                    <li class="{{ Request::is('admin/contact') ? 'active' : null }} ">
+                        <a href="{{ route('contact.index') }}">
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i> <span>Quản lý Liên hệ</span>
+                        </a>
+                    </li>
+{{--                    <li class="{{ Request::is('admin/subcribe-email') ? 'active' : null }} ">--}}
+{{--                        <a href="{{ route('subcribe-email.index') }}">--}}
+{{--                            <i class="fa fa-envelope-o" aria-hidden="true"></i> <span>Đăng ký nhận email (SDT)</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+                    <li class="{{ Request::is('admin/comments') ? 'active' : null }} ">
+                        <a href="{{ route('comments.index') }}">
+                            <i class="fa fa-comments" aria-hidden="true"></i> <span>Quản lý bình luận</span>
+                        </a>
+                    </li>
+{{--                    <li class="{{ Request::is('admin/filter') ? 'active' : null }} ">--}}
+{{--                        <a href="{{ route('filter.index') }}">--}}
+{{--                            <i class="fa fa-filter" aria-hidden="true"></i> <span>Bộ lọc</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+                </ul>
+            </li>
+
+{{--            <li class="header" title="Cài đặt thanh toán, liên hệ, đăng ký nhận mail, bình luận">Hỗ trợ facebook</li>--}}
+{{--            <li class="{{ Request::is('admin/get-post-facebook', 'admin/show-get-uid', 'admin/show-convert-uid', 'admin/show-request-friend') ? 'active' : null }} treeview">--}}
+{{--                <a>--}}
+{{--                    <i class="fa fa-info" aria-hidden="true"></i> <span>Hỗ trợ facebook</span>--}}
+{{--                    <span class="pull-right-container">--}}
+{{--                      <i class="fa fa-angle-left pull-right"></i>--}}
+{{--                    </span>--}}
+{{--                </a>--}}
+{{--                <ul class="treeview-menu">--}}
+{{--                    <li class="{{ Request::is('admin/get-post-facebook') ? 'active' : null }} ">--}}
+{{--                        <a href="{{ route('get_post_facebook') }}">--}}
+{{--                            <i class="fa fa-arrow-up" aria-hidden="true"></i> <span>fanpage và trang cá nhân</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    <li class="{{ Request::is('admin/show-get-uid') ? 'active' : null }} ">--}}
+{{--                        <a href="{{ route('show_get_uid') }}">--}}
+{{--                            <i class="fa fa-arrow-up" aria-hidden="true"></i> <span>Lấy uid từ facebook</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    <li class="{{ Request::is('admin/show-convert-uid') ? 'active' : null }} ">--}}
+{{--                        <a href="{{ route('show_convert_uid') }}">--}}
+{{--                            <i class="fa fa-arrow-up" aria-hidden="true"></i> <span>Convert uid sang email và số điện thoại</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                    <li class="{{ Request::is('admin/show-request-friend') ? 'active' : null }} ">--}}
+{{--                        <a href="{{ route('show_request_friend') }}">--}}
+{{--                            <i class="fa fa-arrow-up" aria-hidden="true"></i> <span>Tự động gửi lời mời kết bạn</span>--}}
+{{--                        </a>--}}
+{{--                    </li>--}}
+{{--                </ul>--}}
+{{--            </li>--}}
+
+            
+			<li class="header" title="Dạng bài viết, trường dữ liệu, trường thông tin, template">Cài Đặt Website</li>
+            <li class="{{ Request::is('admin/type-sub-post', 'admin/type-input', 'admin/type-information', 'admin/templates') ? 'active' : null }} treeview">
+                <a>
+                    <i class="fa fa-wrench" aria-hidden="true"></i> <span>Cài đặt</span>
+                    <span class="pull-right-container">
+                      <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{{ Request::is( 'admin/type-sub-post' ) ? 'active' : null }}">
+                        <a href="{{ route('type-sub-post.index') }}"><i class="fa fa-clipboard" aria-hidden="true"></i> Dạng bài viết</a>
+                    </li>
+                    <li class="{{ Request::is( 'admin/type-input' ) ? 'active' : null }}">
+                        <a href="{{ route('type-input.index') }}"><i class="fa fa-keyboard-o" aria-hidden="true"></i> Trường dữ liệu</a>
+                    </li>
+                    <li class="{{ Request::is( 'admin/type-information' ) ? 'active' : null }}">
+                        <a href="{{ route('type-information.index') }}"><i class="fa fa-info-circle" aria-hidden="true"></i> Trường Thông tin</a>
+                    </li>
+                    <li class="{{ Request::is( 'admin/templates' ) ? 'active' : null }}">
+                        <a href="{{ route('templates.index') }}"><i class="fa fa-desktop" aria-hidden="true"></i> Template</a>
+                    </li>
+                </ul>
+            </li>
+            
         </ul>
     </section>
     <!-- /.sidebar -->
+
 </aside>

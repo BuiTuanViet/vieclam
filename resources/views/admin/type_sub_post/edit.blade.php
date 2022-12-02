@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chỉnh sửa '.$typeSubPost->title )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('type-sub-post.update', ['type_sub_post_id' => $typeSubPost->type_sub_post_id]) }}" method="POST">
+            <form role="form" action="{{ route('type-sub-post.update', ['type_sub_post_id' => $typeSubPost->type_sub_post_id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">
@@ -39,31 +41,6 @@
                                 <label for="exampleInputEmail1">slug</label>
                                 <input type="text" class="form-control" name="slug" placeholder="đường dẫn tĩnh"
                                 value="{{ $typeSubPost->slug }}" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Số thứ tự hiển thị</label>
-                                <input type="number" class="form-control" name="location" placeholder="Số thứ tự hiển thị" value="{{ $typeSubPost->location }}" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Hiển thị trong lựa chọn menu</label>
-                                <input type="checkbox" class="flat-red" value="1" name="show_menu" placeholder="Hiển thị trong lựa chọn menu"
-                                {{ ($typeSubPost->show_menu == 1) ? 'checked' : '' }}/>
-                            </div>
-
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" name="have_sort" value="1" class="flat-red" @if($typeSubPost->have_sort == 1) checked @endif />
-                                    Có lựa chọn số thứ tự sắp xếp
-                                </label>
-                            </div>
-
-                            <div class="form-group">
-                                <label>
-                                    <input type="checkbox" name="is_index_hot" value="1" class="flat-red" @if($typeSubPost->is_index_hot == 1) checked @endif />
-                                    Có lưa chọn nổi bật
-                                </label>
                             </div>
 
                             <div class="form-group" style="color: red;">

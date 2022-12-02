@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entity\Contact;
+use App\Ultility\Error;
 use Illuminate\Http\Request;
 use App\Entity\User;
 use App\Ultility\Ultility;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Validator;
 
@@ -36,10 +38,20 @@ class ContactController extends AdminController
     public function index()
     {
         $contact = new Contact();
-        $contacts = $contact->orderBy('contact_id')->get();
+        try {
+            $contacts = $contact->orderBy('contact_id', 'desc')
+                ->paginate(15);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị liên hệ: dữ liệu lỗi.');
 
-        return view('admin.contact.list', compact('contacts'));
+            Log::error('http->admin->ContactController->index: Lỗi lấy dữ liệu contacts');
+
+            $contacts = null;
+        } finally {
+            return view('admin.contact.list', compact('contacts'));
+        }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -59,35 +71,30 @@ class ContactController extends AdminController
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => 'required',
-            'phone' => 'required',
-            'email' => 'required|email',
-            'address' => 'required',
-        ]);
-
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect(route('contact.create'))
-                ->withErrors($validation)
-                ->withInput();
-        }
-
         // if slug null slug create as title
-        $contact = new Contact();
-        $contact->insert([
-            'name' => $request->input('name'),
-            'phone' => $request->input('phone'),
-            'email' => $request->input('email'),
-            'address' => $request->input('address'),
-            'message' => $request->input('message'),
-            'created_at' => new \DateTime(),
-            'updated_at' => new \DateTime()
-        ]);
+        $this->insertContact($request);
 
         return redirect(route('contact.index'));
     }
 
+    private function insertContact($request) {
+        try {
+            $contact = new Contact();
+            $contact->insert([
+                'name' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'email' => $request->input('email'),
+                'address' => $request->input('address'),
+                'status' => $request->input('status'),
+                'message' => $request->input('message'),
+                'created_at' => new \DateTime(),
+                'updated_at' => new \DateTime()
+            ]);
+        } catch(\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi thêm mới liên hệ: Dữ liệu nhập vào không hợp lệ');
+            Log::error(' http->admin->ContactController->insertContact: Lỗi thêm mới liên hệ');
+        }
+    }
     /**
      * Display the specified resource.
      *
@@ -119,33 +126,28 @@ class ContactController extends AdminController
      */
     public function update(Request $request, Contact  $contact)
     {
-        $validation = Validator::make($request->all(), [
-            'name' => 'required',
-            'phone' => 'required',
-            'email' => 'required|email',
-            'address' => 'required',
-        ]);
-
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect(route('contact.edit', ['contact_id' => $contact->contact_id]))
-                ->withErrors($validation)
-                ->withInput();
-        }
-
-        $contact->update([
-            'name' => $request->input('name'),
-            'phone' => $request->input('phone'),
-            'email' => $request->input('email'),
-            'address' => $request->input('address'),
-            'message' => $request->input('message'),
-            'created_at' => new \DateTime(),
-            'updated_at' => new \DateTime()
-        ]);
+        $this->updateContact($contact, $request);
 
         return redirect(route('contact.index'));
     }
 
+    private function updateContact($contact, $request) {
+        try {
+            $contact->update([
+                'name' => $request->input('name'),
+                'phone' => $request->input('phone'),
+                'email' => $request->input('email'),
+                'address' => $request->input('address'),
+                'status' => $request->input('status'),
+                'message' => $request->input('message'),
+                'created_at' => new \DateTime(),
+                'updated_at' => new \DateTime()
+            ]);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy khi cập nhật liên hệ: Dữ liệu nhập vào không hợp lệ');
+            Log::error('http->admin->ContactController->updateContact: Lỗi khi cập nhật liên hệ');
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *

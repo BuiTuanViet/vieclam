@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -42,20 +43,25 @@ class LoginController extends Controller
     {
         return view('admin.login.login');
     }
+
+
     /**
-     * Send the response after the user was authenticated.
+     * The user has been authenticated.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  mixed  $user
+     * @return mixed
      */
-    protected function sendLoginResponse(Request $request)
+    protected function authenticated(Request $request, $user)
     {
-        $request->session()->regenerate();
-
-        $this->clearLoginAttempts($request);
-
-        return redirect($this->redirectTo);
+        if( $user->role < 3 ){
+            Auth::logout();
+            return redirect()->back()
+                ->withInput($request->only($this->username(), 'remember'))
+                ->withErrors('Tài khoản không đúng hoặc bạn không có quyền truy cập.');
+        }
     }
+
     /**
      * Validate the user login request.
      *
@@ -71,17 +77,18 @@ class LoginController extends Controller
             'required' => 'Trường :attribute không được để trống'
         ]);
     }
-    
+
     public function logout(Request $request)
     {
         $this->guard()->logout();
 
         $request->session()->invalidate();
-		// xóa session
+        // xóa session
         session_start();
         session_destroy();
-		
+
         return redirect('/admin');
     }
+
 
 }

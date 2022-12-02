@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Thêm mới liên hệ')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('contact.store') }}" method="POST">
+            <form role="form" action="{{ route('contact.store') }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
                 <div class="col-xs-12 col-md-6">
@@ -48,7 +50,15 @@
                                     <label for="exampleInputEmail1">Địa chỉ</label>
                                     <input type="text" class="form-control" name="address" placeholder="Địa chỉ" required>
                                 </div>
-                                
+
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Trạng thái</label>
+                                    <select class="form-control" name="status">
+                                        <option value="1">Đã tư vấn</option>
+                                        <option value="0">Chưa tư vấn</option>
+                                    </select>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Message</label>
                                     <textarea rows="4" class="form-control" name="message"

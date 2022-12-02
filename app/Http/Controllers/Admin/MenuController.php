@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entity\Category;
-use App\Entity\Language;
-use App\Entity\LanguageSave;
 use App\Entity\Menu;
 use App\Entity\MenuElement;
 use App\Entity\Post;
 use App\Entity\TypeSubPost;
 use App\Entity\User;
+use App\Ultility\Error;
 use App\Ultility\Location;
 use Illuminate\Http\Request;
 use App\Ultility\Ultility;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Validator;
 
@@ -42,9 +42,18 @@ class MenuController extends AdminController
      */
     public function index()
     {
-        $menus = Menu::orderBy('menu_id', 'desc')->get();
+        try {
+            $menus = Menu::orderBy('menu_id', 'desc')
+                ->get();
 
-        return View('admin.menu.list', compact('menus'));
+            return View('admin.menu.list', compact('menus'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị menu: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->index: Lỗi xảy tra trong quá trình lấy dữ liệu menu');
+            $menus = null;
+        } finally {
+            return View('admin.menu.list', compact('menus'));
+        }
     }
 
     /**
@@ -68,33 +77,30 @@ class MenuController extends AdminController
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'title' => 'unique:menus',
-            'slug' => 'unique:menus',
-        ]);
+        try {
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
+            // insert to database
+            $menu = new Menu();
+            $data =[
+                'title' => $request->input('title'),
+                'slug' => $slug,
+                'location' => $request->input('location'),
+            ];
+            if ($request->hasFile('image')){
+                $data['image'] = Ultility::saveFile($request, 'image');
+            }
 
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect('menus/create')
-                ->withErrors($validation)
-                ->withInput();
+            $menu->insert($data);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi thêm mới menu: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->store: Lỗi xảy tra trong quá trình thêm mới menu');
+        } finally {
+            return redirect('admin/menus');
         }
-
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-        // insert to database
-        $menu = new Menu();
-        $menu->insert([
-            'title' => $request->input('title'),
-            'slug' => $slug,
-            'image' => $request->input('image'),
-            'location' => $request->input('location'),
-        ]);
-
-        return redirect('admin/menus');
     }
 
     /**
@@ -105,7 +111,7 @@ class MenuController extends AdminController
      */
     public function show($id)
     {
-        return redirect('admin/menus');
+
     }
 
     /**
@@ -120,84 +126,124 @@ class MenuController extends AdminController
         /* ==== get all post ==== */
         // get category of post
         $postCategories = $category->getCategory();
-        foreach ($postCategories as $id => &$postCategory) {
-            $postCategory['language'] = $category->getCategoryLanguage('post', $postCategory->category_id);
-
-        }
         // get all Post
-        $posts = Post::where('post_type', 'post')
-            ->where('language', 'vn')
-            ->orderBy('post_id', 'desc')->get();
-        foreach ($posts as $id => $post) {
-            $posts[$id]['language'] = Post::getPostLanguage($post->post_id);
-        }
-        // get all category of product
-        $productCategories = $category->getCategory('product');
-        foreach ($productCategories as $id => &$productCategory) {
-            $productCategory['language'] = $category->getCategoryLanguage('product', $productCategory->category_id);
+        $posts = $this->getPosts();
 
-        }
-        // get all Post
-        $posts = Post::where('post_type', 'post')
-            ->where('language', 'vn')
-            ->orderBy('post_id', 'desc')->get();
-        foreach ($posts as $id => $post) {
-            $posts[$id]['language'] = Post::getPostLanguage($post->post_id);
-        }
+        /* ==== get all product === */
+        // get category of product
+        $productCategories =$category->getCategory('product');
+        // get all product
+        $products = $this->getProducts();
+
+        /* ==== get all sub post ==== */
         // get all sub post
-        $typeSubPosts = TypeSubPost::orderBy('type_sub_post_id', 'desc')
-            ->where('show_menu', 1)->get();
-        $subPosts = array();
-        foreach ($typeSubPosts as $typeSubPost) {
-            $subPosts[$typeSubPost->slug] = Post::join('sub_post', 'sub_post.post_id', '=', 'posts.post_id')
-                ->select(
-                    'sub_post.sub_post_id',
-                    'posts.post_id',
-                    'title',
-                    'slug',
-                    'image'
-                )
-                ->where('language', 'vn')
-                ->where('post_type', $typeSubPost->slug)->orderBy('posts.post_id', 'desc')->get();
-            foreach ($subPosts[$typeSubPost->slug] as $id => $typeSubPostDetail) {
-                $subPosts[$typeSubPost->slug][$id]['language'] =  Post::getPostLanguage($typeSubPostDetail->post_id);
-            }
-        }
-        $menuElement = new MenuElement();
-        $menuElements = $menuElement->where('menu_slug', $menu->slug)
-            ->where('language', 'vn')
-            ->orderBy('menu_element_id')->get();
+        $typeSubPosts = $this->getTypeSubPosts();
+        $subPosts = $this->getSubPost($typeSubPosts);
 
-        $countLanguage = Language::count();
-        foreach ($menuElements as $id => $menuElement) {
-           $idxCount = $countLanguage;
-           $menuElementIds = array();
-           while ($idxCount > 0) {
-               $idxCount --;
-               $menuElementIds[] = $menuElement->menu_element_id + $idxCount;
-           }
-            $menuElements[$id]['language'] = $menuElement->whereIn('menu_element_id', $menuElementIds)->get();
-        }
+        // lấy ra trang
+        $pages = $this->getPage();
 
         $location = new Location();
         $locationMenus = $location->getLocationMenu();
-
-        $languages = Language::orderBy('language_id', 'asc')->get();
-
+        
         return View('admin.menu.edit', compact(
             'menu',
             'postCategories',
             'posts',
             'productCategories',
+            'products',
             'typeSubPosts',
             'subPosts',
-            'menuElements',
             'locationMenus',
-            'languages'
+            'pages'
             )
         );
     }
 
+    private function getPosts() {
+        try {
+            $posts = Post::where('post_type', 'post')
+                ->orderBy('post_id', 'desc')
+                ->get();
+
+            return $posts;
+        } catch(\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi lấy bài viết: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->getPosts: Lỗi xảy ra khi lấy bài viết');
+        }
+    }
+
+    private function getProducts() {
+        try {
+            $products = Post::join('products', 'products.post_id', '=', 'posts.post_id')
+                ->select(
+                    'products.product_id',
+                    'title',
+                    'slug',
+                    'image'
+                )
+                ->where('post_type', 'product')->orderBy('posts.post_id', 'desc')->get();
+
+            return $products;
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi lấy sản phẩm: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->getProducts: Lỗi xảy ra khi lấy sản phẩm');
+
+            return null;
+        }
+    }
+
+    private function getTypeSubPosts() {
+        try {
+            $typeSubPosts = TypeSubPost::orderBy('type_sub_post_id', 'desc')
+                ->get();
+
+            return $typeSubPosts;
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi lấy dạng bài viết: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->getTypeSubPosts: Lỗi xảy ra khi lấy dạng bài viết');
+
+            return null;
+        }
+    }
+
+    private function getSubPost($typeSubPosts) {
+        try {
+            $subPosts = array();
+            foreach ($typeSubPosts as $typeSubPost) {
+                $subPosts[$typeSubPost->slug] = Post::join('sub_post', 'sub_post.post_id', '=', 'posts.post_id')
+                    ->select(
+                        'sub_post.sub_post_id',
+                        'posts.post_id',
+                        'title',
+                        'slug',
+                        'image'
+                    )
+                    ->where('post_type', $typeSubPost->slug)->orderBy('posts.post_id', 'desc')->get();
+            }
+
+            return $subPosts;
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi lấy dạng bài viết: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->getSubPost: Lỗi xảy ra khi lấy dạng bài viết');
+
+            return null;
+        }
+    }
+
+    private function getPage() {
+        try {
+            $pages = Post::where('post_type', 'page')
+                ->get();
+
+            return $pages;
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi lấy trangt: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->getPage: Lỗi xảy ra khi lấy trang');
+
+            return null;
+        }
+    }
     /**
      * Update the specified resource in storage.
      *
@@ -207,42 +253,39 @@ class MenuController extends AdminController
      */
     public function update(Request $request, Menu  $menu)
     {
-        $validation = Validator::make($request->all(), [
-            'title' =>  Rule::unique('menus')->ignore($menu->menu_id, 'menu_id'),
-            'slug' => Rule::unique('menus')->ignore($menu->menu_id, 'menu_id'),
-        ]);
+        try {
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
+            // insert to database
+            $data =[
+                'title' => $request->input('title'),
+                'slug' => $slug,
+                'location' => $request->input('location'),
+            ];
+            if ($request->hasFile('image')){
+                $data['image'] = Ultility::saveFile($request, 'image');
+            }
+            $menu->update($data);
 
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect(route('menus.edit', ['menu_id' => $menu->menu_id]))
-                ->withErrors($validation)
-                ->withInput();
+            $menuElement = new MenuElement();
+            $menuElement->updateMenuElement(
+                $menu->slug,
+                $request->input('url'),
+                $request->input('title_show'),
+                $request->input('menu_level'),
+                $request->input('menu_image')
+            );
+
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi chỉnh sửa menu: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->update: Lỗi xảy tra trong quá trình cập nhật menu');
+        } finally {
+            return redirect('admin/menus');
         }
 
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-        // insert to database
-        $menu->update([
-            'title' => $request->input('title'),
-            'slug' => $slug,
-            'image' =>  $request->input('image'),
-            'location' =>  $request->input('location'),
-        ]);
-
-        $menuElement = new MenuElement();
-        $menuElement->updateMenuElement(
-            $menu->slug,
-            $request->input('url'),
-            $request->input('title_show'),
-            $request->input('menu_level'),
-            $request->input('menu_image'),
-            $request->input('language')
-        );
-
-        return redirect('admin/menus');
     }
 
     /**
@@ -253,9 +296,23 @@ class MenuController extends AdminController
      */
     public function destroy(Menu  $menu)
     {
-        $menus = new Menu();
-        $menus->where('menu_id', $menu->menu_id)->delete();
+        try {
+            if ($menu->theme_code != $this->themeCode || $menu->user_email != $this->emailUser) {
+                return redirect('admin/menus');
+            }
 
-        return redirect('admin/menus');
+            $menuElement = new MenuElement();
+            $menuElement->where('menu_slug', $menu->slug)
+                ->delete();
+
+            $menus = new Menu();
+            $menus->where('menu_id', $menu->menu_id)->delete();
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi xóa menu: dữ liệu hợp lệ.');
+            Log::error('http->admin->MenuController->destroy: Lỗi xảy tra trong quá trình xóa menu');
+        } finally {
+            return redirect('admin/menus');
+        }
+
     }
 }

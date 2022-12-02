@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chỉnh sửa '.$menu->title)
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -26,46 +28,24 @@
                             <div class="collapse" id="postCategory">
                                 <ul class="sortable1" >
                                     @foreach ($postCategories as $postCategory)
-                                        <li class="ui-state-default">
-                                            {{ $postCategory->title }}
-                                            <i class="fa fa-plus addMenu" onclick="return addMenu(this);"aria-hidden="true"></i>
-                                            <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#postCategory{{$postCategory->category_id}}" aria-expanded="false" aria-controls="postCategory"></i>
-
-                                            <input  type="text" placeholder="cấp menu" value="1" name="menu_level[]" class="menuLevel"/>
-                                            <i class="titleMenuLevel">Cấp menu</i>
-
-                                            <div class="collapse" id="postCategory{{$postCategory->category_id}}">
-                                                @foreach ($postCategory['language'] as $language)
-                                                <label for="exampleInputEmail1"><i>Tiêu đề {{ $language->language }}</i></label>
-                                                <input type="text" name="title_show[]" value="{{$language->title}}" class="titleShow form-control" />
-                                                <!-- tiếng việt -->
-                                                <input type="hidden" name="menu_image[]" class="form-control" value="{{ $language->image }}" />
-                                                <input type="hidden" name="url[]" class="form-control"
-                                                       value="{{ route('category', ['cate_slug' => $language->slug, 'languageCurrent' => $language->language]) }}" />
-                                                <input type="hidden" name="language[]" class="form-control" value="{{ $language->language }}" />
-                                                @endforeach
-                                            </div>
+                                        <li>
+                                           {!! \App\Entity\MenuElement::showContentMenu(
+                                                $postCategory->title,
+                                                'postCategory'.$postCategory->category_id,
+                                                $postCategory->image,
+                                                '/danh-muc/'.$postCategory->slug,
+                                                1
+                                             )  !!}
                                         </li>
                                         @foreach ($postCategory['sub_children'] as $child)
-                                            <li class="ui-state-default">
-                                                {{ \App\Ultility\Ultility::textLimit($child['title'], 5) }}
-                                                <i class="fa fa-plus addMenu" onclick="return addMenu(this);"aria-hidden="true"></i>
-                                                <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#postCategory{{$child['category_id']}}" aria-expanded="false" aria-controls="postCategory"></i>
-
-                                                <input  type="text" placeholder="cấp menu" value="2" name="menu_level[]" class="menuLevel"/>
-                                                <i class="titleMenuLevel">Cấp menu</i>
-
-                                                <div class="collapse" id="postCategory{{$child['category_id']}}">
-                                                    @foreach ($child['language'] as $language)
-                                                    <label for="exampleInputEmail1"><i>Tiêu đề {{ $language->language }}</i></label>
-                                                    <input type="text" name="title_show[]" value="{{$language->title}}" class="titleShow form-control" />
-
-                                                    <input type="hidden" name="menu_image[]" class="form-control" value="{{$language->image}}" />
-                                                    <input type="hidden" name="url[]" class="form-control"
-                                                           value="{{ route('category', ['cate_slug' => $language->slug, 'languageCurrent' => $language->language]) }}" />
-                                                    <input type="hidden" name="language[]" class="form-control" value="{{ $language->language }}" />
-                                                    @endforeach
-                                                </div>
+                                            <li>
+                                                {!! \App\Entity\MenuElement::showContentMenu(
+                                                     $child['title_show'],
+                                                     'postCategory'.$child['category_id'],
+                                                     $child['image'] ,
+                                                     '/danh-muc/'.$child['slug'],
+                                                     1
+                                                  )  !!}
                                             </li>
                                         @endforeach
                                     @endforeach
@@ -80,26 +60,14 @@
                             <div class="collapse" id="posts">
                                 <ul class="sortable1" >
                                     @foreach ($posts as $post)
-                                        <li class="ui-state-default">
-                                            {{ $post->title }}
-                                            <i class="fa fa-plus addMenu" onclick="return addMenu(this);"aria-hidden="true"></i>
-                                            <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#posts{{$post->post_id}}" aria-expanded="false" aria-controls="posts"></i>
-
-                                            <input type="text" placeholder="cấp menu" value="1" name="menu_level[]" class="menuLevel"/>
-                                            <i class="titleMenuLevel">Cấp menu</i>
-
-                                            <div class="collapse" id="posts{{$post->post_id}}">
-                                                @foreach ($post['language'] as $postLanguage)
-                                                <label for="exampleInputEmail1">Tiêu đề {{ $postLanguage->language }}</label>
-                                                <input type="text" name="title_show[]" value="{{$postLanguage->title}}" class="titleShow form-control" />
-
-                                                <input type="hidden" name="menu_image[]" class="form-control" value="" placeholder="ảnh"/>
-                                                <input type="hidden" name="url[]" class="form-control"
-                                                       value="{{ route('post', ['cate_slug' => ($postLanguage->language == 'vn') ? 'tin-tuc' : 'news', 'post_slug' => $postLanguage->slug,
-                                                       'languageCurrent' => $postLanguage->language]) }}" />
-                                                <input type="hidden" name="language[]" class="form-control" value="{{ $postLanguage->language }}" />
-                                                @endforeach
-                                            </div>
+                                        <li>
+                                            {!! \App\Entity\MenuElement::showContentMenu(
+                                                 $post->title,
+                                                 'posts'.$post->post_id,
+                                                 $post->image,
+                                                 '/tin-tuc/'.$post->slug,
+                                                 1
+                                              )  !!}
                                         </li>
                                     @endforeach
                                 </ul>
@@ -107,58 +75,79 @@
                         </div>
 
                         <div class="form-group">
-                            <button class="btn btn-primary menuButton" type="button" data-toggle="collapse" data-target="#productCategory" aria-expanded="false" aria-controls="productCategory">
-                                Chuyên mục sản phẩm
+                            <button class="btn btn-primary menuButton" type="button" data-toggle="collapse" data-target="#productCategories" aria-expanded="false" aria-controls="posts">
+                                Danh mục sản phẩm
                             </button>
-                            <div class="collapse" id="productCategory">
+                            <div class="collapse" id="productCategories">
                                 <ul class="sortable1" >
                                     @foreach ($productCategories as $productCategory)
-                                        <li class="ui-state-default">
-                                            {{ $productCategory->title }}
-                                            <i class="fa fa-plus addMenu" onclick="return addMenu(this);"aria-hidden="true"></i>
-                                            <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#productCategory{{$productCategory->category_id}}" aria-expanded="false" aria-controls="productCategory"></i>
-
-                                            <input  type="text" placeholder="cấp menu" value="1" name="menu_level[]" class="menuLevel"/>
-                                            <i class="titleMenuLevel">Cấp menu</i>
-
-                                            <div class="collapse" id="productCategory{{$productCategory->category_id}}">
-                                                @foreach ($productCategory['language'] as $language)
-                                                    <label for="exampleInputEmail1"><i>Tiêu đề {{ $language->language }}</i></label>
-                                                    <input type="text" name="title_show[]" value="{{$language->title}}" class="titleShow form-control" />
-                                                    <!-- tiếng việt -->
-                                                    <input type="hidden" name="menu_image[]" class="form-control" value="{{ $language->image }}" />
-                                                    <input type="hidden" name="url[]" class="form-control"
-                                                           value="{{ route('category_product', ['cate_slug' => $language->slug, 'languageCurrent' => $language->language]) }}" />
-                                                    <input type="hidden" name="language[]" class="form-control" value="{{ $language->language }}" />
-                                                @endforeach
-                                            </div>
+                                        <li>
+                                            {!! \App\Entity\MenuElement::showContentMenu(
+                                                 $productCategory->title,
+                                                 'productCategories'.$productCategory->category_id,
+                                                 $productCategory->image,
+                                                 '/cua-hang/'.$productCategory->slug,
+                                                 1
+                                              )  !!}
                                         </li>
                                         @foreach ($productCategory['sub_children'] as $child)
-                                            <li class="ui-state-default">
-                                                {{ \App\Ultility\Ultility::textLimit($child['title'], 5) }}
-                                                <i class="fa fa-plus addMenu" onclick="return addMenu(this);"aria-hidden="true"></i>
-                                                <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#productCategory{{$child['category_id']}}" aria-expanded="false" aria-controls="productCategory"></i>
-
-                                                <input  type="text" placeholder="cấp menu" value="2" name="menu_level[]" class="menuLevel"/>
-                                                <i class="titleMenuLevel">Cấp menu</i>
-
-                                                <div class="collapse" id="productCategory{{$child['category_id']}}">
-                                                    @foreach ($child['language'] as $language)
-                                                        <label for="exampleInputEmail1"><i>Tiêu đề {{ $language->language }}</i></label>
-                                                        <input type="text" name="title_show[]" value="{{$language->title}}" class="titleShow form-control" />
-
-                                                        <input type="hidden" name="menu_image[]" class="form-control" value="{{$language->image}}" />
-                                                        <input type="hidden" name="url[]" class="form-control"
-                                                               value="{{ route('category_product', ['cate_slug' => $language->slug, 'languageCurrent' => $language->language]) }}" />
-                                                        <input type="hidden" name="language[]" class="form-control" value="{{ $language->language }}" />
-                                                    @endforeach
-                                                </div>
+                                            <li>
+                                                {!! \App\Entity\MenuElement::showContentMenu(
+                                                     $child['title_show'],
+                                                     'postCategory'.$child['category_id'],
+                                                     $child['image'],
+                                                      '/cua-hang/'.$child['slug'],
+                                                     1
+                                                  )  !!}
                                             </li>
                                         @endforeach
                                     @endforeach
                                 </ul>
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary menuButton" type="button" data-toggle="collapse" data-target="#products" aria-expanded="false" aria-controls="posts">
+                                Sản phẩm
+                            </button>
+                            <div class="collapse" id="products">
+                                <ul class="sortable1" >
+                                    @foreach ($products as $product)
+                                        <li>
+                                        {!! \App\Entity\MenuElement::showContentMenu(
+                                                    $product->title,
+                                                    'products'.$product->product_id,
+                                                    $product->image,
+                                                    '/'.$product->slug,
+                                                    1
+                                                 )  !!}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button class="btn btn-primary menuButton" type="button" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="posts">
+                                Trang
+                            </button>
+                            <div class="collapse" id="pages">
+                                <ul class="sortable1" >
+                                    @foreach ($pages as $page)
+                                        <li>
+                                            {!! \App\Entity\MenuElement::showContentMenu(
+                                                $page->title,
+                                                'pages'.$page->post_id,
+                                                $page->image,
+                                                '/trang/'.$page->slug,
+                                                1
+                                             )  !!}
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+
 
                         @foreach ($typeSubPosts as $typeSubPost)
                             <div class="form-group">
@@ -168,23 +157,14 @@
                                 <div class="collapse" id="{{ $typeSubPost->slug }}">
                                     <ul class="sortable1" >
                                         @foreach ($subPosts[$typeSubPost->slug] as $subPost)
-                                            <li class="ui-state-default">
-                                                {{ $subPost->title }}
-                                                <i class="fa fa-plus addMenu" onclick="return addMenu(this);"aria-hidden="true"></i>
-                                                <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#{{ $subPost->slug.$subPost->sub_post_id }}" aria-expanded="false" aria-controls="{{ $subPost->slug }}"></i>
-
-                                                <input type="text" placeholder="cấp menu" value="1" name="menu_level[]" class="menuLevel"/>
-                                                <i class="titleMenuLevel">Cấp menu</i>
-                                                <div class="collapse" id="{{ $subPost->slug.$subPost->sub_post_id }}">
-                                                    @foreach ($subPost['language'] as $postLanguage)
-                                                    <label for="exampleInputEmail1">Tiêu đề {{ $postLanguage->language }}</label>
-                                                    <input type="text" name="title_show[]" value="{{$postLanguage->title}}" class="titleShow form-control" />
-
-                                                    <input type="hidden" name="menu_image[]" class="form-control" value="" />
-                                                    <input type="hidden" name="url[]" class="form-control" value="{{ $postLanguage->slug }}" />
-                                                    <input type="hidden" name="language[]" class="form-control" value="{{ $postLanguage->language }}" />
-                                                    @endforeach
-                                                </div>
+                                            <li>
+                                                {!! \App\Entity\MenuElement::showContentMenu(
+                                                    $subPost->title,
+                                                    $typeSubPost->slug.$subPost->sub_post_id,
+                                                    '',
+                                                    '/bo-sung/'.$subPost->slug,
+                                                    1
+                                                 )  !!}
                                             </li>
                                         @endforeach
                                     </ul>
@@ -194,32 +174,20 @@
 
                         <ul class="sortable1" >
                             <li class="ui-state-default">
-                                Trường tùy biến
-                                <i class="fa fa-plus addMenu" onclick="return addMenu(this);"aria-hidden="true"></i>
-                                <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#submitInput" aria-expanded="false" aria-controls="submitInput"></i>
-
-                                <input type="text" placeholder="cấp menu" value="1" name="menu_level[]" class="menuLevel"/>
-                                <i class="titleMenuLevel">Cấp menu</i>
-
-
-                                <div class="collapse" id="submitInput">
-                                    @foreach ($languages as $id => $language)
-                                    <label for="exampleInputEmail1">Tiêu đề {{ $language->language }}</label>
-                                    <input type="text" name="title_show[]" value="" class="titleShow form-control" placeholder="tiêu đề hiển thị"/>
-                                    <i>Đường dẫn {{ $language->language }}</i>
-                                    
-                                    <input type="hidden" name="menu_image[]" class="form-control" value="" />
-                                    <input type="text" name="url[]" class="form-control" value="" placeholder="Nhập đường dẫn"/>
-                                    <input type="hidden" name="language[]" class="form-control" value="{{ $language->acronym }}" />
-                                    @endforeach
-                                </div>
+                                {!! \App\Entity\MenuElement::showContentMenu(
+                                    'Bổ sung thay thế',
+                                    'addNew',
+                                    '',
+                                    '',
+                                    1
+                                 )  !!}
                             </li>
                         </ul>
                     </div>
                 </div>
             </div>
             <!-- form start -->
-            <form role="form" action="{{ route('menus.update', ['menu_id' => $menu->menu_id]) }}" method="POST">
+            <form role="form" action="{{ route('menus.update', ['menu_id' => $menu->menu_id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
 
@@ -227,9 +195,33 @@
                     <!-- Nội dung thêm mới -->
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Nội dung</h3>
+                            <h3 class="box-title">Nội dung menu</h3>
                         </div>
                         <!-- /.box-header -->
+                        <div class="box box-primary">
+                            <div class="box-body" id="myList">
+                                <?= \App\Entity\MenuElement::callMenuAdmin($menu->slug)?>
+                            </div>
+                        </div>
+
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+                </div>
+                <div class="col-xs-12 col-md-6 col-md-offset-6">
+
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                    <!-- /.box -->
+
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Nội dung menu</h3>
+                        </div>
 
                         <div class="box-body">
                             <div class="form-group">
@@ -252,7 +244,7 @@
                             </div>
 
                             <div class="form-group">
-                                <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                <input type="file" name="image" accept="image/*"  value="Chọn ảnh"
                                        size="20"/>
                                 <img src="{{ $menu->image }}" width="80" height="70"/>
                                 <input name="image" type="hidden" value="{{ $menu->image }}"/>
@@ -264,52 +256,52 @@
                                 @endif
                             </div>
                         </div>
-                        <!-- /.box-body -->
-                    </div>
-                    <!-- /.box -->
-                    
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <ul id="sortable2">
-                                @foreach($menuElements as $menuElement)
-                                <li class="ui-state-default">
-                                    <i class="fa fa-ban removeMenu" aria-hidden="true" onclick="return removeMenu(this);"></i>
-                                    {{ \App\Ultility\Ultility::textLimit($menuElement->title_show, 5) }}
-                                    <i class="fa fa-caret-down menuSubButton" aria-hidden="true" data-toggle="collapse" data-target="#menuElement{{ $menuElement->menu_element_id }}" aria-expanded="false" aria-controls="menuElement"></i>
-
-                                    <input type="text" placeholder="cấp menu" value="{{ $menuElement->menu_level }}" name="menu_level[]" class="menuLevel"/>
-                                    <i class="titleMenuLevel">Cấp menu</i>
-
-                                    <div class="collapse" id="menuElement{{ $menuElement->menu_element_id }}">
-                                        @foreach ($menuElement['language'] as $language)
-                                        <label for="exampleInputEmail1">Tiêu đề {{ $language->language }}</label>
-                                        <input type="text" name="title_show[]" value="{{$language->title_show}}" class="titleShow form-control" />
-
-                                        <input type="text" name="menu_image[]" placeholder="Hình ảnh" class="form-control" value="{{ $language->menu_image }}" />
-                                        <input type="text" name="url[]" class="form-control" value="{{ $language->url }}" />
-                                        <input type="hidden" name="language[]" class="form-control" value="{{ $language->language }}" />
-                                        @endforeach
-                                    </div>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
                     </div>
                 </div>
 
-                <div class="col-xs-12 col-md-6 col-md-offset-6">
 
-
-                    <div class="box-footer">
-                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                    </div>
-                    <!-- /.box -->
-
-                </div>
             </form>
         </div>
     </section>
     <style>
+        #sortableListsBase ol {
+            background-color: rgb(0, 128, 0);
+            border: 1px solid #b5e853;
+            display: block;
+            padding-left: 0;
+        }
+        #sortableListsBase li {
+            padding-left: 50px;
+            margin: 5px;
+            border: 1px solid #3f3f3f;
+            background-color: #3f3f3f;
+            list-style-type: none;
+            color: #b5e853;
+        }
+        .red {
+           color: #f77720;
+            cursor: pointer;
+        }
+        .aqua {
+            color: #0074a2;
+            cursor: pointer;
+        }
+        #sortableListsBase li div{
+            padding: 7px;
+            background-color: #222;
+            border-radius: 3px;
+            position: relative;
+        }
+        #sortableListsBase .addMenu {
+            display: none;
+        }
+        .sortable1 li {
+            border: 1px solid #dbdbdb;
+            margin-bottom: 10px;
+        }
+        .sortable1 li .menuSubButton {
+            display: none;
+        }
         .sortable1, #sortable2 {
             border: 1px solid #eee;
             width: 100%;
@@ -335,11 +327,15 @@
             overflow-x:hidden;
         }
         .menuSubButton {
-            background: #fff;
-            color: #000;
+            color: #fff;
             float: right;
             margin-right: 3px;
             cursor: pointer;
+            position: absolute;
+            top: 1px;
+            right: 8px;
+            font-size: 32px;
+            z-index: 10000000000000;
         }
         .menuLevel {
             float: right;
@@ -366,6 +362,8 @@
             margin-right: 10px;
             color: #1fa67a;
             cursor: pointer;
+            position: absolute;
+            right: 20px;
         }
         .addMenu:hover {
             color: #dcd7d7;
@@ -382,5 +380,79 @@
             color: #dcd7d7;
         }
     </style>
+    <script>
+        $(function () {
+            var options = {
+                // Like a css class name. Class will be removed after drop.
+                currElClass: 'currElemClass',
+                // or like a jQuery css object. Note that css object settings can't be removed
+                currElCss: {'background-color':'green', 'color':'#fff'},
+                placeholderClass: 'placeholderClass',
+                // or like a jQuery css object
+                placeholderCss: {'background-color':'yellow'},
+                hintClass: 'hintClass',
+                // or like a jQuery css object
+                hintCss: {'background-color':'green'},
+                listSelector: 'ol',
+                hintWrapperClass: 'hintClass',
+                // or like a jQuery css object
+                hintWrapperCss: {'background-color':'green'},
+                insertZonePlus: true,
+                insertZone: 50,
+                scroll: 20,
+                ignoreClass: 'clickable',
+                opener: {
+                    active: true,
+                    as: 'html',  // or "class" or skip if using background-image url
+                    close: '<i class="fa fa-minus red"></i>',
+                    open: '<i class="fa fa-plus"></i>',
+                    openerCss: {
+                        'display': 'inline-block', // Default value
+                        'float': 'left', // Default value
+                        'width': '18px',
+                        'height': '18px',
+                        'margin-left': '-35px',
+                        'margin-right': '5px',
+                        'background-position': 'center center', // Default value
+                        'background-repeat': 'no-repeat' // Default value
+                    },
+                    // or like a class. Note that class can not rewrite default values. To rewrite defaults you have to do it through css object.
+                    openerClass: 'showList'
+                },
+                complete: function(currEl)
+                {
+                    var lengthParent = $('#myList').parents().length;
+                    // console.log(lengthParent);
+                    //console.log($(currEl).parents().length);
+                    var levelMenu = ($(currEl).parents().length - lengthParent -2)/2 + 1;
+                    $(currEl).find('.menuLevel').val(levelMenu);
+                    // console.log( levelMenu);
+                }
+            }
+            $('#sortableListsBase').sortableLists(options);
+        });
+        function changeTitleShowMenu(e) {
+            var title = $(e).val();
+            $(e).parent().parent().parent().parent().find('.titleShow').html(title);
+        }
+        function addMenu(e) {
+            var itemMenu = '<li>';
+            itemMenu += $(e).parent().parent().html();
+            itemMenu += '</li>';
+
+            // change id and data-target
+            var dataTarget = $(e).parent().parent().find('.menuSubButton').attr('data-target');
+            var id = $(e).parent().parent().find('.collapse').attr('id');
+            $(e).parent().parent().find('.menuSubButton').attr('data-target', dataTarget+ 1);
+            $(e).parent().parent().find('.collapse').attr('id', id+ 1);
+
+            // console.log(1);
+            $('#myList ul').append(itemMenu);
+        };
+
+        function removeMenu(e) {
+            $(e).parent().parent().parent().parent().parent().remove();
+        }
+    </script>
 @endsection
 

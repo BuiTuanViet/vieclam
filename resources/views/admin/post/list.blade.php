@@ -1,5 +1,6 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách bài viết')
 
 @section('content')
     <!-- Content Header (Page header) -->
@@ -32,6 +33,14 @@
                                 <th>Thao tác</th>
                             </tr>
                             </thead>
+                            <tfoot>
+                                <th width="5%">ID</th>
+                                <th>Tiêu đề</th>
+                                <th>Đường dẫn</th>
+                                <th>Danh mục</th>
+                                <th>Hình ảnh</th>
+                                <th>Thao tác</th>
+                            </tfoot>
                         </table>
                     </div>
                     <!-- /.box-body -->
@@ -47,7 +56,7 @@
 @push('scripts')
 <script>
     $(function() {
-        $('#posts').DataTable({
+        var table = $('#posts').DataTable({
             processing: true,
             serverSide: true,
             ajax: '{!! route('datatable_post') !!}',
@@ -55,7 +64,7 @@
                 { data: 'post_id', name: 'post_id' },
                 { data: 'title', name: 'title' },
                 { data: 'slug', name: 'slug' },
-                { data: 'category', name: 'category' },
+                { data: 'category_string', name: 'category_string' },
                 { data: 'image', name: 'image', orderable: false,
                     render: function ( data, type, row, meta ) {
                         return '<img src="'+data+'" width="100" />';

@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách danh mục sản phẩm')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -20,12 +22,12 @@
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
-                        <table id="category" class="table table-bordered table-striped">
+                        <table id="example1" class="table table-bordered table-striped">
                             <thead>
                             <tr>
                                 <th width="5%">ID</th>
                                 <th>Tiêu đề</th>
-                                <th>Đường dẫn</th>
+                                <th>Danh mục cha</th>
                                 <th>Hình ảnh</th>
                                 <th>Thao tác</th>
                             </tr>

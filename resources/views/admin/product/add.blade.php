@@ -1,14 +1,16 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Thêm mới sản phẩm')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
-            Thêm mới sản phẩm
+            Thêm mới bài viết
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#">Bài viết</a></li>
+            <li><a href="#">Sản phẩm</a></li>
             <li class="active">Thêm mới</li>
         </ol>
     </section>
@@ -16,11 +18,92 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('products.store') }}" method="POST">
+            <form role="form" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
+                <div class="col-xs-12 col-md-8">
 
-                <div class="col-xs-12 col-md-6">
+                    <!-- Nội dung thêm mới -->
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Nội dung</h3>
+                        </div>
+                        <!-- /.box-header -->
+
+                        <div class="box-body">
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">title</label>
+                                <input type="text" class="form-control" name="title" placeholder="Tiêu đề" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Nội dung</label>
+                                <textarea class="editor" id="content" name="content" rows="10" cols="80"/></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">slug</label>
+                                <input type="text" class="form-control" name="slug" placeholder="đường dẫn tĩnh" >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Mô tả</label>
+                                <textarea rows="4" class="form-control" name="description"
+                                          placeholder=""></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Tags (Viết tag cách nhau bởi dấu ,)</label>
+                                <input type="text" class="form-control" name="tags" placeholder="Tags" >
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="file" name="image" accept="image/*" value="Chọn ảnh"
+                                       size="20"/>
+                                <img src="" width="80" height="70"/>
+                                {{--                                <input name="image" type="hidden" value=""/>--}}
+                            </div>
+
+                            <div class="form-group" style="color: red;">
+                                @if ($errors->has('title'))
+                                    <label for="exampleInputEmail1">{{ $errors->first('title') }}</label>
+                                @endif
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                    <!-- /.box -->
+
+                    <!-- Nội dung thêm mới -->
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">Hỗ trợ Seo</h3>
+                        </div>
+                        <!-- /.box-header -->
+
+                        <div class="box-body">
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Thẻ title</label>
+                                <input type="text" class="form-control" name="meta_title" placeholder="Thẻ title" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Thẻ description</label>
+                                <input type="text" class="form-control" name="meta_description" placeholder="Thẻ description" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Thẻ keyword</label>
+                                <input type="text" class="form-control" name="meta_keyword" placeholder="Thẻ keyword" />
+                            </div>
+                        </div>
+                        <!-- /.box-body -->
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-4">
 
                     <!-- Nội dung thêm mới -->
                     <div class="box box-primary boxCateScoll">
@@ -48,13 +131,9 @@
                                 @endforeach
                             @endforeach
 
-
                         </div>
-
                     </div>
-                </div>
 
-                <div class="col-xs-12 col-md-6">
                     <div class="box box-primary">
                         <div class="box-body">
                             <div class="form-group">
@@ -66,252 +145,148 @@
                                     @endforeach
                                 </select>
                             </div>
+
                         </div>
                     </div>
 
-                    <!-- Nội dung thêm mới -->
                     <div class="box box-primary">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Hỗ trợ seo</h3>
+                            <h3 class="box-title">Thông tin Sản phẩm</h3>
                         </div>
                         <!-- /.box-header -->
 
                         <div class="box-body">
 
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Thẻ title</label>
-                                <input type="text" class="form-control" name="meta_title" placeholder="Thẻ title" />
+                                <label for="exampleInputEmail1">Mã sản phẩm</label>
+                                <input type="text" class="form-control" name="code" placeholder="Mã sản phẩm" >
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Thẻ description</label>
-                                <input type="text" class="form-control" name="meta_description" placeholder="Thẻ description" />
+                                <label for="exampleInputEmail1">Thuộc tính sản phẩm</label>
+                                <textarea class="editor" id="properties" name="properties" rows="10" cols="80"/></textarea>
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Thẻ keyword</label>
-                                <input type="text" class="form-control" name="meta_keyword" placeholder="Thẻ keyword" />
+                                <label for="exampleInputEmail1">Giá Gốc</label>
+                                <input type="text" class="form-control formatPrice" name="origin_price" placeholder="Giá sản phẩm" min="1" >
                             </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Giá</label>
+                                <input type="text" class="form-control formatPrice" name="price" placeholder="Giá sản phẩm" min="1" >
+                            </div>
+
+
+{{--                            <div class="form-group">--}}
+{{--                                <label for="exampleInputEmail1">Giá khuyến mãi</label>--}}
+{{--                                <input type="text" class="form-control formatPrice" name="discount" placeholder="Giá khuyến mãi" min="1" step="any">--}}
+{{--                            </div>--}}
+
+{{--                            <div class="form-group">--}}
+{{--                                <label>Hot deal:</label>--}}
+{{--                                <div class="input-group">--}}
+{{--                                    <div class="input-group-addon">--}}
+{{--                                        <i class="fa fa-clock-o"></i>--}}
+{{--                                    </div>--}}
+{{--                                    <input type="datetime-local" class="form-control pull-right" name="deal_end">--}}
+{{--                                </div>--}}
+{{--                                <input type="text" class="form-control formatPrice" name="price_deal" placeholder="Giá deal" >--}}
+{{--                                <!-- /.input group -->--}}
+{{--                            </div>--}}
+
+{{--                            <script>--}}
+{{--                                $('.formatPrice').priceFormat({--}}
+{{--                                    prefix: '',--}}
+{{--                                    centsLimit: 0,--}}
+{{--                                    thousandsSeparator: '.'--}}
+{{--                                });--}}
+{{--                            </script>--}}
+
+		
+                            <div class="form-group">
+                                <label>Danh sách hình ảnh</label>
+                                <input type="file" name="image_list[]" sub="multiple"  value="Chọn ảnh" accept="image/*"
+                                       size="20" multiple />
+                                <div class="imageList">
+                                </div>
+                            </div>
+
+{{--                            <div class="form-group">--}}
+{{--                                <label>Sản phẩm mua cùng:</label>--}}
+{{--                                <select class="select2 form-control " name="buy_together[]" multiple="multiple">--}}
+{{--                                    @foreach($productList as $productSearch)--}}
+{{--                                        <option value="{{ $productSearch->slug }}">{{ $productSearch->title }}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+
+{{--                            <div class="form-group">--}}
+{{--                                <label>Sản phẩm mua sau đó:</label>--}}
+{{--                                <select class="select2 form-control " name="buy_after[]" multiple="multiple">--}}
+{{--                                    @foreach($productList as $productSearch)--}}
+{{--                                        <option value="{{ $productSearch->slug }}">{{ $productSearch->title }}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
+
+{{--                            <div class="form-group">--}}
+{{--                                <label>Bộ lọc:</label>--}}
+{{--                                <select class="select2 form-control " name="filter[]" multiple="multiple">--}}
+{{--                                    @foreach($filter as $filters)--}}
+{{--                                        <option value="{{ $filters->name_filter }}">{{ $filters->name_filter }}</option>--}}
+{{--                                    @endforeach--}}
+{{--                                </select>--}}
+{{--                            </div>--}}
                         </div>
                         <!-- /.box-body -->
                     </div>
                     <!-- /.box -->
-
-
-                    <!-- /.box -->
-                </div>
-
-                <div class="col-xs-12 col-md-6">
+                    
+                    <!-- Bổ sung -->
                     <div class="box box-primary">
                         <div class="box-body">
-                            @foreach ($typeInputsGeneral as $typeInput)
-                                <div class="form-group">
-                                    <label>{{ $typeInput->title }}</label>
-                                    @if($typeInput->type_input == 'one_line')
-                                        <input type="text" class="form-control" name="{{$typeInput->slug}}" placeholder="{{ $typeInput->placeholder }}" />
-                                    @endif
+                            @foreach ($typeInputs as $typeInput)
+                            <div class="form-group">
+                                <label>{{ $typeInput->title }} </label>
+                                @if($typeInput->type_input == 'one_line')
+                                <input type="text" class="form-control" name="{{$typeInput->slug}}" placeholder="{{ $typeInput->placeholder }}" />
+                                @endif
 
-                                    @if($typeInput->type_input == 'multi_line')
-                                        <textarea rows="4" class="form-control" name="{{$typeInput->slug}}" placeholder="{{ $typeInput->placeholder }}"></textarea>
-                                    @endif
+                                @if($typeInput->type_input == 'multi_line')
+                                <textarea rows="4" class="form-control" name="{{$typeInput->slug}}" placeholder="{{ $typeInput->placeholder }}"></textarea>
+                                @endif
 
-                                    @if($typeInput->type_input == 'image')
-                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
-                                               size="20"/>
-                                        <img src="" width="80" height="70"/>
-                                        <input name="{{$typeInput->slug}}" type="hidden" value=""/>
-                                    @endif
+                                @if($typeInput->type_input == 'image')
+                                <input type="file" name="{{$typeInput->slug}}" accept="image/*"  value="Chọn ảnh"
+                                       size="20"/>
+                                <img src="" width="80" height="70"/>
+{{--                                <input name="{{$typeInput->slug}}" type="hidden" value=""/>--}}
+                                @endif
+                                
+                                @if($typeInput->type_input == 'editor')
+                                <textarea class="editor" id="{{$typeInput->slug}}" name="{{$typeInput->slug}}" rows="10" cols="80"/></textarea>
+                                @endif
 
-                                    @if($typeInput->type_input == 'image_list')
-                                        <div class="form-group">
-                                            <input type="button" onclick="return openKCFinder(this);" value="Chọn ảnh"
-                                                   size="20"/>
-                                            <div class="imageList">
-                                            </div>
-                                            <input name="{{$typeInput->slug}}" type="hidden" value=""/>
-                                        </div>
-                                    @endif
-
-                                    @if($typeInput->type_input == 'editor')
-                                        <textarea class="editor" id="{{$typeInput->slug}}" name="{{$typeInput->slug}}" rows="10" cols="80"/></textarea>
-                                    @endif
-
-                                    @if(!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor', 'text_color', 'image_list'), true))
-                                        <select name="{{$typeInput->slug}}" class="form-control">
-                                            <option value="">-------------</option>
-                                            @foreach(\App\Entity\SubPost::showSubPost($typeInput->type_input, 100) as $subPost)
-                                                <option value="{{ $subPost->title }}">{{ $subPost->title }}</option>
-                                            @endforeach
-                                        </select>
-                                    @endif
-                                </div>
+                                @if(!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor'), true))
+                                    <select name="{{$typeInput->slug}}" class="form-control">
+                                    @foreach(\App\Entity\SubPost::showSubPost($typeInput->type_input, 100) as $subPost)
+                                        <option value="{{ $subPost->title }}">{{ $subPost->title }}</option>
+                                    @endforeach
+                                    </select>
+                                @endif
+                            </div>
                             @endforeach
                         </div>
                     </div>
-                </div>
 
-                <div class="col-xs-12 col-md-12">
-
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        @foreach ($languages as $id => $language)
-                            <li role="presentation" class="{{ ($id == 0) ? 'active' : '' }}">
-                                <a href="#{{ $language->acronym }}" aria-controls="{{ $language->acronym }}" role="tab" data-toggle="tab">{{ $language->language }}</a>
-                            </li>
-                        @endforeach
-                    </ul>
-
-                    <!-- Tab panes -->
-                    <div class="tab-content clearfix">
-                        @foreach ($languages as $id => $language)
-                            <div role="tabpanel" class="tab-pane {{ ($id == 0) ? 'active' : '' }}" id="{{ $language->acronym }}">
-                                <div class="row">
-                                    <div class="col-xs-12 col-md-7">
-
-                                        <!-- Nội dung thêm mới -->
-                                        <div class="box box-primary">
-                                            <div class="box-header with-border">
-                                                <h3 class="box-title">Nội dung ngôn ngữ {{ $language->language }}</h3>
-                                            </div>
-                                            <!-- /.box-header -->
-
-                                            <div class="box-body">
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">title {{ $language->language }}</label>
-                                                    <input type="text" class="form-control" name="title[]" placeholder="Tiêu đề" >
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Nội dung {{ $language->language }}</label>
-                                                    <textarea class="editor" id="content{{ $language->acronym }}" name="content[]" rows="10" cols="80"/></textarea>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">slug {{ $language->language }}</label>
-                                                    <input type="text" class="form-control" name="slug[]" placeholder="đường dẫn tĩnh" >
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Mô tả {{ $language->language }}</label>
-                                                    <textarea rows="4" class="form-control" name="description[]"
-                                                              placeholder=""></textarea>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh {{ $language->language }}"
-                                                           size="20"/>
-                                                    <img src="" width="80" height="70"/>
-                                                    <input name="image[]" type="hidden" value=""/>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Tags {{ $language->language }} (Viết tag cách nhau bởi dấu ,)</label>
-                                                    <input type="text" class="form-control" name="tags[]" placeholder="Tags" >
-                                                </div>
-
-                                                <div class="form-group" style="color: red;">
-                                                    @if ($errors->has('title'))
-                                                        <label for="exampleInputEmail1">{{ $errors->first('title') }}</label>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                            <!-- /.box-body -->
-                                        </div>
-                                        <!-- /.box -->
-                                    </div>
-
-                                    <div class="col-xs-12 col-md-5">
-                                        <!-- Bổ sung -->
-                                        <div class="box box-primary">
-                                            <div class="box-body">
-
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Mã sản phẩm {{ $language->language }}</label>
-                                                    <input type="text" class="form-control" name="code[]" placeholder="Mã sản phẩm" >
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Thuộc tính sản phẩm {{ $language->language }}</label>
-                                                    <textarea class="form-control" rows="4" name="properties[]" placeholder="Điền thuộc tính sản phẩm (màu sắc, kích cỡ, ...)" ></textarea>
-                                                </div>
-
-                                                <div class="form-group">
-                                                    <label for="exampleInputEmail1">Giá {{ $language->language }}</label>
-                                                    <input type="text" class="form-control" name="price[]" placeholder="Giá sản phẩm" >
-                                                </div>
-
-
-
-
-
-                                                <div class="form-group">
-                                                    <label>Danh sách hình ảnh {{ $language->language }}</label>
-                                                    <input type="button" onclick="return openKCFinder(this);" value="Chọn ảnh"
-                                                           size="20"/>
-                                                    <div class="imageList">
-                                                    </div>
-                                                    <input name="image_list[]" type="hidden" value=""/>
-                                                </div>
-
-                                                @foreach ($typeInputs as $typeInput)
-                                                    <div class="form-group">
-                                                        <label>{{ $typeInput->title }}</label>
-                                                        @if($typeInput->type_input == 'one_line')
-                                                            <input type="text" class="form-control" name="{{$typeInput->slug}}[]" placeholder="{{ $typeInput->placeholder }}" />
-                                                        @endif
-
-                                                        @if($typeInput->type_input == 'multi_line')
-                                                            <textarea rows="4" class="form-control" name="{{$typeInput->slug}}[]" placeholder="{{ $typeInput->placeholder }}"></textarea>
-                                                        @endif
-
-                                                        @if($typeInput->type_input == 'image')
-                                                            <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
-                                                                   size="20"/>
-                                                            <img src="" width="80" height="70"/>
-                                                            <input name="{{$typeInput->slug}}[]" type="hidden" value=""/>
-                                                        @endif
-
-                                                        @if($typeInput->type_input == 'image_list')
-                                                            <div class="form-group">
-                                                                <input type="button" onclick="return openKCFinder(this);" value="Chọn ảnh"
-                                                                       size="20"/>
-                                                                <div class="imageList">
-                                                                </div>
-                                                                <input name="{{$typeInput->slug}}[]" type="hidden" value=""/>
-                                                            </div>
-                                                        @endif
-
-                                                        @if($typeInput->type_input == 'editor')
-                                                            <textarea class="editor" id="{{$typeInput->slug}}" name="{{$typeInput->slug}}[]" rows="10" cols="80"/></textarea>
-                                                        @endif
-
-                                                        @if(!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor', 'text_color', 'image_list'), true))
-                                                            <select name="{{$typeInput->slug}}[]" class="form-control">
-                                                                <option value="">-------------</option>
-                                                                @foreach(\App\Entity\SubPost::showSubPost($typeInput->type_input, 100) as $subPost)
-                                                                    <option value="{{ $subPost->title }}">{{ $subPost->title }}</option>
-                                                                @endforeach
-                                                            </select>
-                                                        @endif
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-
-                    </div>
-
-                </div>
-                <div class="col-xs-12 col-md-6">
                     <div class="box-footer">
                         <button type="submit" class="btn btn-primary">Thêm mới</button>
                     </div>
+                    <!-- /.box -->
+
                 </div>
+
             </form>
         </div>
     </section>

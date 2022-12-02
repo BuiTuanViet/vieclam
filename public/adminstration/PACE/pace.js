@@ -1,9 +1,9 @@
 (function() {
-  var AjaxMonitor, Bar, DocumentMonitor, ElementMonitor, ElementTracker, EventLagMonitor, Evented, Events, NoTargetError, Pace, RequestIntercept, SOURCE_KEYS, Scaler, SocketRequestTracker, XHRRequestTracker, animation, avgAmplitude, bar, cancelAnimation, cancelAnimationFrame, defaultOptions, extend, extendNative, getFromDOM, getIntercept, handlePushState, ignoreStack, init, now, options, requestAnimationFrame, result, runAnimation, scalers, shouldIgnoreURL, shouldTrack, source, sources, uniScaler, _WebSocket, _XDomainRequest, _XMLHttpRequest, _i, _intercept, _len, _pushState, _ref, _ref1, _replaceState,
-    __slice = [].slice,
-    __hasProp = {}.hasOwnProperty,
-    __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var AjaxMonitor, Bar, DocumentMonitor, ElementMonitor, ElementTracker, EventLagMonitor, Evented, Events, NoTargetError, Pace, RequestIntercept, SOURCE_KEYS, Scaler, SocketRequestTracker, XHRRequestTracker, _WebSocket, _XDomainRequest, _XMLHttpRequest, _intercept, _pushState, _replaceState, animation, avgAmplitude, bar, cancelAnimation, cancelAnimationFrame, defaultOptions, extend, extendNative, getFromDOM, getIntercept, handlePushState, ignoreStack, init, k, len, now, options, ref, requestAnimationFrame, result, runAnimation, scalers, shouldIgnoreURL, shouldTrack, source, sources, uniScaler,
+    slice = [].slice,
+    hasProp = {}.hasOwnProperty,
+    extend1 = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
+    indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   defaultOptions = {
     catchupTime: 100,
@@ -33,8 +33,8 @@
   };
 
   now = function() {
-    var _ref;
-    return (_ref = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? _ref : +(new Date);
+    var ref;
+    return (ref = typeof performance !== "undefined" && performance !== null ? typeof performance.now === "function" ? performance.now() : void 0 : void 0) != null ? ref : +(new Date);
   };
 
   requestAnimationFrame = window.requestAnimationFrame || window.mozRequestAnimationFrame || window.webkitRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -70,7 +70,7 @@
 
   result = function() {
     var args, key, obj;
-    obj = arguments[0], key = arguments[1], args = 3 <= arguments.length ? __slice.call(arguments, 2) : [];
+    obj = arguments[0], key = arguments[1], args = 3 <= arguments.length ? slice.call(arguments, 2) : [];
     if (typeof obj[key] === 'function') {
       return obj[key].apply(obj, args);
     } else {
@@ -79,13 +79,13 @@
   };
 
   extend = function() {
-    var key, out, source, sources, val, _i, _len;
-    out = arguments[0], sources = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-    for (_i = 0, _len = sources.length; _i < _len; _i++) {
-      source = sources[_i];
+    var k, key, len, out, source, sources, val;
+    out = arguments[0], sources = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+    for (k = 0, len = sources.length; k < len; k++) {
+      source = sources[k];
       if (source) {
         for (key in source) {
-          if (!__hasProp.call(source, key)) continue;
+          if (!hasProp.call(source, key)) continue;
           val = source[key];
           if ((out[key] != null) && typeof out[key] === 'object' && (val != null) && typeof val === 'object') {
             extend(out[key], val);
@@ -99,10 +99,10 @@
   };
 
   avgAmplitude = function(arr) {
-    var count, sum, v, _i, _len;
+    var count, k, len, sum, v;
     sum = count = 0;
-    for (_i = 0, _len = arr.length; _i < _len; _i++) {
-      v = arr[_i];
+    for (k = 0, len = arr.length; k < len; k++) {
+      v = arr[k];
       sum += Math.abs(v);
       count++;
     }
@@ -127,8 +127,8 @@
     }
     try {
       return JSON.parse(data);
-    } catch (_error) {
-      e = _error;
+    } catch (error) {
+      e = error;
       return typeof console !== "undefined" && console !== null ? console.error("Error parsing inline pace options", e) : void 0;
     }
   };
@@ -137,15 +137,15 @@
     function Evented() {}
 
     Evented.prototype.on = function(event, handler, ctx, once) {
-      var _base;
+      var base;
       if (once == null) {
         once = false;
       }
       if (this.bindings == null) {
         this.bindings = {};
       }
-      if ((_base = this.bindings)[event] == null) {
-        _base[event] = [];
+      if ((base = this.bindings)[event] == null) {
+        base[event] = [];
       }
       return this.bindings[event].push({
         handler: handler,
@@ -159,42 +159,42 @@
     };
 
     Evented.prototype.off = function(event, handler) {
-      var i, _ref, _results;
-      if (((_ref = this.bindings) != null ? _ref[event] : void 0) == null) {
+      var i, ref, results;
+      if (((ref = this.bindings) != null ? ref[event] : void 0) == null) {
         return;
       }
       if (handler == null) {
         return delete this.bindings[event];
       } else {
         i = 0;
-        _results = [];
+        results = [];
         while (i < this.bindings[event].length) {
           if (this.bindings[event][i].handler === handler) {
-            _results.push(this.bindings[event].splice(i, 1));
+            results.push(this.bindings[event].splice(i, 1));
           } else {
-            _results.push(i++);
+            results.push(i++);
           }
         }
-        return _results;
+        return results;
       }
     };
 
     Evented.prototype.trigger = function() {
-      var args, ctx, event, handler, i, once, _ref, _ref1, _results;
-      event = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      if ((_ref = this.bindings) != null ? _ref[event] : void 0) {
+      var args, ctx, event, handler, i, once, ref, ref1, results;
+      event = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
+      if ((ref = this.bindings) != null ? ref[event] : void 0) {
         i = 0;
-        _results = [];
+        results = [];
         while (i < this.bindings[event].length) {
-          _ref1 = this.bindings[event][i], handler = _ref1.handler, ctx = _ref1.ctx, once = _ref1.once;
+          ref1 = this.bindings[event][i], handler = ref1.handler, ctx = ref1.ctx, once = ref1.once;
           handler.apply(ctx != null ? ctx : this, args);
           if (once) {
-            _results.push(this.bindings[event].splice(i, 1));
+            results.push(this.bindings[event].splice(i, 1));
           } else {
-            _results.push(i++);
+            results.push(i++);
           }
         }
-        return _results;
+        return results;
       }
     };
 
@@ -210,20 +210,19 @@
 
   options = Pace.options = extend({}, defaultOptions, window.paceOptions, getFromDOM());
 
-  _ref = ['ajax', 'document', 'eventLag', 'elements'];
-  for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-    source = _ref[_i];
+  ref = ['ajax', 'document', 'eventLag', 'elements'];
+  for (k = 0, len = ref.length; k < len; k++) {
+    source = ref[k];
     if (options[source] === true) {
       options[source] = defaultOptions[source];
     }
   }
 
-  NoTargetError = (function(_super) {
-    __extends(NoTargetError, _super);
+  NoTargetError = (function(superClass) {
+    extend1(NoTargetError, superClass);
 
     function NoTargetError() {
-      _ref1 = NoTargetError.__super__.constructor.apply(this, arguments);
-      return _ref1;
+      return NoTargetError.__super__.constructor.apply(this, arguments);
     }
 
     return NoTargetError;
@@ -273,26 +272,26 @@
     Bar.prototype.destroy = function() {
       try {
         this.getElement().parentNode.removeChild(this.getElement());
-      } catch (_error) {
-        NoTargetError = _error;
+      } catch (error) {
+        NoTargetError = error;
       }
       return this.el = void 0;
     };
 
     Bar.prototype.render = function() {
-      var el, key, progressStr, transform, _j, _len1, _ref2;
+      var el, key, l, len1, progressStr, ref1, transform;
       if (document.querySelector(options.target) == null) {
         return false;
       }
       el = this.getElement();
       transform = "translate3d(" + this.progress + "%, 0, 0)";
-      _ref2 = ['webkitTransform', 'msTransform', 'transform'];
-      for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-        key = _ref2[_j];
+      ref1 = ['webkitTransform', 'msTransform', 'transform'];
+      for (l = 0, len1 = ref1.length; l < len1; l++) {
+        key = ref1[l];
         el.children[0].style[key] = transform;
       }
       if (!this.lastRenderedProgress || this.lastRenderedProgress | 0 !== this.progress | 0) {
-        el.children[0].setAttribute('data-progress-text', "" + (this.progress | 0) + "%");
+        el.children[0].setAttribute('data-progress-text', (this.progress | 0) + "%");
         if (this.progress >= 100) {
           progressStr = '99';
         } else {
@@ -318,22 +317,22 @@
     }
 
     Events.prototype.trigger = function(name, val) {
-      var binding, _j, _len1, _ref2, _results;
+      var binding, l, len1, ref1, results;
       if (this.bindings[name] != null) {
-        _ref2 = this.bindings[name];
-        _results = [];
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          binding = _ref2[_j];
-          _results.push(binding.call(this, val));
+        ref1 = this.bindings[name];
+        results = [];
+        for (l = 0, len1 = ref1.length; l < len1; l++) {
+          binding = ref1[l];
+          results.push(binding.call(this, val));
         }
-        return _results;
+        return results;
       }
     };
 
     Events.prototype.on = function(name, fn) {
-      var _base;
-      if ((_base = this.bindings)[name] == null) {
-        _base[name] = [];
+      var base;
+      if ((base = this.bindings)[name] == null) {
+        base[name] = [];
       }
       return this.bindings[name].push(fn);
     };
@@ -349,13 +348,13 @@
   _WebSocket = window.WebSocket;
 
   extendNative = function(to, from) {
-    var e, key, _results;
-    _results = [];
+    var e, key, results;
+    results = [];
     for (key in from.prototype) {
       try {
         if ((to[key] == null) && typeof from[key] !== 'function') {
           if (typeof Object.defineProperty === 'function') {
-            _results.push(Object.defineProperty(to, key, {
+            results.push(Object.defineProperty(to, key, {
               get: function() {
                 return from.prototype[key];
               },
@@ -363,23 +362,23 @@
               enumerable: true
             }));
           } else {
-            _results.push(to[key] = from.prototype[key]);
+            results.push(to[key] = from.prototype[key]);
           }
         } else {
-          _results.push(void 0);
+          results.push(void 0);
         }
-      } catch (_error) {
-        e = _error;
+      } catch (error) {
+        e = error;
       }
     }
-    return _results;
+    return results;
   };
 
   ignoreStack = [];
 
   Pace.ignore = function() {
     var args, fn, ret;
-    fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    fn = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
     ignoreStack.unshift('ignore');
     ret = fn.apply(null, args);
     ignoreStack.shift();
@@ -388,7 +387,7 @@
 
   Pace.track = function() {
     var args, fn, ret;
-    fn = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    fn = arguments[0], args = 2 <= arguments.length ? slice.call(arguments, 1) : [];
     ignoreStack.unshift('track');
     ret = fn.apply(null, args);
     ignoreStack.shift();
@@ -396,7 +395,7 @@
   };
 
   shouldTrack = function(method) {
-    var _ref2;
+    var ref1;
     if (method == null) {
       method = 'GET';
     }
@@ -406,34 +405,35 @@
     if (!ignoreStack.length && options.ajax) {
       if (method === 'socket' && options.ajax.trackWebSockets) {
         return true;
-      } else if (_ref2 = method.toUpperCase(), __indexOf.call(options.ajax.trackMethods, _ref2) >= 0) {
+      } else if (ref1 = method.toUpperCase(), indexOf.call(options.ajax.trackMethods, ref1) >= 0) {
         return true;
       }
     }
     return false;
   };
 
-  RequestIntercept = (function(_super) {
-    __extends(RequestIntercept, _super);
+  RequestIntercept = (function(superClass) {
+    extend1(RequestIntercept, superClass);
 
     function RequestIntercept() {
-      var monitorXHR,
-        _this = this;
+      var monitorXHR;
       RequestIntercept.__super__.constructor.apply(this, arguments);
-      monitorXHR = function(req) {
-        var _open;
-        _open = req.open;
-        return req.open = function(type, url, async) {
-          if (shouldTrack(type)) {
-            _this.trigger('request', {
-              type: type,
-              url: url,
-              request: req
-            });
-          }
-          return _open.apply(req, arguments);
+      monitorXHR = (function(_this) {
+        return function(req) {
+          var _open;
+          _open = req.open;
+          return req.open = function(type, url, async) {
+            if (shouldTrack(type)) {
+              _this.trigger('request', {
+                type: type,
+                url: url,
+                request: req
+              });
+            }
+            return _open.apply(req, arguments);
+          };
         };
-      };
+      })(this);
       window.XMLHttpRequest = function(flags) {
         var req;
         req = new _XMLHttpRequest(flags);
@@ -442,7 +442,7 @@
       };
       try {
         extendNative(window.XMLHttpRequest, _XMLHttpRequest);
-      } catch (_error) {}
+      } catch (error) {}
       if (_XDomainRequest != null) {
         window.XDomainRequest = function() {
           var req;
@@ -452,29 +452,31 @@
         };
         try {
           extendNative(window.XDomainRequest, _XDomainRequest);
-        } catch (_error) {}
+        } catch (error) {}
       }
       if ((_WebSocket != null) && options.ajax.trackWebSockets) {
-        window.WebSocket = function(url, protocols) {
-          var req;
-          if (protocols != null) {
-            req = new _WebSocket(url, protocols);
-          } else {
-            req = new _WebSocket(url);
-          }
-          if (shouldTrack('socket')) {
-            _this.trigger('request', {
-              type: 'socket',
-              url: url,
-              protocols: protocols,
-              request: req
-            });
-          }
-          return req;
-        };
+        window.WebSocket = (function(_this) {
+          return function(url, protocols) {
+            var req;
+            if (protocols != null) {
+              req = new _WebSocket(url, protocols);
+            } else {
+              req = new _WebSocket(url);
+            }
+            if (shouldTrack('socket')) {
+              _this.trigger('request', {
+                type: 'socket',
+                url: url,
+                protocols: protocols,
+                request: req
+              });
+            }
+            return req;
+          };
+        })(this);
         try {
           extendNative(window.WebSocket, _WebSocket);
-        } catch (_error) {}
+        } catch (error) {}
       }
     }
 
@@ -492,10 +494,10 @@
   };
 
   shouldIgnoreURL = function(url) {
-    var pattern, _j, _len1, _ref2;
-    _ref2 = options.ajax.ignoreURLs;
-    for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-      pattern = _ref2[_j];
+    var l, len1, pattern, ref1;
+    ref1 = options.ajax.ignoreURLs;
+    for (l = 0, len1 = ref1.length; l < len1; l++) {
+      pattern = ref1[l];
       if (typeof pattern === 'string') {
         if (url.indexOf(pattern) !== -1) {
           return true;
@@ -509,9 +511,9 @@
     return false;
   };
 
-  getIntercept().on('request', function(_arg) {
+  getIntercept().on('request', function(arg) {
     var after, args, request, type, url;
-    type = _arg.type, request = _arg.request, url = _arg.url;
+    type = arg.type, request = arg.request, url = arg.url;
     if (shouldIgnoreURL(url)) {
       return;
     }
@@ -522,26 +524,26 @@
         after = 0;
       }
       return setTimeout(function() {
-        var stillActive, _j, _len1, _ref2, _ref3, _results;
+        var l, len1, ref1, ref2, results, stillActive;
         if (type === 'socket') {
           stillActive = request.readyState < 2;
         } else {
-          stillActive = (0 < (_ref2 = request.readyState) && _ref2 < 4);
+          stillActive = (0 < (ref1 = request.readyState) && ref1 < 4);
         }
         if (stillActive) {
           Pace.restart();
-          _ref3 = Pace.sources;
-          _results = [];
-          for (_j = 0, _len1 = _ref3.length; _j < _len1; _j++) {
-            source = _ref3[_j];
+          ref2 = Pace.sources;
+          results = [];
+          for (l = 0, len1 = ref2.length; l < len1; l++) {
+            source = ref2[l];
             if (source instanceof AjaxMonitor) {
               source.watch.apply(source, args);
               break;
             } else {
-              _results.push(void 0);
+              results.push(void 0);
             }
           }
-          return _results;
+          return results;
         }
       }, after);
     }
@@ -549,16 +551,17 @@
 
   AjaxMonitor = (function() {
     function AjaxMonitor() {
-      var _this = this;
       this.elements = [];
-      getIntercept().on('request', function() {
-        return _this.watch.apply(_this, arguments);
-      });
+      getIntercept().on('request', (function(_this) {
+        return function() {
+          return _this.watch.apply(_this, arguments);
+        };
+      })(this));
     }
 
-    AjaxMonitor.prototype.watch = function(_arg) {
+    AjaxMonitor.prototype.watch = function(arg) {
       var request, tracker, type, url;
-      type = _arg.type, request = _arg.request, url = _arg.url;
+      type = arg.type, request = arg.request, url = arg.url;
       if (shouldIgnoreURL(url)) {
         return;
       }
@@ -576,36 +579,41 @@
 
   XHRRequestTracker = (function() {
     function XHRRequestTracker(request) {
-      var event, size, _j, _len1, _onreadystatechange, _ref2,
-        _this = this;
+      var _onreadystatechange, event, l, len1, ref1, size;
       this.progress = 0;
       if (window.ProgressEvent != null) {
         size = null;
-        request.addEventListener('progress', function(evt) {
-          if (evt.lengthComputable) {
-            return _this.progress = 100 * evt.loaded / evt.total;
-          } else {
-            return _this.progress = _this.progress + (100 - _this.progress) / 2;
-          }
-        }, false);
-        _ref2 = ['load', 'abort', 'timeout', 'error'];
-        for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-          event = _ref2[_j];
-          request.addEventListener(event, function() {
-            return _this.progress = 100;
-          }, false);
+        request.addEventListener('progress', (function(_this) {
+          return function(evt) {
+            if (evt.lengthComputable) {
+              return _this.progress = 100 * evt.loaded / evt.total;
+            } else {
+              return _this.progress = _this.progress + (100 - _this.progress) / 2;
+            }
+          };
+        })(this), false);
+        ref1 = ['load', 'abort', 'timeout', 'error'];
+        for (l = 0, len1 = ref1.length; l < len1; l++) {
+          event = ref1[l];
+          request.addEventListener(event, (function(_this) {
+            return function() {
+              return _this.progress = 100;
+            };
+          })(this), false);
         }
       } else {
         _onreadystatechange = request.onreadystatechange;
-        request.onreadystatechange = function() {
-          var _ref3;
-          if ((_ref3 = request.readyState) === 0 || _ref3 === 4) {
-            _this.progress = 100;
-          } else if (request.readyState === 3) {
-            _this.progress = 50;
-          }
-          return typeof _onreadystatechange === "function" ? _onreadystatechange.apply(null, arguments) : void 0;
-        };
+        request.onreadystatechange = (function(_this) {
+          return function() {
+            var ref2;
+            if ((ref2 = request.readyState) === 0 || ref2 === 4) {
+              _this.progress = 100;
+            } else if (request.readyState === 3) {
+              _this.progress = 50;
+            }
+            return typeof _onreadystatechange === "function" ? _onreadystatechange.apply(null, arguments) : void 0;
+          };
+        })(this);
       }
     }
 
@@ -615,15 +623,16 @@
 
   SocketRequestTracker = (function() {
     function SocketRequestTracker(request) {
-      var event, _j, _len1, _ref2,
-        _this = this;
+      var event, l, len1, ref1;
       this.progress = 0;
-      _ref2 = ['error', 'open'];
-      for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-        event = _ref2[_j];
-        request.addEventListener(event, function() {
-          return _this.progress = 100;
-        }, false);
+      ref1 = ['error', 'open'];
+      for (l = 0, len1 = ref1.length; l < len1; l++) {
+        event = ref1[l];
+        request.addEventListener(event, (function(_this) {
+          return function() {
+            return _this.progress = 100;
+          };
+        })(this), false);
       }
     }
 
@@ -633,7 +642,7 @@
 
   ElementMonitor = (function() {
     function ElementMonitor(options) {
-      var selector, _j, _len1, _ref2;
+      var l, len1, ref1, selector;
       if (options == null) {
         options = {};
       }
@@ -641,9 +650,9 @@
       if (options.selectors == null) {
         options.selectors = [];
       }
-      _ref2 = options.selectors;
-      for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-        selector = _ref2[_j];
+      ref1 = options.selectors;
+      for (l = 0, len1 = ref1.length; l < len1; l++) {
+        selector = ref1[l];
         this.elements.push(new ElementTracker(selector));
       }
     }
@@ -653,20 +662,21 @@
   })();
 
   ElementTracker = (function() {
-    function ElementTracker(selector) {
-      this.selector = selector;
+    function ElementTracker(selector1) {
+      this.selector = selector1;
       this.progress = 0;
       this.check();
     }
 
     ElementTracker.prototype.check = function() {
-      var _this = this;
       if (document.querySelector(this.selector)) {
         return this.done();
       } else {
-        return setTimeout((function() {
-          return _this.check();
-        }), options.elements.checkInterval);
+        return setTimeout(((function(_this) {
+          return function() {
+            return _this.check();
+          };
+        })(this)), options.elements.checkInterval);
       }
     };
 
@@ -686,16 +696,17 @@
     };
 
     function DocumentMonitor() {
-      var _onreadystatechange, _ref2,
-        _this = this;
-      this.progress = (_ref2 = this.states[document.readyState]) != null ? _ref2 : 100;
+      var _onreadystatechange, ref1;
+      this.progress = (ref1 = this.states[document.readyState]) != null ? ref1 : 100;
       _onreadystatechange = document.onreadystatechange;
-      document.onreadystatechange = function() {
-        if (_this.states[document.readyState] != null) {
-          _this.progress = _this.states[document.readyState];
-        }
-        return typeof _onreadystatechange === "function" ? _onreadystatechange.apply(null, arguments) : void 0;
-      };
+      document.onreadystatechange = (function(_this) {
+        return function() {
+          if (_this.states[document.readyState] != null) {
+            _this.progress = _this.states[document.readyState];
+          }
+          return typeof _onreadystatechange === "function" ? _onreadystatechange.apply(null, arguments) : void 0;
+        };
+      })(this);
     }
 
     return DocumentMonitor;
@@ -704,29 +715,30 @@
 
   EventLagMonitor = (function() {
     function EventLagMonitor() {
-      var avg, interval, last, points, samples,
-        _this = this;
+      var avg, interval, last, points, samples;
       this.progress = 0;
       avg = 0;
       samples = [];
       points = 0;
       last = now();
-      interval = setInterval(function() {
-        var diff;
-        diff = now() - last - 50;
-        last = now();
-        samples.push(diff);
-        if (samples.length > options.eventLag.sampleCount) {
-          samples.shift();
-        }
-        avg = avgAmplitude(samples);
-        if (++points >= options.eventLag.minSamples && avg < options.eventLag.lagThreshold) {
-          _this.progress = 100;
-          return clearInterval(interval);
-        } else {
-          return _this.progress = 100 * (3 / (avg + 3));
-        }
-      }, 50);
+      interval = setInterval((function(_this) {
+        return function() {
+          var diff;
+          diff = now() - last - 50;
+          last = now();
+          samples.push(diff);
+          if (samples.length > options.eventLag.sampleCount) {
+            samples.shift();
+          }
+          avg = avgAmplitude(samples);
+          if (++points >= options.eventLag.minSamples && avg < options.eventLag.lagThreshold) {
+            _this.progress = 100;
+            return clearInterval(interval);
+          } else {
+            return _this.progress = 100 * (3 / (avg + 3));
+          }
+        };
+      })(this), 50);
     }
 
     return EventLagMonitor;
@@ -734,8 +746,8 @@
   })();
 
   Scaler = (function() {
-    function Scaler(source) {
-      this.source = source;
+    function Scaler(source1) {
+      this.source = source1;
       this.last = this.sinceLastUpdate = 0;
       this.rate = options.initialRate;
       this.catchup = 0;
@@ -823,18 +835,18 @@
   };
 
   (init = function() {
-    var type, _j, _k, _len1, _len2, _ref2, _ref3, _ref4;
+    var l, len1, len2, m, ref1, ref2, ref3, type;
     Pace.sources = sources = [];
-    _ref2 = ['ajax', 'elements', 'document', 'eventLag'];
-    for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
-      type = _ref2[_j];
+    ref1 = ['ajax', 'elements', 'document', 'eventLag'];
+    for (l = 0, len1 = ref1.length; l < len1; l++) {
+      type = ref1[l];
       if (options[type] !== false) {
         sources.push(new SOURCE_KEYS[type](options[type]));
       }
     }
-    _ref4 = (_ref3 = options.extraSources) != null ? _ref3 : [];
-    for (_k = 0, _len2 = _ref4.length; _k < _len2; _k++) {
-      source = _ref4[_k];
+    ref3 = (ref2 = options.extraSources) != null ? ref2 : [];
+    for (m = 0, len2 = ref3.length; m < len2; m++) {
+      source = ref3[m];
       sources.push(new source(options));
     }
     Pace.bar = bar = new Bar;
@@ -869,15 +881,15 @@
     start = now();
     cancelAnimation = false;
     return animation = runAnimation(function(frameTime, enqueueNextFrame) {
-      var avg, count, done, element, elements, i, j, remaining, scaler, scalerList, sum, _j, _k, _len1, _len2, _ref2;
+      var avg, count, done, element, elements, i, j, l, len1, len2, m, ref1, remaining, scaler, scalerList, sum;
       remaining = 100 - bar.progress;
       count = sum = 0;
       done = true;
-      for (i = _j = 0, _len1 = sources.length; _j < _len1; i = ++_j) {
+      for (i = l = 0, len1 = sources.length; l < len1; i = ++l) {
         source = sources[i];
         scalerList = scalers[i] != null ? scalers[i] : scalers[i] = [];
-        elements = (_ref2 = source.elements) != null ? _ref2 : [source];
-        for (j = _k = 0, _len2 = elements.length; _k < _len2; j = ++_k) {
+        elements = (ref1 = source.elements) != null ? ref1 : [source];
+        for (j = m = 0, len2 = elements.length; m < len2; j = ++m) {
           element = elements[j];
           scaler = scalerList[j] != null ? scalerList[j] : scalerList[j] = new Scaler(element);
           done &= scaler.done;
@@ -909,8 +921,8 @@
     Pace.running = true;
     try {
       bar.render();
-    } catch (_error) {
-      NoTargetError = _error;
+    } catch (error) {
+      NoTargetError = error;
     }
     if (!document.querySelector('.pace')) {
       return setTimeout(Pace.start, 50);

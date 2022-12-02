@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Thêm mới trường dữ liệu' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,11 +18,11 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('type-input.store') }}" method="POST">
+            <form role="form" action="{{ route('type-input.store') }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
                 <div class="col-xs-12 col-md-6">
-
+    
                     <!-- Nội dung thêm mới -->
                     <div class="box box-primary">
                         <div class="box-header with-border">
@@ -28,38 +30,35 @@
                         </div>
                         <!-- /.box-header -->
 
-                        <div class="box-body">
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">title</label>
-                                <input type="text" class="form-control" name="title" placeholder="Tiêu đề" required>
-                            </div>
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">title</label>
+                                    <input type="text" class="form-control" name="title" placeholder="Tiêu đề" required>
+                                </div>
 
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">placeholder</label>
-                                <input type="text" class="form-control" name="placeholder" placeholder="ghi chú" >
-                            </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">placeholder</label>
+                                    <input type="text" class="form-control" name="placeholder" placeholder="ghi chú" >
+                                </div>
 
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">slug</label>
-                                <input type="text" class="form-control" name="slug" placeholder="đường dẫn tĩnh" >
-                            </div>
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">slug</label>
+                                    <input type="text" class="form-control" name="slug" placeholder="đường dẫn tĩnh" >
+                                </div>
 
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Sử dụng chung</label>
-                                <input type="checkbox" class="flat-red" name="general" value="1" >
-                            </div>
 
-                            <div class="form-group" style="color: red;">
-                                @if ($errors->has('title'))
-                                    <label for="exampleInputEmail1">{{ $errors->first('title') }}</label>
-                                @endif
-                            </div>
-                        </div>
-                        <!-- /.box-body -->
 
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Thêm mới</button>
-                        </div>
+                                <div class="form-group" style="color: red;">
+                                    @if ($errors->has('title'))
+                                        <label for="exampleInputEmail1">{{ $errors->first('title') }}</label>
+                                    @endif
+                                </div>
+                            </div>
+                            <!-- /.box-body -->
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            </div>
                     </div>
                     <!-- /.box -->
 
@@ -94,22 +93,11 @@
                             </div>
                             <div class="form-group">
                                 <label>
-                                    <input type="radio" name="type_input" value="image_list" class="flat-red">
-                                    Danh sách Hình ảnh
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>
                                     <input type="radio" name="type_input" value="editor" class="flat-red">
                                     editor
                                 </label>
                             </div>
-                            <div class="form-group">
-                                <label>
-                                    <input type="radio" name="type_input" value="text_color" class="flat-red">
-                                    Input chọn màu sắc
-                                </label>
-                            </div>
+                            
                             <div class="form-group">
                                 <label>
                                     <input type="radio" name="type_input" value="list" class="flat-red">
@@ -123,15 +111,15 @@
                             </div>
 
                             {{--<div class="form-group">--}}
-                            {{--<label>--}}
-                            {{--<input type="radio" name="type_input" value="list_multi" class="flat-red">--}}
-                            {{--List chọn nhiều danh sách của:--}}
-                            {{--</label>--}}
-                            {{--<select class="form-control" name="list">--}}
-                            {{--@foreach ($typeSubPosts as $typeSubPost)--}}
-                            {{--<option value="{{ $typeSubPost->slug }}">{{ $typeSubPost->title }}</option>--}}
-                            {{--@endforeach--}}
-                            {{--</select>--}}
+                                {{--<label>--}}
+                                    {{--<input type="radio" name="type_input" value="list" class="flat-red">--}}
+                                    {{--List danh sách nhiều dòng của:--}}
+                                {{--</label>--}}
+                                {{--<select class="form-control" name="list">--}}
+                                    {{--@foreach ($typeSubPosts as $typeSubPost)--}}
+                                        {{--<option value="listMultil{{ $typeSubPost->slug }}">{{ $typeSubPost->title }}</option>--}}
+                                    {{--@endforeach--}}
+                                {{--</select>--}}
                             {{--</div>--}}
                         </div>
                         <!-- /.box-body -->
@@ -160,17 +148,29 @@
                             </div>
                             <div class="form-group">
                                 <label>
-                                    <input type="checkbox" name="post_used[]" value="language" class="flat-red">
-                                    Ngôn ngữ (Không dùng chung với dạng bài viết khác)
+                                    <input type="checkbox" name="post_used[]" value="page" class="flat-red" checked>
+                                    Trang
                                 </label>
                             </div>
-                            @foreach($typeSubPosts as $typeSubPost)
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="post_used[]" value="{{ $typeSubPost->slug }}" class="flat-red">
-                                        {{$typeSubPost->title}}
-                                    </label>
-                                </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="post_used[]" value="cate_post" class="flat-red" >
+                                    Danh mục bài viết
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="post_used[]" value="cate_product" class="flat-red" >
+                                    Danh mục sản phẩm
+                                </label>
+                            </div>
+                             @foreach($typeSubPosts as $typeSubPost) 
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="post_used[]" value="{{ $typeSubPost->slug }}" class="flat-red">
+                                    {{$typeSubPost->title}}
+                                </label>
+                            </div>
                             @endforeach
                         </div>
                         <!-- /.box-body -->

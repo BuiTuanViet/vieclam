@@ -33,18 +33,30 @@ class GroupMailController extends AdminController
     }
 
     public function store(Request $request){
-        $groupMail = new GroupMail();
-        $groupMail->insert([
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-        ]);
-
-        return redirect(route('subcribe-email.index'));
+        try {
+            $groupMail = new GroupMail();
+            $groupMail->insert([
+                'name' => $request->input('name'),
+                'description' => $request->input('description'),
+            ]);
+        } catch(\Exception $e) {
+            Error::setErrorMessage('Lỗi tạo mới nhóm email');
+            Log::error('http->admin->GroupMailController->store: Lỗi tạo mới nhóm email');
+        } finally {
+            return redirect(route('subcribe-email.index'));
+        }
     }
 
     public function destroy(GroupMail $groupMail){
-        $groupMail->delete();
+        try {
+            $groupMail->delete();
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xóa nhóm email');
+            Log::error('http->admin->GroupMailController->destroy: Lỗi xóa nhóm email');
+        } finally {
+            return redirect(route('subcribe-email.index'));
+        }
 
-        return redirect(route('subcribe-email.index'));
+
     }
 }

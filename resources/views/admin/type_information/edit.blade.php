@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chỉnh sửa '.$typeInformation->title )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('type-information.update', ['type_infor_id' => $typeInformation->type_infor_id]) }}" method="POST">
+            <form role="form" action="{{ route('type-information.update', ['type_infor_id' => $typeInformation->type_infor_id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">

@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chỉnh sửa '.$category->title)
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('category-products.update', ['category_id' => $category->category_id]) }}" method="POST">
+            <form role="form" action="{{ route('category-products.update', ['category_id' => $category->category_id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-8">
@@ -39,7 +41,7 @@
                                                 @if($cate->category_id == $category->parent) selected @endif  >{{ $cate->title }}</option>
                                         @foreach($cate['sub_children'] as $child)
                                             <option value="{{ $child['category_id']}}"
-                                                    @if($child['category_id'] == $category->parent) selected @endif >{{ $child['title'] }}</option>
+                                            @if($child['category_id'] == $category->parent) selected @endif >{{ $child['title'] }}</option>
                                         @endforeach
                                     @endforeach
                                 </select>
@@ -51,67 +53,110 @@
                                     <option value="default">Mặc định</option>
                                     @foreach($templates as $template)
                                         <option value="{{ $template->slug }}"
-                                                @if($template->slug == $category->template) selected @endif>{{ $template->title }}</option>
+                                        @if($template->slug == $category->template) selected @endif>{{ $template->title }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
-                    </div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <div>
-                                <!-- Nav tabs -->
-                                <ul class="nav nav-tabs" role="tablist">
-                                    @foreach ($languages as $id => $language)
-                                        <li role="presentation" class="{{ ($id == 0) ? 'active' : '' }}">
-                                            <a href="#{{ $language->acronym }}" aria-controls="{{ $language->acronym }}" role="tab" data-toggle="tab">{{ $language->language }}</a>
-                                        </li>
-                                    @endforeach
-                                </ul>
 
-                                <div class="tab-content clearfix">
-                                    @foreach ($languages as $id => $language)
-                                        @foreach ($categorieLanguages as $cate)
-                                            @if ($cate->language == $language->acronym)
-                                                <div role="tabpanel" class="tab-pane {{ ($id == 0) ? 'active' : '' }}" id="{{ $language->acronym }}">
-                                                    <div class="form-group">
-                                                        <label for="exampleInputEmail1">Tiêu đề {{ $language->language }}</label>
-                                                        <input type="text" class="form-control" name="title[]" placeholder="Tiêu đề {{ $language->language }}"
-                                                               value="{{ $cate->title }}" required>
-                                                    </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">title</label>
+                                <input type="text" class="form-control" name="title" placeholder="Tiêu đề" value="{{$category->title}}" required>
+                            </div>
 
-                                                    <div class="form-group">
-                                                        <label for="exampleInputEmail1">slug {{ $language->language }}</label>
-                                                        <input type="text" class="form-control" name="slug[]" placeholder="đường dẫn tĩnh {{ $language->language }}"
-                                                               value="{{ $cate->slug }}" />
-                                                    </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">slug</label>
+                                <input type="text" class="form-control" name="slug" placeholder="đường dẫn tĩnh" value="{{$category->slug}}">
+                            </div>
 
-                                                    <div class="form-group">
-                                                        <label for="exampleInputEmail1">Mô tả {{ $language->language }}</label>
-                                                        <textarea rows="4" class="form-control" name="description[]"
-                                                                  placeholder="">{{ $cate->description }}</textarea>
-                                                    </div>
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Mô tả</label>
+                                <textarea class="editor" id="content" name="description" rows="10" cols="80"/>{{$category->description}}</textarea>
+                            </div>
 
-                                                    <div class="form-group">
-                                                        <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh {{ $language->language }}"
-                                                               size="20"/>
-                                                        <img src="{{ $cate->image }}" width="80" height="70"/>
-                                                        <input name="image[]" type="hidden" value="{{ $cate->image }}"/>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endforeach
-                                </div>
+                            <div class="form-group">
+                                <input type="file" name="image" accept="image/*"  value="Chọn ảnh"
+                                       size="20"/>
+                                <img src="{{$category->image}}" width="80" height="70"/>
+                                <input name="image" type="hidden" value="{{$category->image}}"/>
+                            </div>
+
+                            <div class="form-group" style="color: red;">
+                                @if ($errors->has('title'))
+                                    <label for="exampleInputEmail1">{{ $errors->first('title') }}</label>
+                                @endif
                             </div>
                         </div>
                         <!-- /.box-body -->
 
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
-                        </div>
+
                     </div>
                     <!-- /.box -->
+
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            @foreach ($typeInputs as $typeInput)
+                                <div class="form-group">
+                                    <label>{{ $typeInput->title }}</label>
+
+                                    @if($typeInput->type_input == 'one_line')
+                                        <input type="text" class="form-control" name="{{$typeInput->slug}}" placeholder="{{ $typeInput->placeholder }}"
+                                               value="{{ $category[$typeInput->slug] }}" />
+                                    @endif
+
+                                    @if($typeInput->type_input == 'multi_line')
+                                        <textarea rows="4" class="form-control" name="{{$typeInput->slug}}" placeholder="{{ $typeInput->placeholder }}">{{ $category[$typeInput->slug] }}</textarea>
+                                    @endif
+
+                                    @if($typeInput->type_input == 'image')
+                                        <input type="file" name="image" accept="image/*"  value="Chọn ảnh"
+                                               size="20"/>
+                                        <img src="{{ $category[$typeInput->slug] }}" width="80" height="70"/>
+                                        <input name="{{$typeInput->slug}}" type="hidden" value="{{ $category[$typeInput->slug] }}"/>
+                                    @endif
+
+                                    @if($typeInput->type_input == 'editor')
+                                        <textarea class="editor" id="{{$typeInput->slug}}" name="{{$typeInput->slug}}" rows="10" cols="80"/>{{ $category[$typeInput->slug] }}</textarea>
+                                    @endif
+
+                                    @if($typeInput->type_input == 'image_list')
+                                        <input type="file" onChange="return openKCFinder(this);" multiple  value="Chọn ảnh"
+                                               size="20"/>
+                                        <div class="imageList">
+                                            @if(!empty($category[$typeInput->slug]))
+                                                @foreach(explode(',',$category[$typeInput->slug] ) as $image)
+                                                    <img src="{{ asset($image) }}" width="80" height="70" style="margin-left: 5px; margin-bottom: 5px;"/>
+                                                @endforeach
+                                            @endif
+                                        </div>
+                                        <input name="{{$typeInput->slug}}" type="hidden" value="{{$category[$typeInput->slug]}}"/>
+                                    @endif
+
+                                    @if(!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor', 'image_list'), true) && strpos($typeInput->type_input, 'listMultil') >= 0)
+                                        <select name="{{$typeInput->slug}}[]" class="select2 form-control" multiple="multiple">
+                                            <?php $slugSubPost = str_replace('listMultil', '', $typeInput->type_input);?>
+                                            @foreach(\App\Entity\SubPost::showSubPost($slugSubPost, 100) as $subPost)
+                                                <option value="{{ $subPost->slug }}"
+                                                        @if(in_array($subPost->slug, explode(',', $category[$typeInput->slug])) > 0 ) selected @endif>
+                                                    {{ $subPost->title }}</option>
+                                            @endforeach
+                                        </select>
+                                    @elseif (!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor', 'image_list'), true))
+                                        <select name="{{$typeInput->slug}}" class="form-control">
+                                            @foreach(\App\Entity\SubPost::showSubPost($typeInput->type_input, 100) as $subPost)
+                                                <option value="{{ $subPost->title }}"
+                                                        @if($category[$typeInput->slug] == $subPost->title) selected @endif>
+                                                    {{ $subPost->title }}</option>
+                                            @endforeach
+                                        </select>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <div class="box-footer">
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
 
                 </div>
             </form>

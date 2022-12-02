@@ -9,14 +9,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entity\GroupMail;
+use App\Entity\MailConfig;
 use App\Entity\Post;
 use App\Entity\SubcribeEmail;
 use App\Entity\User;
 use App\Mail\Mail;
+use App\Ultility\Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Yajra\Datatables\Datatables;
-use Maatwebsite\Excel\Facades\Excel;
 
 class SubcribeEmailController extends AdminController
 {
@@ -38,9 +40,17 @@ class SubcribeEmailController extends AdminController
     }
 
     public function index() {
-         $groupMails = GroupMail::orderBy('group_mail_id', 'desc')->get();
+        try {
+            $groupMails = GroupMail::orderBy('group_mail_id', 'desc')->get();
 
-         return view('admin.subcribe_email.index', compact('groupMails'));
+            return view('admin.subcribe_email.index', compact('groupMails'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị đăng ký email kh: dữ liệu không hợp lệ.');
+            Log::error('http->admin->SubcribeEmailController->index: Lỗi xảy ra trong quá trình hiển thị đăng ký email khách hàng');
+
+            return redirect('admin/home');
+        }
+
     }
 
     /**
@@ -50,9 +60,16 @@ class SubcribeEmailController extends AdminController
      */
     public function create()
     {
-        $groupMails = GroupMail::orderBy('group_mail_id', 'desc')->get();
-        
-        return view('admin.subcribe_email.add', compact('groupMails'));
+        try {
+            $groupMails = GroupMail::orderBy('group_mail_id', 'desc')->get();
+
+            return view('admin.subcribe_email.add', compact('groupMails'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi tạo mới đăng ký email kh: dữ liệu không hợp lệ.');
+            Log::error('http->admin->SubcribeEmailController->create: Lỗi xảy ra trong quá trình tạo mới đăng ký email khách hàng');
+
+            return redirect('admin/home');
+        }
     }
 
     /**
@@ -63,14 +80,20 @@ class SubcribeEmailController extends AdminController
      */
     public function store(Request $request)
     {
-        $subcribeEmail = new SubcribeEmail();
-        $subcribeEmail->insert([
-            'email' => $request->input('email'),
-            'name' => $request->input('name'),
-            'group_id' => $request->input('group'),
-        ]);
-
-        return redirect(route('subcribe-email.index'));
+        try {
+            $subcribeEmail = new SubcribeEmail();
+            $subcribeEmail->insert([
+                'email' => $request->input('email'),
+                'name' => $request->input('name'),
+                'group_id' => $request->input('group'),
+                'status' => $request->input('status'),
+            ]);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi tạo mới đăng ký email kh: dữ liệu không hợp lệ.');
+            Log::error('http->admin->SubcribeEmailController->store: Lỗi xảy ra trong quá trình tạo mới đăng ký email khách hàng');
+        } finally {
+            return redirect(route('subcribe-email.index'));
+        }
     }
 
     /**
@@ -92,9 +115,16 @@ class SubcribeEmailController extends AdminController
      */
     public function edit(SubcribeEmail $subcribeEmail)
     {
-        $groupMails = GroupMail::orderBy('group_mail_id', 'desc')->get();
+        try {
+            $groupMails = GroupMail::orderBy('group_mail_id', 'desc')->get();
 
-        return view('admin.subcribe_email.edit', compact('groupMails', 'subcribeEmail'));
+            return view('admin.subcribe_email.edit', compact('groupMails', 'subcribeEmail'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi chỉnh sửa đăng ký email kh: dữ liệu không hợp lệ.');
+            Log::error('http->admin->SubcribeEmailController->edit: Lỗi xảy ra trong quá trình chỉnh sửa đăng ký email khách hàng');
+
+            return redirect('admin/home');
+        }
     }
 
     /**
@@ -106,13 +136,19 @@ class SubcribeEmailController extends AdminController
      */
     public function update(Request $request, SubcribeEmail $subcribeEmail)
     {
-        $subcribeEmail->update([
-            'email' => $request->input('email'),
-            'name' => $request->input('name'),
-            'group_id' => $request->input('group'),
-        ]);
-
-        return redirect(route('subcribe-email.index'));
+        try {
+            $subcribeEmail->update([
+                'email' => $request->input('email'),
+                'name' => $request->input('name'),
+                'group_id' => $request->input('group'),
+                'status' => $request->input('status'),
+            ]);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi chỉnh sửa đăng ký email kh: dữ liệu không hợp lệ.');
+            Log::error('http->admin->SubcribeEmailController->update: Lỗi xảy ra trong quá trình chỉnh sửa đăng ký email khách hàng');
+        } finally {
+            return redirect(route('subcribe-email.index'));
+        }
     }
 
     public function anyDatatables(Request $request) {
@@ -133,79 +169,42 @@ class SubcribeEmailController extends AdminController
     }
     
     public function destroy(SubcribeEmail $subcribeEmail) {
-        $subcribeEmails = new SubcribeEmail();
-        $subcribeEmails->where('subcribe_email_id', $subcribeEmail->subcribe_email_id)->delete();
+        try {
+            $subcribeEmails = new SubcribeEmail();
+            $subcribeEmails->where('subcribe_email_id', $subcribeEmail->subcribe_email_id)->delete();
 
-        return redirect(route('subcribe-email.index'));
+            return redirect(route('subcribe-email.index'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi xóa đăng ký email kh: dữ liệu không hợp lệ.');
+            Log::error('http->admin->SubcribeEmailController->update: Lỗi xảy ra trong quá trình xóa đăng ký email khách hàng');
+        } finally {
+            return redirect(route('subcribe-email.index'));
+        }
+
     }
 
     public function send(Request $request) {
-        $group = $request->input('group');
-        $emailSetting = $request->input('setting');
-        $subject = $request->input('subject');
-        $message = $request->input('content');
-        $from = $request->input('from');
-        
-        $this->sendMail($emailSetting, $group, $from, $subject, $message);
+        try {
+            $group = $request->input('group');
+            $subject = $request->input('subject');
+            $message = $request->input('content');
 
-        return redirect(route('subcribe-email.index'));
-    }
-    private function sendMail($emailSetting, $group, $from, $subject, $message){
-        if (!empty($emailSetting)) {
-            $mailConfig = Post::join('sub_post', 'sub_post.post_id', '=', 'posts.post_id')
-                ->select('posts.*')
-                ->where('type_sub_post_slug', 'cau-hinh-email')
-                ->where('posts.slug', 'mail-cho-nguoi-dat-hang')
-                ->first();
-            $from = $mailConfig['from'];
-            $subject = $mailConfig['chu-de-(subject)'];
-            $content = $mailConfig->content;
-        } else {
-            $subject = $subject;
-            $content = $message;
+            // get email to
+            $emails = SubcribeEmail::where('group_id', $group)->get();
+            $emailSend = array();
+            foreach($emails as $email) {
+                $emailSend[] =  $email->email;
+            }
+
+            MailConfig::sendMail($emailSend, $subject, $message);
+
+
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi gửi email kh: dữ liệu không hợp lệ.');
+            Log::error('http->admin->SubcribeEmailController->send: Lỗi xảy ra trong quá trình gửi email khách hàng');
+        } finally {
+            return redirect(route('subcribe-email.index'));
         }
-
-        // get email to
-        $emails = SubcribeEmail::where('group_id', $group)->get();
-        $emailSend = array();
-        foreach($emails as $email) {
-            $emailSend[] =  $email->email;
-        }
-        
-        $mail = new Mail(
-            $content
-        );
-        \Mail::to($emailSend)->send($mail->from($from)->subject($subject));
-
-        return redirect(route('subcribe-email.index'));
-    }
-
-    public function exportToExcel(){
-        $subcribeEmail = new SubcribeEmail();
-        $subcribeEmails = $subcribeEmail->orderBy('subcribe_email_id', 'desc')->get();
-        $data = array();
-        $data[] = array(
-            'Id',
-            'email',
-            'thời gian đăng ký'
-        );
-        foreach ($subcribeEmails as $item)
-        {
-            $date = date_create($item->created_at);
-
-            $data[] = array(
-                $item->subcribe_email_id,
-                $item->email,
-                date_format($date,"H:i d/m/Y ")
-            );
-        }
-        $date = new \DateTime();
-        $filename = 'dk-nhan-mail-'.$date->format("d/m/y");
-        Excel::create($filename, function($excel) use ($data){
-            $excel->sheet('sheetname', function($sheet) use ($data){
-                $sheet->fromArray($data);
-            });
-        })->download('xls');
 
     }
 }

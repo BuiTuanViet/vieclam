@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Thêm mới người dùng' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('users.store') }}" method="POST">
+            <form role="form" action="{{ route('users.store') }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
                 <div class="col-xs-12 col-md-6">
@@ -29,7 +31,7 @@
                         <!-- /.box-header -->
 
                             <div class="box-body">
-                                
+                                @if(\App\Entity\User::isManager(\Illuminate\Support\Facades\Auth::user()->role))
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Phân quyền</label>
                                     <select class="form-control" name="roles">
@@ -38,7 +40,7 @@
                                         <option value="3">Quản trị</option>
                                     </select>
                                 </div>
-
+                                @endif
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Email</label>
                                     <input type="email" class="form-control" name="email" placeholder="Email" required />
@@ -53,22 +55,17 @@
                                     <label for="exampleInputEmail1">Số điện thoại</label>
                                     <input type="text" class="form-control" name="phone" placeholder="Số điện thoại" />
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Địa chỉ</label>
-                                    <input type="text" class="form-control" name="address" placeholder="Địa chỉ" />
-                                </div>
-
+                                
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Mật khẩu</label>
                                     <input type="text" class="form-control" name="password" placeholder="Mật khẩu" />
                                 </div>
 
                                 <div class="form-group">
-                                    <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                    <input type="file" name="image" accept="image/*"  value="Chọn ảnh"
                                            size="20"/>
                                     <img src="" width="80" height="70"/>
-                                    <input name="image" type="hidden" value=""/>
+                                    {{--                                <input name="image" type="hidden" value=""/>--}}
                                 </div>
                                 
                                 <div class="form-group" style="color: red;">

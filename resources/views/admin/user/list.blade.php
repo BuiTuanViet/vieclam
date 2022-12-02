@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách thành viên' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -27,6 +29,7 @@
                                 <th width="5%">ID</th>
                                 <th>Email</th>
                                 <th>Họ và tên</th>
+                                <th>Số điện thoại</th>
                                 <th>Ảnh</th>
                                 <th>Đơn hàng đã đặt</th>
                                 <th>Thao tác</th>
@@ -39,6 +42,7 @@
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->email }}</td>
                                     <td>{{ $user->name }}</td>
+                                    <td>{{ $user->phone }}</td>
                                     <td><img src="{{ $user->image }}" width="150"/></td>
                                     <td><a href="{{ route('orderAdmin', ['user_id' => $user->id]) }}" target="_blank">Xem chi tiết đơn hàng</a></td>
                                     <td>

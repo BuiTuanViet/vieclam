@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chinh sửa '.$typeInput->title )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('type-input.update', ['type_input_id' => $typeInput->type_input_id]) }}" method="POST">
+            <form role="form" action="{{ route('type-input.update', ['type_input_id' => $typeInput->type_input_id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">
@@ -43,12 +45,7 @@
                             <div class="form-group">
                                 <label for="exampleInputEmail1">slug</label>
                                 <input type="text" class="form-control" name="slug" placeholder="đường dẫn tĩnh"
-                                       value="{{ $typeInput->slug }}" />
-                            </div>
-
-                            <div class="form-group">
-                                <label for="exampleInputEmail1">Sử dụng chung</label>
-                                <input type="checkbox" class="flat-red" name="general" value="1" {{ ($typeInput->general == 1) ? 'checked' : '' }}>
+                                value="{{ $typeInput->slug }}" />
                             </div>
 
                             <div class="form-group" style="color: red;">
@@ -79,7 +76,7 @@
                             <div class="form-group">
                                 <label>
                                     <input type="radio" name="type_input" value="one_line" class="flat-red"
-                                           @if($typeInput->type_input == 'one_line') checked @endif/>
+                                    @if($typeInput->type_input == 'one_line') checked @endif/>
                                     Một dòng
                                 </label>
                             </div>
@@ -99,63 +96,51 @@
                             </div>
                             <div class="form-group">
                                 <label>
-                                    <input type="radio" name="type_input" value="image_list" class="flat-red"
-                                           @if($typeInput->type_input == 'image_list') checked @endif />
-                                    Danh sách Hình ảnh
-                                </label>
-                            </div>
-                            <div class="form-group">
-                                <label>
                                     <input type="radio" name="type_input" value="editor" class="flat-red"
                                            @if($typeInput->type_input == 'editor') checked @endif/>
                                     editor
                                 </label>
                             </div>
-                            <div class="form-group">
-                                <label>
-                                    <input type="radio" name="type_input" value="text_color" class="flat-red"
-                                           @if($typeInput->type_input == 'text_color') checked @endif/>
-                                    Input chọn màu sắc
-                                </label>
-                            </div>
+                            
                             <div class="form-group">
                                 <label>
                                     <input type="radio" name="type_input" value="list" class="flat-red"
-                                           @foreach ($typeSubPosts as $typeSubPost)
-                                           @if($typeSubPost->slug == $typeInput->type_input)
-                                           checked
-                                            @endif
-                                            @endforeach
+                                    @foreach ($typeSubPosts as $typeSubPost)
+                                        @if($typeSubPost->slug == $typeInput->type_input)
+                                            checked
+                                        @endif
+                                    @endforeach
                                     />
                                     List danh sách của:
                                 </label>
                                 <select class="form-control" name="list">
                                     @foreach ($typeSubPosts as $typeSubPost)
                                         <option value="{{ $typeSubPost->slug }}"
-                                                @if($typeInput->type_input ==  $typeSubPost->slug) selected @endif>
+                                        @if($typeInput->type_input ==  $typeSubPost->slug) selected @endif>
                                             {{ $typeSubPost->title }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
                             {{--<div class="form-group">--}}
-                            {{--<label>--}}
-                            {{--<input type="radio" name="type_input" value="list_multi" class="flat-red"--}}
-                            {{--@foreach ($typeSubPosts as $typeSubPost)--}}
-                            {{--@if($typeSubPost->slug == $typeInput->type_input)--}}
-                            {{--checked--}}
-                            {{--@endif--}}
-                            {{--@endforeach--}}
-                            {{--/>--}}
-                            {{--List chọn nhiều danh sách của:--}}
-                            {{--</label>--}}
-                            {{--<select class="form-control" name="list_multi">--}}
-                            {{--@foreach ($typeSubPosts as $typeSubPost)--}}
-                            {{--<option value="{{ $typeSubPost->slug }}" @if($typeInput->type_input ==  $typeSubPost->slug) selected @endif>{{ $typeSubPost->title }}</option>--}}
-                            {{--@endforeach--}}
-                            {{--</select>--}}
+                                {{--<label>--}}
+                                    {{--<input type="radio" name="type_input" value="list" class="flat-red"--}}
+                                       {{--@foreach ($typeSubPosts as $typeSubPost)--}}
+                                           {{--@if('listMultil'.$typeSubPost->slug == $typeInput->type_input)--}}
+                                                {{--checked--}}
+                                            {{--@endif--}}
+                                            {{--@endforeach/>--}}
+                                    {{--List danh sách nhiều dòng của:--}}
+                                {{--</label>--}}
+                                {{--<select class="form-control" name="list">--}}
+                                    {{--@foreach ($typeSubPosts as $typeSubPost)--}}
+                                        {{--<option value="listMultil{{ $typeSubPost->slug }}"--}}
+                                                {{--@if($typeInput->type_input ==  'listMultil'.$typeSubPost->slug) selected @endif>--}}
+                                            {{--{{ $typeSubPost->title }}</option>--}}
+                                    {{--@endforeach--}}
+                                {{--</select>--}}
                             {{--</div>--}}
-
+                            
                         </div>
                         <!-- /.box-body -->
                     </div>
@@ -172,7 +157,7 @@
                             <div class="form-group">
                                 <label>
                                     <input type="checkbox" name="post_used[]" value="post" class="flat-red"
-                                           @if(in_array('post', $postUsed)) checked @endif />
+                                    @if(in_array('post', $postUsed)) checked @endif />
                                     Bài viết
                                 </label>
                             </div>
@@ -185,9 +170,25 @@
                             </div>
                             <div class="form-group">
                                 <label>
-                                    <input type="checkbox" name="post_used[]" value="language" class="flat-red"
-                                           @if(in_array('language', $postUsed)) checked @endif />
-                                    Ngôn ngữ (Không dùng chung với dạng bài viết khác)
+                                    <input type="checkbox" name="post_used[]" value="page" class="flat-red"
+                                           @if(in_array('page', $postUsed)) checked @endif />
+                                    Trang
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="post_used[]" value="cate_post" class="flat-red"
+                                           @if(in_array('cate_post', $postUsed)) checked @endif
+                                    />
+                                    Danh mục bài viết
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>
+                                    <input type="checkbox" name="post_used[]" value="cate_product" class="flat-red"
+                                           @if(in_array('cate_product', $postUsed)) checked @endif
+                                    />
+                                    Danh mục sản phẩm
                                 </label>
                             </div>
                             @foreach($typeSubPosts as $typeSubPost)

@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chỉnh sửa '.$subcribeEmail->title )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('subcribe-email.update', ['subcribe_email_id' => $subcribeEmail->subcribe_email_id]) }}" method="POST">
+            <form role="form" action="{{ route('subcribe-email.update', ['subcribe_email_id' => $subcribeEmail->subcribe_email_id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-8">
@@ -41,12 +43,20 @@
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email</label>
-                                <input type="email" class="form-control" name="email" placeholder="email" value="{{ $subcribeEmail->email }}" required>
+                                <input type="text" class="form-control" name="email" placeholder="email" value="{{ $subcribeEmail->email }}" >
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Tên chủ email</label>
-                                <input type="text" class="form-control" name="name" placeholder="Tên email" value="{{ $subcribeEmail->name }}" required/>
+                                <input type="text" class="form-control" name="name" placeholder="Tên email" value="{{ $subcribeEmail->name }}" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Trạng thái</label>
+                                <select class="form-control" name="status">
+                                    <option value="1" {{ $subcribeEmail->status==1 ? 'selected' : '' }}>Đã tư vấn</option>
+                                    <option value="0" {{ $subcribeEmail->status==0 ? 'selected' : '' }}>Chưa tư vấn</option>
+                                </select>
                             </div>
 
                             <div class="form-group" style="color: red;">

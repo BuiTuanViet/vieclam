@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách liên hệ')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -27,7 +29,9 @@
                                 <th>Họ và tên</th>
                                 <th>Số điện thoai</th>
                                 <th>Email</th>
-                                <th>Message</th>
+								<th>Địa chỉ</th>
+                                <th>Trạng thái</th>
+                                <th>Hình ảnh</th>
                                 <th>Thao tác</th>
                             </tr>
                             </thead>
@@ -38,7 +42,13 @@
                                     <td>{{ $contact->name }}</td>
                                     <td>{{ $contact->phone }}</td>
                                     <td>{{ $contact->email }}</td>
-                                    <td>{{ $contact->message }}</td>
+                                    <td>{{ $contact->address }}</td>
+                                    <td>{{ $contact->status == 1 ? 'Đã tư vấn' : 'chưa tư vấn' }}</td>
+                                    <td>
+										@foreach (explode('-', $contact->images) as $image) 
+											<img src="{{ $image }}" width="150"/>
+										@endforeach
+										</td>
                                     <td>
                                         <a href="{{ route('contact.edit', ['contact_id' => $contact->contact_id]) }}">
                                             <button class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></button>
@@ -56,11 +66,15 @@
                                 <th>Họ và tên</th>
                                 <th>Số điện thoai</th>
                                 <th>Email</th>
+                                <th>Trạng thái</th>
                                 <th>Message</th>
                                 <th>Thao tác</th>
                             </tr>
                             </tfoot>
                         </table>
+                        <div>
+                            {{ $contacts->links() }}
+                        </div>
                     </div>
                     <!-- /.box-body -->
                 </div>

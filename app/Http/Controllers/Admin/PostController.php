@@ -6,15 +6,18 @@ use App\Entity\Category;
 use App\Entity\CategoryPost;
 use App\Entity\Comment;
 use App\Entity\Input;
-use App\Entity\Language;
-use App\Entity\LanguageSave;
 use App\Entity\Post;
+use App\Entity\PostFacebook;
 use App\Entity\Template;
 use App\Entity\TypeInput;
 use App\Entity\User;
+use App\Facebook\Fanpage;
+use App\Ultility\Error;
 use App\Ultility\Ultility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Validator;
 use Yajra\Datatables\Datatables;
@@ -32,10 +35,9 @@ class PostController extends AdminController
             if (User::isMember($this->role)) {
                 return redirect('admin/home');
             }
-            
+
             return $next($request);
         });
-
     }
     
     /**
@@ -55,34 +57,36 @@ class PostController extends AdminController
      */
     public function create()
     {
-
-        $category = new Category();
-        $categories =$category->getCategory();
-        $templates = Template::orderBy('template_id')->get();
-        $typeInputDatabaseGeneral = TypeInput::orderBy('type_input_id')
-            ->where('general', 1)->get();
-        $typeInputsGeneral = array();
-        foreach($typeInputDatabaseGeneral as $typeInput) {
-            $token = explode(',', $typeInput->post_used);
-            if (in_array('post', $token)) {
-                $typeInputsGeneral[] = $typeInput;
+        try {
+            $category = new Category();
+            $categories =$category->getCategory();
+            $templates = Template::getTemplate();
+            // lọc bỏ những trường mà ko sử dụng trong post
+            $typeInputDatabase = TypeInput::orderBy('type_input_id')->get();
+            $typeInputs = array();
+            foreach($typeInputDatabase as $typeInput) {
+                $token = explode(',', $typeInput->post_used);
+                if (in_array('post', $token)) {
+                    $typeInputs[] = $typeInput;
+                }
             }
-        }
-        // lọc bỏ những trường mà ko sử dụng trong post
-        $typeInputDatabase = TypeInput::orderBy('type_input_id')
-            ->where('general', null)->get();
-        $typeInputs = array();
-        foreach($typeInputDatabase as $typeInput) {
-            $token = explode(',', $typeInput->post_used);
-            if (in_array('post', $token)) {
-                $typeInputs[] = $typeInput;
-            }
-        }
 
-        $languages = Language::orderBy('language_id')->get();
-        
-        return view('admin.post.add', compact('categories', 'templates', 'typeInputs', 'languages', 'typeInputsGeneral'));
+            $productList = Post::join('products', 'products.post_id', '=', 'posts.post_id')
+                ->select(
+                    'products.product_id',
+                    'posts.*'
+                )
+                ->where('post_type', 'product')->orderBy('posts.post_id', 'desc')->get();
 
+
+
+            return view('admin.post.add', compact('categories', 'templates', 'typeInputs', 'productList'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi tạo mới bài viết: dữ liệu không hợp lệ.');
+            Log::error('http->admin->PostController->create: Lỗi xảy ra trong quá trình tạo mới bài viết');
+
+            return redirect('admin/home');
+        }
     }
 
     /**
@@ -93,9 +97,97 @@ class PostController extends AdminController
      */
     public function store(Request $request)
     {
-        $this->insertNewPost($request);
+        try {
+            DB::beginTransaction();
+            // lấy user id
+            $userId = Auth::user()->id;
 
-        return redirect('admin/posts');
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
+
+            // insert to database
+            if (!empty($request->input('parents'))) {
+                $categoriParents = Category::whereIn('category_id', $request->input('parents'))->get();
+                $categories = array();
+                foreach ($categoriParents as $cate) {
+                    $categories[] =  $cate->title;
+                }
+            }
+
+            $post = new Post();
+            $postData = [
+                'title' => $request->input('title'),
+                'post_type' => 'post',
+                'template' =>  $request->input('template'),
+                'description' => $request->input('description'),
+                'tags' => $request->input('tags'),
+                'content' =>  $request->input('content'),
+                'visiable' => 0,
+                'category_string' => !empty($categories) ? implode(',', $categories) : '',
+                'meta_title' => $request->input('meta_title'),
+                'meta_description' => $request->input('meta_description'),
+                'meta_keyword' => $request->input('meta_keyword'),
+                'product_list' => !empty($request->input('product_list')) ? implode(',', $request->input('product_list')) : '',
+            ];
+            if ($request->hasFile('image')){
+                $postData['image'] = Ultility::saveFile($request, 'image');
+            }
+
+            $postId = $post->insertGetId($postData);
+
+            // insert slug
+            $postWithSlug = $post->where('slug', $slug)->first();
+            if (empty($postWithSlug)) {
+                $post->where('post_id', '=', $postId)
+                    ->update([
+                        'slug' => $slug
+                    ]);
+            } else {
+                $post->where('post_id', '=', $postId)
+                    ->update([
+                        'slug' => $slug.'-'.$postId
+                    ]);
+            }
+
+            // insert danh mục cha
+            $categoryPost = new CategoryPost();
+            if (!empty($request->input('parents'))) {
+                foreach($request->input('parents') as $parent) {
+                    $categoryPost->insert([
+                        'category_id' => $parent,
+                        'post_id' => $postId,
+                    ]);
+                }
+            }
+
+            // insert input
+            $typeInputDatabase = TypeInput::orderBy('type_input_id')->get();
+            foreach($typeInputDatabase as $typeInput) {
+                $token = explode(',', $typeInput->post_used);
+                if (in_array('post', $token)) {
+                    $contentInput =  $request->input($typeInput->slug);
+                    if(!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor'), true) && strpos($typeInput->type_input, 'listMultil') >= 0) {
+                        $contentInput = ( !empty($contentInput) && count($contentInput) >= 1) ? implode(',', $contentInput) : $contentInput;
+                    }
+                    $input = new Input();
+                    $input->insert([
+                        'type_input_slug' => $typeInput->slug,
+                        'content' => $contentInput,
+                        'post_id' => $postId,
+                    ]);
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            Error::setErrorMessage('Lỗi xảy ra khi tạo mới bài viết: dữ liệu không hợp lệ.');
+            Log::error('http->admin->PostController->store: Lỗi xảy ra trong quá trình tạo mới bài viết');
+        } finally {
+            return redirect('admin/posts');
+        }
     }
 
     /**
@@ -117,45 +209,57 @@ class PostController extends AdminController
      */
     public function edit(Post $post)
     {
-        $category = new Category();
-        $categories =$category->getCategory();
-        $templates = Template::orderBy('template_id')->get();
+        try {
+            $postExist = Post::where('post_id', $post->post_id)->exists();
+            if (!$postExist) {
+                return redirect('admin/posts');
+            }
 
-        $categoryPosts = CategoryPost::where('post_id', $post->post_id)->get();
-        $categoryPost = array();
-        foreach($categoryPosts as $cate ) {
-            $categoryPost[] = $cate->category_id;
-        }
-
-        // get bài viết thuộc ngôn ngữ khác
-        $languages = Language::orderBy('language_id')->get();
-        $languageSave = LanguageSave::select('element_id')->where('main_id', $post->post_id)->first();
-        $posts = Post::whereIn('post_id', explode(',', $languageSave->element_id))->get();
-        // lọc bỏ những trường mà ko sử dụng trong post
-        foreach ($posts as $id => $postLanguage) {
+            $category = new Category();
+            $categories =$category->getCategory();
+            $templates = Template::orderBy('template_id')->get();
+            // lọc bỏ những trường mà ko sử dụng trong post
             $typeInputDatabase = TypeInput::orderBy('type_input_id')
-                ->where('general', null)->get();
+                ->get();
             $typeInputs = array();
             foreach($typeInputDatabase as $typeInput) {
                 $token = explode(',', $typeInput->post_used);
                 if (in_array('post', $token)) {
                     $typeInputs[] = $typeInput;
-                    $posts[$id][$typeInput->slug] = Input::getPostMeta($typeInput->slug, $postLanguage->post_id);
+                    $post[$typeInput->slug] = Input::getPostMeta($typeInput->slug, $post->post_id);
                 }
             }
+            $categoryPosts = CategoryPost::where('post_id', $post->post_id)
+                ->get();
+            $categoryPost = array();
+            foreach($categoryPosts as $cate ) {
+                $categoryPost[] = $cate->category_id;
+            }
+
+            $productList = Post::join('products', 'products.post_id', '=', 'posts.post_id')
+                ->select(
+                    'products.product_id',
+                    'posts.*'
+                )
+                ->where('post_type', 'product')
+                ->orderBy('posts.post_id', 'desc')
+                ->get();
+
+            return view('admin.post.edit', compact(
+                'categories',
+                'templates',
+                'typeInputs',
+                'post',
+                'categoryPost',
+                'productList'
+            ));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi chỉnh sửa bài viết: dữ liệu không hợp lệ.');
+            Log::error('http->admin->PostController->edit: Lỗi xảy ra trong quá trình chỉnh sửa bài viết');
+
+            return redirect('admin/home');
         }
 
-        $typeInputDatabase = TypeInput::orderBy('type_input_id')
-            ->where('general', 1)->get();
-        $typeInputsGeneral = array();
-        foreach($typeInputDatabase as $typeInput) {
-            $token = explode(',', $typeInput->post_used);
-            if (in_array('post', $token)) {
-                $typeInputsGeneral[] = $typeInput;
-                $post[$typeInput->slug] = Input::getPostMeta($typeInput->slug, $post->post_id);
-            }
-        }
-        return view('admin.post.edit', compact('categories', 'templates', 'typeInputs', 'post', 'categoryPost', 'languages', 'posts', 'typeInputsGeneral'));
     }
 
     /**
@@ -167,49 +271,45 @@ class PostController extends AdminController
      */
     public function update(Request $request, Post $post)
     {
-        $languageSave = LanguageSave::select('element_id')->where('main_id', $post->post_id)->first();
-        $titles = $request->input('title');
-        $tags = $request->input('tags');
-        $contents = $request->input('content');
-        $descriptions = $request->input('description');
-        $images = $request->input('image');
-        $slugs = $request->input('slug');
-        //kiểm tra xem có là tin hot ko
-        $isHotnews = $request->input('is_hotnews');
-
-        // kiểm tra title xem có bị rỗng ko
-        $emptyTitle = '';
-        foreach ($titles as $title) {
-            $emptyTitle .= $title;
-        }
-        if (empty($emptyTitle)) {
-            return false;
-        }
-
-        $posts = Post::whereIn('post_id', explode(',', $languageSave->element_id))->get();
-
-        foreach ($posts as $id => $post) {
-            $slug = $slugs[$id];
-            // if slug null slug create as title
-            if (empty($slug)) {
-                $slug = Ultility::createSlug($titles[$id]);
+        try {
+            DB::beginTransaction();
+            $postExist = Post::where('post_id', $post->post_id)->exists();
+            if (!$postExist) {
+                return redirect('admin/posts');
             }
 
-            $post->update([
-                'title' => $titles[$id],
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
+            // update to database
+            if (!empty($request->input('parents'))) {
+                $categoriParents = Category::whereIn('category_id', $request->input('parents'))->get();
+                $categories = array();
+                foreach ($categoriParents as $cate) {
+                    $categories[] =  $cate->title;
+                }
+            }
+
+            $postData = [
+                'title' => $request->input('title'),
                 'post_type' => 'post',
                 'template' =>  $request->input('template'),
-                'description' => $descriptions[$id],
-                'tags' => $tags[$id],
-                'image' =>  $images[$id],
-                'content' =>  $contents[$id],
+                'description' => $request->input('description'),
+                'tags' => $request->input('tags'),
+                'content' =>  $request->input('content'),
                 'visiable' => 0,
+                'category_string' => !empty($categories) ? implode(',', $categories) : '',
                 'meta_title' => $request->input('meta_title'),
                 'meta_description' => $request->input('meta_description'),
                 'meta_keyword' => $request->input('meta_keyword'),
-                'created_at' => new \DateTime(),
-                'updated_at' => new \DateTime(),
-            ]);
+                'product_list' => !empty($request->input('product_list')) ? implode(',', $request->input('product_list')) : '',
+            ];
+            if ($request->hasFile('image')){
+                $postData['image'] = Ultility::saveFile($request, 'image');
+            }
+            $post->update($postData);
 
             // insert slug
             $postWithSlug = Post::where('slug', $slug)
@@ -228,52 +328,31 @@ class PostController extends AdminController
             }
 
             // insert danh mục cha
-            CategoryPost::where('post_id', $post->post_id)->delete();
+            $categoryPost = new CategoryPost();
+            $categoryPost->where('post_id', $post->post_id)
+                ->delete();
             if (!empty($request->input('parents'))) {
                 foreach($request->input('parents') as $parent) {
-                    $categoryPost =  CategoryPost::where('category_id', $parent)
-                        ->where('post_id', $post->post_id)
-                        ->first();
-                    if (empty($categoryPost)) {
-                        $categoryPost = new CategoryPost();
-                        $categoryPost->insert([
-                            'category_id' => $parent,
-                            'post_id' => $post->post_id
-                        ]);
-                    }
+                    $categoryPost->insert([
+                        'category_id' => $parent,
+                        'post_id' => $post->post_id,
+                    ]);
                 }
             }
 
             // insert input
-
             $typeInputDatabase = TypeInput::orderBy('type_input_id')->get();
-            foreach($typeInputDatabase as $typeInput) {
-                $token = explode(',', $typeInput->post_used);
-                if (in_array('post', $token)) {
-                    $contentInputs =  $request->input($typeInput->slug);
-                    $input = Input::where('post_id', $post->post_id)
-                        ->where('type_input_slug', $typeInput->slug)->first();
-                    if (empty($input)) {
-                        $input = new Input();
-                        $input->insert([
-                            'type_input_slug' => $typeInput->slug,
-                            'content' => is_array($contentInputs) ? $contentInputs[$id] : $contentInputs,
-                            'post_id' => $post->post_id
-                        ]);
-                    } else {
-                        $input->update([
-                            'content' => is_array($contentInputs) ? $contentInputs[$id] : $contentInputs,
-                        ]);
-                    }
-
-
-                }
-            }
+            $input = new Input();
+            $input->updateInput($typeInputDatabase, $request, $post->post_id);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            Error::setErrorMessage('Lỗi xảy ra khi chỉnh sửa bài viết: dữ liệu không hợp lệ.');
+            Log::error('http->admin->PostController->update: Lỗi xảy ra trong quá trình chỉnh sửa bài viết');
+        } finally {
+            return redirect('admin/posts');
         }
 
-
-
-        return redirect('admin/posts');
     }
 
     /**
@@ -284,25 +363,32 @@ class PostController extends AdminController
      */
     public function destroy(Post $post)
     {
-        $languageSave = LanguageSave::select('element_id')->where('main_id', $post->post_id)->first();
-        // xóa hết dữ liệu cũ đi
-        Post::whereIn('post_id', explode(',', $languageSave->element_id))->delete();
-        $categoryPost = new CategoryPost();
-        $categoryPost->whereIn('post_id', explode(',', $languageSave->element_id))->delete();
-        $input = new Input();
-        $input->whereIn('post_id', explode(',', $languageSave->element_id))->delete();
-        $languageSave->where('main_id', $post->post_id)->where('element_type', 'post')->delete();
-        Comment::whereIn('post_id', explode(',', $languageSave->element_id))->delete();
-        
-        return redirect('admin/posts');
+        try {
+            DB::beginTransaction();
+            $postExist = Post::where('post_id', $post->post_id)->exists();
+            if (!$postExist) {
+                return redirect('admin/posts');
+            }
+
+            $posts = new Post();
+            $posts->where('post_id', $post->post_id)->delete();
+
+            Comment::where('post_id', $post->post_id)->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            Error::setErrorMessage('Lỗi xảy ra khi xóa bài viết: dữ liệu không hợp lệ.');
+            Log::error('http->admin->PostController->destroy: Lỗi xảy ra trong quá trình xóa bài viết');
+        } finally {
+            return redirect('admin/posts');
+        }
     }
 
     public function visiable(Request $request) {
         $visiable = $request->input('visiable');
         $postId = $request->input('post_id');
-
-        $postLanguage = LanguageSave::where('main_id', $postId)->first();
-        Post::whereIn('post_id', explode(',', $postLanguage->element_id))->update([
+        
+        Post::where('post_id', $postId)->update([
             'visiable' => $visiable
         ]);
 
@@ -310,42 +396,14 @@ class PostController extends AdminController
             'status' => 200
         ])->header('Content-Type', 'text/plain');
     }
-
-    public function indexHot(Request $request) {
-        $indexHot = $request->input('index_hot');
-        $postId = $request->input('post_id');
-
-        $postLanguage = LanguageSave::where('main_id', $postId)->first();
-        Post::whereIn('post_id', explode(',', $postLanguage->element_id))->update([
-            'index_hot' => $indexHot
-        ]);
-
-        return response([
-            'status' => 200
-        ])->header('Content-Type', 'text/plain');
-    }
-
+    
     public function anyDatatables(Request $request) {
-        $posts = Post::where('post_type', 'post')->where('language', 'vn')->select('posts.*');
+        $posts = Post::where('post_type', 'post')->select('posts.*');
 
         return Datatables::of($posts)
-            ->addColumn('category', function($post) {
-                $categories = Category::leftJoin('category_post', 'category_post.category_id', 'categories.category_id')
-                    ->select('title')->where('category_post.post_id', $post->post_id)->get();
-                $categoryPost  = '';
-                foreach ($categories as $category ) {
-                    if(empty($categoryPost)) {
-                        $categoryPost =  $category->title;
-                        continue;
-                    }
-                    $categoryPost = implode(',', array($categoryPost, $category->title));
-                }
-
-                return $categoryPost;
-            })
            ->addColumn('action', function($post) {
-              // $string = '<input type="checkbox" class="flat-red" onclick="return visiablePost(this);" value="'.$post->post_id.'" '.( ($post->visiable == 0 || $post->visiable == null ) ? 'checked' : '' ).'/> Hiện ';
-               $string = '<a href="'.route('posts.edit', ['post_id' => $post->post_id]).'">
+               $string = '<input type="checkbox" class="flat-red" onclick="return visiablePost(this);" value="'.$post->post_id.'" '.( ($post->visiable == 0 || $post->visiable == null ) ? 'checked' : '' ).'/> Hiện ';
+               $string .=  '<a href="'.route('posts.edit', ['post_id' => $post->post_id]).'">
                            <button class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></button>
                        </a>';
                $string .= '<a  href="'.route('posts.destroy', ['post_id' => $post->post_id]).'" class="btn btn-danger btnDelete" 
@@ -356,113 +414,5 @@ class PostController extends AdminController
            })
             ->orderColumn('post_id', 'post_id desc')
            ->make(true);
-    }
-
-    private function insertNewPost($request) {
-        $userId = Auth::user()->id;
-        $languages = Language::orderBy('language_id', 'asc')->get();
-
-        $titles = $request->input('title');
-        $tags = $request->input('tags');
-        $contents = $request->input('content');
-        $descriptions = $request->input('description');
-        $images = $request->input('image');
-        $slugs = $request->input('slug');
-        // kiểm tra xem có là tin hot ko
-        $isHotnews = $request->input('is_hotnews');
-        // kiểm tra title xem có bị rỗng ko
-        $emptyTitle = '';
-        foreach ($titles as $title) {
-            $emptyTitle .= $title;
-        }
-        if (empty($emptyTitle)) {
-            return false;
-        }
-
-        $postIds = array();
-        $mainId = 0;
-        foreach ($languages as $id => $language) {
-            $slug = $slugs[$id];
-            // if slug null slug create as title
-            if (empty($slug)) {
-                $slug = Ultility::createSlug($titles[$id]);
-            }
-            $post = new Post();
-            $postId = $post->insertGetId([
-                'title' => $titles[$id],
-                'post_type' => 'post',
-                'template' =>  $request->input('template'),
-                'description' => $descriptions[$id],
-                'tags' => $tags[$id],
-                'image' =>  $images[$id],
-                'user_id' => $userId,
-                'visiable' => 0,
-                'meta_title' => $request->input('meta_title'),
-                'meta_description' => $request->input('meta_description'),
-                'meta_keyword' => $request->input('meta_keyword'),
-                'language' =>  $language->acronym,
-                'created_at' => new \DateTime(),
-                'updated_at' => new \DateTime(),
-                'content' =>  $contents[$id],
-            ]);
-
-            // insert slug
-            $postWithSlug = $post->where('slug', $slug)->first();
-            if (empty($postWithSlug)) {
-                $post->where('post_id', '=', $postId)
-                    ->update([
-                        'slug' => $slug
-                    ]);
-            } else {
-                $post->where('post_id', '=', $postId)
-                    ->update([
-                        'slug' => $slug.'-'.$postId
-                    ]);
-            }
-
-            $postIds[] = $postId;
-            // post_id đại diện cho posts
-            if ($id == 0) {
-                $mainId = $postId;
-            }
-        }
-
-        $languageSave = new LanguageSave();
-        $languageSave->insert([
-            'element_type' => 'post',
-            'element_id' => implode(',', $postIds),
-            'main_id' =>  $mainId
-        ]);
-
-        // insert danh mục cha
-        $categoryPost = new CategoryPost();
-        if (!empty($request->input('parents'))) {
-            foreach($request->input('parents') as $parent) {
-                foreach($postIds as $postId) {
-                    $categoryPost->insert([
-                        'category_id' => $parent,
-                        'post_id' => $postId
-                    ]);
-                }
-            }
-        }
-
-        // insert input
-        $input = new Input();
-        $typeInputDatabase = TypeInput::orderBy('type_input_id')->get();
-        foreach($typeInputDatabase as $typeInput) {
-            $token = explode(',', $typeInput->post_used);
-            if (in_array('post', $token)) {
-                $contentInputs =  $request->input($typeInput->slug);
-                foreach($postIds as $id => $postId) {
-                    $input->insert([
-                        'type_input_slug' => $typeInput->slug,
-                        'content' => is_array($contentInputs) ? $contentInputs[$id] : $contentInputs,
-                        'post_id' => $postId
-                    ]);
-                }
-
-            }
-        }
     }
 }

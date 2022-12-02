@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Entity\Language;
+use App\Entity\InformationGeneral;
 use App\Entity\TypeInformation;
 use App\Entity\User;
+use App\Ultility\Error;
+use App\Ultility\Ultility;
 use Illuminate\Http\Request;
 use App\Entity\Information;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class InformationController extends AdminController
 {
@@ -34,27 +37,63 @@ class InformationController extends AdminController
      */
     public function index()
     {
-        $typeInformations = TypeInformation::orderBy('type_infor_id')->get();
-        $languages = Language::orderBy('language_id')->get();
+
+        $typeInformations = $this->getTypeInformations();
 
         // get information
-        $informations = Information::get();
-        foreach($typeInformations as $id => $typeInformation) {
-            foreach($languages as $language ) {
-                $typeInformations[$id]['information'.$language->acronym] = '';
+        $informations = $this->getInformation();
+        $typeInformations = $this->getContentInformation($typeInformations, $informations);
+        
+        return View('admin.information.index', compact('typeInformations'));
+    }
+
+    private function getTypeInformations() {
+        try {
+            $typeInformations = TypeInformation::orderBy('type_infor_id')
+                ->get();
+
+            return $typeInformations;
+        } catch (\Exception $e) {
+            Log::error('http->admin->InformationController->getTypeInformations: Lỗi lấy kiểu thông tin.');
+            Error::setErrorMessage('Lỗi lây thông tin website.');
+
+            return null;
+        }
+    }
+
+    private function getInformation() {
+        try  {
+            $informations = Information::get();
+
+            return $informations;
+        } catch (\Exception $e) {
+            Log::error('http->admin->InformationController->getInformation: Lỗi lấy  thông tin.');
+            Error::setErrorMessage('Lỗi lây thông tin website.');
+
+            return null;
+        }
+    }
+
+    private function getContentInformation($typeInformations, $informations) {
+        try {
+            foreach($typeInformations as $id => $typeInformation) {
+                $typeInformations[$id]['information'] = '';
                 foreach ($informations as $information) {
-                    if ( ($information->slug_type_input == $typeInformation->slug) && ($information->language == $language->acronym )) {
-                        $typeInformations[$id]['information'.$language->acronym] = $information->content;
+                    if ($information->slug_type_input == $typeInformation->slug) {
+                        $typeInformations[$id]['information'] = $information->content;
                         break;
                     }
                 }
             }
 
+            return $typeInformations;
+        } catch (\Exception $e) {
+            Log::error('http->admin->InformationController->getContentInformation: Lỗi lấy  thông tin.');
+            Error::setErrorMessage('Lỗi lây thông tin website.');
+
+            return null;
         }
-
-        return View('admin.information.index', compact('typeInformations', 'languages'));
     }
-
     /**
      *  Store a newly created resource in storage.
      *
@@ -63,39 +102,117 @@ class InformationController extends AdminController
      */
     public function store(Request $request)
     {
-        $contents = array();
-        $languages = Language::orderBy('language_id')->get();
-        foreach ($languages as $language) {
-            $contents[$language->acronym] = $request->input('content'.$language->acronym);
-        }
-        
-        $typeInformations = TypeInformation::orderBy('type_infor_id')->get();
-        foreach($typeInformations as $id => $typeInformation) {
-            // insert information
-            foreach ($languages as $language) {
-                $content = $contents[$language->acronym][$id];
-                $information = new Information();
-                $inforDetail = $information->where([
-                    'language' =>  $language->acronym,
-                    'slug_type_input' => $typeInformation->slug,
-                ])->first();
-                if (empty($inforDetail)) {
+        try {
+            $slugTypeInputs = $request->input('slug_type_input');
+            $contents = $request->input('content');
+            // lưu các type không phải ảnh
+            foreach($slugTypeInputs as  $id => $slugTypeInput) {
+                $content = $contents[$id];
+                $information = Information::where('slug_type_input', $slugTypeInput)->first();
+                // insert information
+                if (empty($information)) {
+                    $information = new Information();
                     $information->insert([
-                        'slug_type_input' => $typeInformation->slug,
+                        'slug_type_input' => $slugTypeInput,
                         'content' => $content,
-                        'language' => $language->acronym
                     ]);
-                } else {
-                    $inforDetail->update([
-                        'content' => $content,
+
+                    continue;
+                }
+                //update information
+                $information->update([
+                    'content' => $content,
+                ]);
+            }
+            // Lưu ảnh
+            if($request->image){
+                foreach($request->image as  $id => $image) {
+                    $information = Information::where('slug_type_input', $id)->first();
+                    // insert information
+                    if (empty($information)) {
+                        $information = new Information();
+                        $information->insert([
+                            'slug_type_input' => $slugTypeInput,
+                            'content' => Ultility::saveFileInformation($image),
+                        ]);
+
+                        continue;
+                    }
+                    //update information
+                    $information->update([
+                        'content' => Ultility::saveFileInformation($image),
                     ]);
                 }
-
             }
+            return redirect('admin/information');
+        } catch (\Exception $e) {
+            Log::error('http->admin->InformationController->store: cập nhật thông tin');
+            Log::error($e->getMessage()." - ". $e->getFile()."-". $e->getLine());
+            Error::setErrorMessage('cập nhật thông tin lỗi: dữ liệu nhập vào không hợp lệ.');
 
+            return redirect('admin/information');
+        }
+    }
+
+    public function generalCreate(  Request $request)
+    {
+        $informationGeneralModel = new InformationGeneral();
+
+        $informationGenerals = $informationGeneralModel
+            ->get();
+
+        // lay theo element de show ra
+        $informationElement  = array();
+        foreach ($informationGenerals as $informationGeneral) {
+            $informationElement[$informationGeneral->slug] = $informationGeneral->content;
         }
 
-        return redirect('admin/information');
+
+        return view('admin.information.create_general', compact('informationElement'));
+    }
+
+    public function generalStore(Request $request) {
+        try {
+            // lấy tất cả dữ liệu truyền lên ra
+            $informationSubmits = $request->all();
+            $informationGeneralModel = new InformationGeneral();
+
+            foreach ($informationSubmits as $slug => $content) {
+                // Nếu gặp phải biến truyền lên là token thì bỏ qua luôn
+                if ($slug == '_token') {
+                    continue;
+                }
+
+                // khi không phải là token, kiểm tra xem trong db có chưa
+                $informationGeneral = $informationGeneralModel->where('slug', $slug)
+                    ->first();
+
+                // nếu chưa tồn tại
+                if (empty($informationGeneral)) {
+                    $informationGeneralModel->insert([
+                        'slug' => $slug,
+                        'content' => $content,
+                        'created_at' => new \Datetime(),
+                        'updated_at' => new \Datetime()
+                    ]);
+
+                    continue;
+                }
+
+                // nếu đã tồn tại
+                $informationGeneralModel->where('slug', $slug)
+                    ->update([
+                        'content' => $content,
+                        'updated_at' => new \Datetime()
+                    ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('http->admin->InformationController->generalStore: cập nhật thông tin');
+            Error::setErrorMessage('cập nhật thông tin lỗi: dữ liệu nhập vào không hợp lệ.');
+        } finally {
+            return redirect(route('information-general'));
+        }
     }
     
 }

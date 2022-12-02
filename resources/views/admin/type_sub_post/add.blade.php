@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Thêm mới dạng bài viết' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('type-sub-post.store') }}" method="POST">
+            <form role="form" action="{{ route('type-sub-post.store') }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
                 <div class="col-xs-12 col-md-6">
@@ -39,30 +41,6 @@
                                     <input type="text" class="form-control" name="slug" placeholder="đường dẫn tĩnh" >
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Số thứ tự hiển thị</label>
-                                    <input type="number" class="form-control" name="location" placeholder="Số thứ tự hiển thị" >
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">Hiển thị trong lựa chọn menu</label>
-                                    <input type="checkbox" class="flat-red" value="1" name="show_menu" placeholder="Hiển thị trong lựa chọn menu" >
-                                </div>
-
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="have_sort" value="1" class="flat-red">
-                                        Có lựa chọn số thứ tự sắp xếp
-                                    </label>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>
-                                        <input type="checkbox" name="is_index_hot" value="1" class="flat-red">
-                                        Có lưa chọn nổi bật
-                                    </label>
-                                </div>
-                                
                                 <div class="form-group" style="color: red;">
                                     @if ($errors->has('title'))
                                         <label for="exampleInputEmail1">{{ $errors->first('title') }}</label>

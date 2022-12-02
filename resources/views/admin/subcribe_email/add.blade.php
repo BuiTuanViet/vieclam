@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Thêm mới subcribe email')
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('subcribe-email.store') }}" method="POST">
+            <form role="form" action="{{ route('subcribe-email.store') }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('POST') }}
                 <div class="col-xs-12 col-md-8">
@@ -41,12 +43,20 @@
                             
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email</label>
-                                <input type="email" class="form-control" name="email" placeholder="Email" required>
+                                <input type="email" class="form-control" name="email" placeholder="Email" >
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Tên chủ email</label>
-                                <input type="text" class="form-control" name="name" placeholder="Tên chính chủ" required/>
+                                <input type="text" class="form-control" name="name" placeholder="Tên chính chủ" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">Trạng thái</label>
+                                <select class="form-control" name="status">
+                                    <option value="1">Đã tư vấn</option>
+                                    <option value="0">Chưa tư vấn</option>
+                                </select>
                             </div>
 
                             <div class="form-group" style="color: red;">

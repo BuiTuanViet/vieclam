@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách đăng ký nhận email' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -8,7 +10,7 @@
         </h1>
         <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-            <li><a href="#">Đăng ký nhận email</a></li>
+            <li><a href="#">Đăng ký nhận email (SDT)</a></li>
         </ol>
     </section>
     <section class="content">
@@ -16,7 +18,7 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#email" aria-controls="email" role="tab" data-toggle="tab">Email subcribe</a></li>
-{{--            <li role="presentation"><a href="#setting" aria-controls="setting" role="tab" data-toggle="tab">Cài đặt và gửi mail</a></li>--}}
+            <li role="presentation"><a href="#setting" aria-controls="setting" role="tab" data-toggle="tab">Cài đặt và gửi mail</a></li>
         </ul>
 
         <!-- Tab panes -->
@@ -27,7 +29,6 @@
                         <div class="box">
                             <div class="box-header">
                                 <a  href="{{ route('subcribe-email.create') }}"><button class="btn btn-primary">Thêm mới</button> </a>
-                                <a href="{{ route('exportEmail') }}" class="btn btn-success">Xuất file Excel</a>
                             </div>
                             <!-- /.box-header -->
                             <div class="box-body">
@@ -35,7 +36,9 @@
                                     <thead>
                                     <tr>
                                         <th width="5%">ID</th>
-                                        <th>Email</th>
+                                        <th>Email (SDT)</th>
+                                        <th>Ngày giờ đăng ký</th>
+                                        <th>Tư vấn</th>
                                         <th>Thao tác</th>
                                     </tr>
                                     </thead>
@@ -85,7 +88,7 @@
                             <!-- /.box-body -->
                             <div class="box-body">
                                 <h4 class="box-title">Thêm mới phí ship</h4>
-                                <form action="{{ route('group_mail.create') }}" method="post">
+                                <form action="{{ route('group_mail.create') }}" method="POST"  enctype="multipart/form-data">
                                     {!! csrf_field() !!}
                                     <div class="form-group">
                                         <label>Tên group</label>
@@ -113,7 +116,7 @@
                             <!-- tools box -->
                             <!-- /. tools -->
                         </div>
-                        <form action="{{ route('subcribe-email_send') }}" method="post">
+                        <form action="{{ route('subcribe-email_send') }}" method="POST"  enctype="multipart/form-data">
                             {!! csrf_field() !!}
                             <div class="box-body">
                                 <div class="form-group">
@@ -123,19 +126,6 @@
                                             <option value="{{ $groupMail->group_mail_id }}">{{ $groupMail->name }}</option>
                                         @endforeach
                                     </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Chọn email cấu hình (nếu chọn không cần điền ô ở dưới)</label>
-                                    <select class="form-control" name="email-setting">
-                                        <option>-----------------------------</option>
-                                        @foreach(\App\Entity\SubPost::showSubPost('cau-hinh-email', 100) as $id => $mail)
-                                            <option value="{{ $mail->slug }}">{{ $mail->title }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                <div class="form-group">
-                                    <label>Người gửi</label>
-                                    <input type="text" class="form-control" name="from" placeholder="Chủ đề">
                                 </div>
                                 <div class="form-group">
                                     <label>Chủ đề</label>
@@ -172,6 +162,17 @@
             columns: [
                 { data: 'subcribe_email_id', name: 'subcribe_email_id' },
                 { data: 'email', name: 'email' },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'status', name: 'status', orderable: false,
+                    render: function ( data, type, row, meta ) {
+                        if (data == 1) {
+                            return 'Đã tư vấn';
+                        } else {
+                            return 'Chưa tư vân';
+                        }
+                        return '<div class=""><img src="'+data+'" width="50" /></div>';
+                    },
+                    searchable: false  },
                 { data: 'action', name: 'action', orderable: false, searchable: false },
             ]
         });

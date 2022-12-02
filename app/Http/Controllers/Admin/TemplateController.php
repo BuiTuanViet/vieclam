@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entity\Domain;
 use App\Entity\Template;
+use App\Entity\Theme;
 use App\Entity\User;
 use App\Ultility\Ultility;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Validator;
 
@@ -24,6 +27,7 @@ class TemplateController extends AdminController
                 return redirect('admin/home');
             }
 
+        
             return $next($request);
         });
 
@@ -35,7 +39,7 @@ class TemplateController extends AdminController
      */
     public function index()
     {
-        $templates = Template::orderBy('template_id', 'desc')->get();
+        $templates = Template::getTemplate();
         
         return View('admin.template.list', compact('templates'));
     }
@@ -58,31 +62,24 @@ class TemplateController extends AdminController
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'title' => 'unique:template',
-            'slug' => 'unique:template',
-        ]);
-
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect('templates/create')
-                ->withErrors($validation)
-                ->withInput();
+        try {
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
+            // insert to database
+            $template = new Template();
+            $template->insert([
+                'title' => $request->input('title'),
+                'slug' => $slug,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('http->admin->TemplateController->store: Lỗi thêm mới template');
+        } finally {
+            return redirect('admin/templates');
         }
 
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-        // insert to database
-        $template = new Template();
-        $template->insert([
-            'title' => $request->input('title'),
-            'slug' => $slug,
-        ]);
-
-        return redirect('admin/templates');
     }
 
     /**
@@ -104,6 +101,7 @@ class TemplateController extends AdminController
      */
     public function edit(Template $template)
     {
+
         return View('admin.template.edit', compact('template'));
     }
 
@@ -116,30 +114,22 @@ class TemplateController extends AdminController
      */
     public function update(Request $request, Template $template)
     {
-        $validation = Validator::make($request->all(), [
-            'title' =>  Rule::unique('template')->ignore($template->template_id, 'template_id'),
-            'slug' => Rule::unique('template')->ignore($template->template_id, 'template_id'),
-        ]);
-
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect(route('templates.edit', ['template_id' => $template->template_id]))
-                ->withErrors($validation)
-                ->withInput();
+        try {
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
+            // insert to database
+            $template->update([
+                'title' => $request->input('title'),
+                'slug' => $slug,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('http->admin->TemplateController->update: Lỗi chỉnh sửa template');
+        } finally {
+            return redirect('admin/templates');
         }
-
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-        // insert to database
-        $template->update([
-            'title' => $request->input('title'),
-            'slug' => $slug
-        ]);
-
-        return redirect('admin/templates');
     }
 
     /**
@@ -150,8 +140,16 @@ class TemplateController extends AdminController
      */
     public function destroy(Template $template)
     {
-        Template::where('template_id', $template->template_id)->delete();
+        try {
 
-        return redirect('admin/templates');
+            Template::where('template_id', $template->template_id)->delete();
+        } catch (\Exception $e) {
+            Log::error('http->admin->TemplateController->destroy: Lỗi xóa template');
+        } finally {
+            return redirect('admin/templates');
+        }
+
+
+
     }
 }

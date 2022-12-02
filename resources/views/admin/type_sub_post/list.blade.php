@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách dạng bài viết' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -27,7 +29,6 @@
                                 <th width="5%">ID</th>
                                 <th>Tiêu đề</th>
                                 <th>Slug</th>
-                                <th>Số thứ tự hiển thị</th>
                                 <th>Thao tác</th>
                             </tr>
                             </thead>
@@ -38,7 +39,6 @@
                                     <td>{{ $typeSubPost->type_sub_post_id }}</td>
                                     <td>{{ $typeSubPost->title }}</td>
                                     <td>{{ $typeSubPost->slug }}</td>
-                                    <td>{{ $typeSubPost->location }}</td>
                                     <td>
                                         <a href="{{ route('type-sub-post.edit', ['type_sub_post_id' => $typeSubPost->type_sub_post_id]) }}">
                                             <button class="btn btn-primary"><i class="fa fa-pencil" aria-hidden="true"></i></button>
@@ -56,7 +56,6 @@
                                 <th>ID</th>
                                 <th>Tiêu đề</th>
                                 <th>Slug</th>
-                                <th>Số thứ tự hiển thị</th>
                                 <th>Thao tác</th>
                             </tr>
                             </tfoot>

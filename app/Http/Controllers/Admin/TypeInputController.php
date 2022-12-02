@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entity\Domain;
+use App\Entity\Theme;
 use App\Entity\TypeSubPost;
 use App\Entity\TypeInput;
 use App\Entity\User;
+use App\Ultility\Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Validator;
 use App\Ultility\Ultility;
 use Illuminate\Validation\Rule;
@@ -36,8 +40,17 @@ class TypeInputController extends AdminController
      */
     public function index()
     {
-        $typeInputs = TypeInput::orderBy('type_input_id', 'desc')->get();
-        return View('admin.type_input.list', compact('typeInputs'));
+        try {
+            $typeInputs = TypeInput::orderBy('type_input_id', 'desc')->get();
+
+            return View('admin.type_input.list', compact('typeInputs'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị kiểu trường dữ liệu: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInputController->index: Lỗi xảy tra trong quá trình hiển thị kiểu trường dữ liệu');
+
+            return redirect('admin/home');
+        }
+
     }
 
     /**
@@ -47,8 +60,17 @@ class TypeInputController extends AdminController
      */
     public function create()
     {
-        $typeSubPosts = TypeSubPost::orderBy('type_sub_post_id', 'desc')->get();
-        return View('admin.type_input.add', compact('typeSubPosts'));
+        try {
+            $typeSubPosts = TypeSubPost::orderBy('type_sub_post_id', 'desc')->get();
+
+            return View('admin.type_input.add', compact('typeSubPosts'));
+        } catch(\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị thêm mới trường dữ liệu: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInputController->create: Lỗi xảy tra trong quá trình thêm mới kiểu trường dữ liệu');
+
+            return redirect('admin/home');
+        }
+
     }
 
     /**
@@ -59,44 +81,36 @@ class TypeInputController extends AdminController
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'title' => 'unique:type_input',
-            'slug' => 'unique:type_input',
-        ]);
+        try {
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
 
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect('admin/type-input/create')
-                ->withErrors($validation)
-                ->withInput();
+            // excuse input_default
+            $postUser = implode(',', $request->input('post_used'));
+
+            // inser type_input
+            $selectTypeInput = $request->input('type_input');
+            if($selectTypeInput == 'list') {
+                $selectTypeInput =  $request->input('list');
+            }
+            // insert to database
+            $typeInput = new TypeInput();
+            $typeInput->insert([
+                'title' => $request->input('title'),
+                'slug' => $slug,
+                'type_input' => $selectTypeInput,
+                'post_used' => $postUser,
+                'placeholder' => $request->input('placeholder'),
+            ]);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi thêm mới trường dữ liệu: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInputController->store: Lỗi xảy tra trong quá trình thêm mới kiểu trường dữ liệu');
+        } finally {
+            return redirect('admin/type-input');
         }
-
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-
-        // excuse input_default
-        $postUser = implode(',', $request->input('post_used'));
-
-        // inser type_input
-        $selectTypeInput = $request->input('type_input');
-        if($selectTypeInput == 'list') {
-            $selectTypeInput =  $request->input('list');
-        }
-        // insert to database
-        $typeInput = new TypeInput();
-        $typeInput->insert([
-            'title' => $request->input('title'),
-            'slug' => $slug,
-            'type_input' => $selectTypeInput,
-            'post_used' => $postUser,
-            'placeholder' => $request->input('placeholder'),
-            'general' => $request->input('general')
-        ]);
-
-        return redirect('admin/type-input');
     }
 
     /**
@@ -118,9 +132,17 @@ class TypeInputController extends AdminController
      */
     public function edit(TypeInput $typeInput)
     {
-        $typeSubPosts = TypeSubPost::orderBy('type_sub_post_id', 'desc')->get();
-        $postUsed = explode(',', $typeInput->post_used);
-        return View('admin.type_input.edit', compact('typeInput', 'typeSubPosts', 'postUsed'));
+        try {
+            $typeSubPosts = TypeSubPost::orderBy('type_sub_post_id', 'desc')->get();
+
+            $postUsed = explode(',', $typeInput->post_used);
+            return View('admin.type_input.edit', compact('typeInput', 'typeSubPosts', 'postUsed'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị chỉnh sửa trường dữ liệu: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInputController->edit: Lỗi xảy tra trong quá trình chỉnh sửa kiểu trường dữ liệu');
+
+            return redirect('admin/home');
+        }
     }
 
     /**
@@ -132,44 +154,37 @@ class TypeInputController extends AdminController
      */
     public function update(Request $request, TypeInput $typeInput)
     {
-        $validation = Validator::make($request->all(), [
-            'title' =>  Rule::unique('type_input')->ignore($typeInput->type_input_id, 'type_input_id'),
-            'slug' => Rule::unique('type_input')->ignore($typeInput->type_input_id, 'type_input_id'),
-        ]);
+        try {
 
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect(route('type-input.edit', ['type_input_id' => $typeInput->type_input_id]))
-                ->withErrors($validation)
-                ->withInput();
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
+
+            // excuse input_default
+            $postUser = implode(',', $request->input('post_used'));
+
+            // inser type_input
+            $selectTypeInput = $request->input('type_input');
+            if($selectTypeInput == 'list') {
+                $selectTypeInput =  $request->input('list');
+            }
+
+            // update to database
+            $typeInput->update([
+                'title' => $request->input('title'),
+                'slug' => $slug,
+                'post_used' => $postUser,
+                'placeholder' => $request->input('placeholder'),
+                'type_input' => $selectTypeInput,
+            ]);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị chỉnh sửa trường dữ liệu: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInputController->update: Lỗi xảy tra trong quá trình chỉnh sửa kiểu trường dữ liệu');
+        } finally {
+            return redirect('admin/type-input');
         }
-
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-
-        // excuse input_default
-        $postUser = implode(',', $request->input('post_used'));
-
-        // inser type_input
-        $selectTypeInput = $request->input('type_input');
-        if($selectTypeInput == 'list') {
-            $selectTypeInput =  $request->input('list');
-        }
-
-        // update to database
-        $typeInput->update([
-            'title' => $request->input('title'),
-            'slug' => $slug,
-            'post_used' => $postUser,
-            'placeholder' => $request->input('placeholder'),
-            'type_input' => $selectTypeInput,
-            'general' => $request->input('general')
-        ]);
-
-        return redirect('admin/type-input');
     }
 
     /**
@@ -180,8 +195,14 @@ class TypeInputController extends AdminController
      */
     public function destroy(TypeInput $typeInput)
     {
-        TypeInput::where('type_input_id', $typeInput->type_input_id)->delete();
+        try {
 
-        return redirect('admin/type-input');
+            TypeInput::where('type_input_id', $typeInput->type_input_id)->delete();
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi xóa trường dữ liệu: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInputController->destroy: Lỗi xảy tra trong quá trình xóa kiểu trường dữ liệu');
+        }finally {
+            return redirect('admin/type-input');
+        }
     }
 }

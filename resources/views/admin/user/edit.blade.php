@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Chỉnh sửa '.$user->email )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -16,7 +18,7 @@
     <section class="content">
         <div class="row">
             <!-- form start -->
-            <form role="form" action="{{ route('users.update', ['id' => $user->id]) }}" method="POST">
+            <form role="form" action="{{ route('users.update', ['id' => $user->id]) }}" method="POST"  enctype="multipart/form-data">
                 {!! csrf_field() !!}
                 {{ method_field('PUT') }}
                 <div class="col-xs-12 col-md-6">
@@ -29,7 +31,7 @@
                         <!-- /.box-header -->
 
                         <div class="box-body">
-
+                            @if(\App\Entity\User::isManager(\Illuminate\Support\Facades\Auth::user()->role))
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Phân quyền</label>
                                 <select class="form-control" name="role">
@@ -39,6 +41,7 @@
                                 </select>
                             </div>
 
+                            @endif
                             <div class="form-group">
                                 <label for="exampleInputEmail1">Email</label>
                                 <input type="email" class="form-control" name="email" placeholder="Email" required value="{{ $user->email }}"/>
@@ -55,18 +58,13 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="exampleInputEmail1">Địa chỉ</label>
-                                <input type="text" class="form-control" name="address" placeholder="Địa chỉ" value="{{ $user->address }}"/>
-                            </div>
-
-                            <div class="form-group">
                                 <input type="checkbox" name="is_change_password" value="1" class="flat-red"> Chọn nếu muốn thay đổi mật khẩu
                                 <label for="exampleInputEmail1">Mật khẩu</label>
                                 <input type="password" class="form-control" name="password" placeholder="Mật khẩu" value="{{ $user->password }}" />
                             </div>
 
                             <div class="form-group">
-                                <input type="button" onclick="return uploadImage(this);" value="Chọn ảnh"
+                                <input type="file" name="image" accept="image/*"  value="Chọn ảnh"
                                        size="20"/>
                                 <img src="{{ $user->image }}" width="80" height="70"/>
                                 <input name="image" type="hidden" value="{{ $user->image }}"/>

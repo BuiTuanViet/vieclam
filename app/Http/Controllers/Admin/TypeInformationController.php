@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entity\Domain;
+use App\Entity\Theme;
 use App\Entity\TypeInformation;
 use App\Entity\User;
+use App\Ultility\Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Mockery\Matcher\Type;
 use Validator;
@@ -24,10 +28,9 @@ class TypeInformationController extends AdminController
             if (User::isMember($this->role)) {
                 return redirect('admin/home');
             }
-
+           
             return $next($request);
         });
-
     }
     /**
      * Display a listing of the resource.
@@ -36,8 +39,18 @@ class TypeInformationController extends AdminController
      */
     public function index()
     {
-        $typeInformations = TypeInformation::orderBy('type_infor_id')->get();
-        return View('admin.type_information.list', compact('typeInformations'));
+        try {
+            $typeInformations = TypeInformation::orderBy('type_infor_id')
+                ->get();
+
+            return View('admin.type_information.list', compact('typeInformations'));
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi hiển thị kiểu thông tin: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInformationController->index: Lỗi xảy tra trong quá trình hiển thị kiểu thông tin');
+
+            return redirect('admin/home');
+        }
+
     }
 
     /**
@@ -58,37 +71,30 @@ class TypeInformationController extends AdminController
      */
     public function store(Request $request)
     {
-        $validation = Validator::make($request->all(), [
-            'title' => 'unique:type_information',
-            'slug' => 'unique:type_information',
-        ]);
+        try {
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
 
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect('type-information/create')
-                ->withErrors($validation)
-                ->withInput();
+            // excuse input_default
+            $typeInput = $request->input('type_input');
+
+            // insert to database
+            $typeInformation = new TypeInformation();
+            $typeInformation->insert([
+                'title' => $request->input('title'),
+                'slug' => $slug,
+                'type_input' => $typeInput,
+                'placeholder' => $request->input('placeholder')
+            ]);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi thêm mới kiểu thông tin: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInformationController->store: Lỗi xảy tra trong quá trình thêm mới kiểu thông tin');
+        } finally {
+            return redirect('admin/type-information');
         }
-
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-
-        // excuse input_default
-        $typeInput = $request->input('type_input');
-
-        // insert to database
-        $typeInformation = new TypeInformation();
-        $typeInformation->insert([
-            'title' => $request->input('title'),
-            'slug' => $slug,
-            'type_input' => $typeInput,
-            'placeholder' => $request->input('placeholder')
-        ]);
-
-        return redirect('admin/type-information');
     }
 
     /**
@@ -110,6 +116,7 @@ class TypeInformationController extends AdminController
      */
     public function edit(TypeInformation $typeInformation)
     {
+
         return View('admin.type_information.edit', compact('typeInformation'));
     }
 
@@ -122,36 +129,29 @@ class TypeInformationController extends AdminController
      */
     public function update(Request $request, TypeInformation $typeInformation)
     {
-        $validation = Validator::make($request->all(), [
-            'title' =>  Rule::unique('type_information')->ignore($typeInformation->type_infor_id, 'type_infor_id'),
-            'slug' => Rule::unique('type_information')->ignore($typeInformation->type_infor_id, 'type_infor_id'),
-        ]);
+        try {
+            // if slug null slug create as title
+            $slug = $request->input('slug');
+            if (empty($slug)) {
+                $slug = Ultility::createSlug($request->input('title'));
+            }
 
-        // if validation fail return error
-        if ($validation->fails()) {
-            return redirect(route('type-information.edit', ['type_infor_id' => $typeInformation->type_infor_id]))
-                ->withErrors($validation)
-                ->withInput();
+            // excuse input_default
+            $typeInput = $request->input('type_input');
+
+            // update to database
+            $typeInformation->update([
+                'title' => $request->input('title'),
+                'slug' => $slug,
+                'type_input' => $typeInput,
+                'placeholder' => $request->input('placeholder')
+            ]);
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi chỉnh sửa kiểu thông tin: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInformationController->update: Lỗi xảy tra trong quá trình chỉnh sửa kiểu thông tin');
+        } finally {
+            return redirect('admin/type-information');
         }
-
-        // if slug null slug create as title
-        $slug = $request->input('slug');
-        if (empty($slug)) {
-            $slug = Ultility::createSlug($request->input('title'));
-        }
-
-        // excuse input_default
-        $typeInput = $request->input('type_input');
-
-        // update to database
-        $typeInformation->update([
-            'title' => $request->input('title'),
-            'slug' => $slug,
-            'type_input' => $typeInput,
-            'placeholder' => $request->input('placeholder')
-        ]);
-
-        return redirect('admin/type-information');
     }
 
     /**
@@ -162,8 +162,14 @@ class TypeInformationController extends AdminController
      */
     public function destroy(TypeInformation $typeInformation)
     {
-        TypeInformation::where('type_infor_id', $typeInformation->type_infor_id)->delete();
+        try {
 
-        return redirect('admin/type-information');
+            TypeInformation::where('type_infor_id', $typeInformation->type_infor_id)->delete();
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi xóa kiểu thông tin: dữ liệu không hợp lệ.');
+            Log::error('http->admin->TypeInformationController->destroy: Lỗi xảy tra trong quá trình xóa kiểu thông tin');
+        } finally {
+            return redirect('admin/type-information');
+        }
     }
 }

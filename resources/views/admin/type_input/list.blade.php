@@ -1,5 +1,7 @@
 @extends('admin.layout.admin')
 
+@section('title', 'Danh sách trường dữ liệu' )
+
 @section('content')
     <!-- Content Header (Page header) -->
     <section class="content-header">
@@ -27,6 +29,7 @@
                                 <th width="5%">ID</th>
                                 <th>Tiêu đề</th>
                                 <th>Slug</th>
+                                <th>Sử dụng với</th>
                                 <th>Placeholder</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -38,6 +41,7 @@
                                     <td>{{ $typeInput->type_input_id }}</td>
                                     <td>{{ $typeInput->title }}</td>
                                     <td>{{ $typeInput->slug }}</td>
+                                    <td>{{ $typeInput->post_used }}</td>
                                     <td>{{ $typeInput->placeholder }}</td>
                                     <td>
                                         <a href="{{ route('type-input.edit', ['type_input_id' => $typeInput->type_input_id]) }}">

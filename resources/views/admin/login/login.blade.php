@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+
+    <!-- /.login-box-body -->
+</div>
+<!-- /.login-box --><html>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Đăng nhập 3ae</title>
+    <title>Đăng nhập quản lý website</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -13,7 +16,7 @@
     <!-- Ionicons -->
     <link rel="stylesheet" href="{{ asset('adminstration/Ionicons/css/ionicons.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('adminstration/css/AdminLTE.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('adminstration/css/AdminLTE.css') }}">
     <!-- iCheck -->
     <link rel="stylesheet" href="{{ asset('adminstration/plugins/iCheck/square/blue.css') }}">
 
@@ -30,13 +33,13 @@
 <body class="hold-transition login-page">
 <div class="login-box">
     <div class="login-logo">
-        <a href="../../index2.html"><b>Quản trị</b> website</a>
+        <a href=""><b>ĐĂNG NHẬP</b></a>
     </div>
     <!-- /.login-logo -->
     <div class="login-box-body">
         <p class="login-box-msg">Đăng nhập để bắt đầu phiên làm việc của bạn</p>
 
-        <form action="{{ route('login') }}" method="post">
+        <form action="{{ route('login') }}" method="POST"  enctype="multipart/form-data">
             {{ csrf_field() }}
             <div class="form-group has-feedback">
                 <input type="email" class="form-control" name="email" placeholder="Email" value="{{ old('email') }}" required autofocus />
@@ -57,6 +60,13 @@
                 </span>
                 @endif
             </div>
+            @if($errors->any())
+                @foreach ($errors->all() as $error)
+                    <div class="alert alert-danger" role="alert">
+                        <strong>{{ $error }}</strong>
+                    </div>
+                @endforeach
+            @endif
             <div class="row">
                 <div class="col-xs-8">
                     <div class="checkbox icheck">
@@ -77,9 +87,6 @@
         <a href="#">Quên mật khẩu</a><br>
 
     </div>
-    <!-- /.login-box-body -->
-</div>
-<!-- /.login-box -->
 
 <!-- jQuery 3 -->
 <script src="{{ asset('adminstration/jquery/dist/jquery.min.js') }}"></script>

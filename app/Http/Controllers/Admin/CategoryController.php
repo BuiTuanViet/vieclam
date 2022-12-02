@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entity\Category;
-use App\Entity\Language;
-use App\Entity\LanguageSave;
+use App\Entity\Input;
 use App\Entity\Template;
+use App\Entity\TypeInput;
 use App\Entity\User;
+use App\Ultility\Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Validator;
 use App\Ultility\Ultility;
@@ -38,10 +40,16 @@ class CategoryController extends AdminController
      */
     public function index()
     {
-        $category = new Category();
-        $categories = $category->getCategory();
-        
-        return view('admin.post_cate.list', compact('categories'));
+        try {
+            $category = new Category();
+            $categories = $category->getCategory();
+        } catch (\Exception $e) {
+            $categories = null;
+            Error::setErrorMessage('Hiển thị danh mục xảy ra lỗi.');
+            Log::error('http->Admin->CategoryController->index: Hiển thị danh mục xảy ra lỗi');
+        } finally {
+            return view('admin.post_cate.list', compact('categories'));
+        }
     }
 
     /**
@@ -52,11 +60,20 @@ class CategoryController extends AdminController
     public function create()
     {
         $category = new Category();
-        $categories =$category->getCategory();
-        $templates = Template::orderBy('template_id')->get();
-        $languages = Language::orderBy('language_id')->get();
-        
-        return view('admin.post_cate.add', compact('categories', 'templates', 'languages'));
+        $categories = $category->getCategory();
+        $templates = Template::getTemplate();
+        // lọc bỏ những trường mà ko sử dụng trong post
+        $typeInputDatabase = TypeInput::orderBy('type_input_id')
+            ->get();
+        $typeInputs = array();
+        foreach($typeInputDatabase as $typeInput) {
+            $token = explode(',', $typeInput->post_used);
+            if (in_array('cate_post', $token)) {
+                $typeInputs[] = $typeInput;
+            }
+        }
+
+        return view('admin.post_cate.add', compact('categories', 'templates', 'typeInputs'));
     }
 
     /**
@@ -67,47 +84,56 @@ class CategoryController extends AdminController
      */
     public function store(Request $request)
     {
-        $this->insertCategory($request);
+
+        // if slug null slug create as title
+        $slug = $this->createSlug($request);
+        // insert to database
+        $this->insertCategory($request, $slug);
 
         return redirect('admin/categories');
     }
-    private function insertCategory($request) {
-        $titles = $request->input('title');
-        $images = $request->input('image');
-        $slugs = $request->input('slug');
-        $descripsions = $request->input('description');
 
-        $categoryIds = array();
-        $mainId = 0;
-        $languages = Language::orderBy('language_id')->get();
-        $category = new Category();
-
-        foreach ($languages as $id => $language) {
-            $slug = $slugs[$id];
-            if (empty($slug)) {
-                $slug = Ultility::createSlug($titles[$id]);
-            }
-            $categoryId = $category->insertGetId([
-                'title' => $titles[$id],
+    private function insertCategory($request, $slug) {
+        try {
+            $category = new Category();
+            $data = [
+                'title' => $request->input('title'),
                 'slug' => $slug,
                 'parent' => $request->input('parent'),
                 'post_type' => 'post',
                 'template' =>  $request->input('template'),
-                'description' =>$descripsions[$id],
-                'image' =>  $images[$id],
-                'language' => $language->acronym
-            ]);
-            $categoryIds[] = $categoryId;
-            if ($id == 0) {
-                $mainId = $categoryId;
+                'description' => $request->input('description'),
+            ];
+            if ($request->hasFile('image')){
+                $data['image'] = Ultility::saveFile($request, 'image');
             }
+
+            $cateId = $category->insertGetId($data);
+
+            // insert input
+            $typeInputDatabase = TypeInput::orderBy('type_input_id')
+               ->get();
+            foreach($typeInputDatabase as $typeInput) {
+                $token = explode(',', $typeInput->post_used);
+                if (in_array('cate_post', $token)) {
+                    $contentInput =  $request->input($typeInput->slug);
+                    if(!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor', 'image_list'), true) && strpos($typeInput->type_input, 'listMultil') >= 0) {
+                        $contentInput = ( !empty($contentInput) && count($contentInput) >= 1) ? implode(',', $contentInput) : $contentInput;
+                    }
+                    $input = new Input();
+                    $input->insert([
+                        'type_input_slug' => $typeInput->slug,
+                        'content' => $contentInput,
+                        'cate_id' => $cateId,
+                    ]);
+                }
+            }
+
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi thêm mới danh mục: dữ liệu nhập vào không hợp lệ.');
+
+            Log::error('http->admin->CategoryController->insertCategory: Lỗi insert danh mục category');
         }
-        $languageSave = new LanguageSave();
-        $languageSave->insert([
-            'element_type' => 'category',
-            'element_id' => implode(',', $categoryIds),
-            'main_id' =>  $mainId
-        ]);
     }
     /**
      * Display the specified resource.
@@ -128,14 +154,20 @@ class CategoryController extends AdminController
      */
     public function edit(Category $category)
     {
-        $categoryObj = new Category();
-        $categories = $categoryObj->getCategory();
-        $templates = Template::orderBy('template_id')->get();
-        $languages = Language::orderBy('language_id')->get();
-        $languageSave = LanguageSave::select('element_id')->where('main_id', $category->category_id)->first();
-        $categorieLanguages = Category::whereIn('category_id', explode(',', $languageSave->element_id))->get();
-
-        return view('admin.post_cate.edit', compact('categories', 'templates', 'category', 'languages', 'categorieLanguages'));
+        $categories = $category->getCategory();
+        $templates = Template::getTemplate();
+        // lọc bỏ những trường mà ko sử dụng trong post
+        $typeInputDatabase = TypeInput::orderBy('type_input_id')
+            ->get();
+        $typeInputs = array();
+        foreach($typeInputDatabase as $typeInput) {
+            $token = explode(',', $typeInput->post_used);
+            if (in_array('cate_post', $token)) {
+                $typeInputs[] = $typeInput;
+                $category[$typeInput->slug] = Input::getPostMetaCate($typeInput->slug, $category->category_id);
+            }
+        }
+        return view('admin.post_cate.edit', compact('categories', 'templates', 'category', 'typeInputs'));
     }
 
     /**
@@ -147,35 +179,58 @@ class CategoryController extends AdminController
      */
     public function update(Request $request, Category $category)
     {
-        $languageSave = LanguageSave::select('element_id')->where('main_id', $category->category_id)->first();
-        $categories = Category::whereIn('category_id', explode(',', $languageSave->element_id))
-            ->orderBy('category_id')
-            ->get();
+        // if slug null slug create as title
+        $slug = $this->createSlug($request);
 
-        $titles = $request->input('title');
-        $images = $request->input('image');
-        $slugs = $request->input('slug');
-        $descripsions = $request->input('description');
-
-        foreach ($categories as $id => $cate) {
-            $slug = $slugs[$id];
-            if (empty($slug)) {
-                $slug = Ultility::createSlug($titles[$id]);
-            }
-            $cate->update([
-                'title' => $titles[$id],
-                'slug' => $slug,
-                'parent' => $request->input('parent'),
-                'post_type' => 'post',
-                'template' =>  $request->input('template'),
-                'description' =>$descripsions[$id],
-                'image' =>  $images[$id],
-            ]);
-        }
+        // update to database
+        $this->updateCategory($category, $request, $slug);
 
         return redirect('admin/categories');
     }
 
+    private function updateCategory ($category, $request, $slug) {
+        try {
+            $data = [
+                'title' => $request->input('title'),
+                'slug' => $slug,
+                'parent' => $request->input('parent'),
+                'post_type' => 'post',
+                'template' =>  $request->input('template'),
+                'description' => $request->input('description'),
+            ];
+            if ($request->hasFile('image')){
+                $data['image'] = Ultility::saveFile($request, 'image');
+            }
+            $category->update($data);
+
+            // insert input
+            $typeInputDatabase = TypeInput::orderBy('type_input_id')
+                                ->get();
+            Input::where([
+                'cate_id' =>  $category->category_id
+            ])
+                ->delete();
+
+            foreach($typeInputDatabase as $typeInput) {
+                $token = explode(',', $typeInput->post_used);
+                if (in_array('cate_post', $token)) {
+                    $contentInput =  $request->input($typeInput->slug);
+                    if(!in_array($typeInput->type_input, array('one_line', 'multi_line', 'image', 'editor', 'image_list'), true) && strpos($typeInput->type_input, 'listMultil') >= 0) {
+                        $contentInput = ( !empty($contentInput) && count($contentInput) >= 1) ? implode(',', $contentInput) : $contentInput;
+                    }
+                    Input::insert([
+                        'type_input_slug' => $typeInput->slug,
+                        'content' => $contentInput,
+                        'cate_id' => $category->category_id,
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi cập nhật danh mục: dữ liệu nhập vào không hợp lệ.');
+
+            Log::error('http->admin->CategoryController->updateCategory: Lỗi xảy ra trong quá trình update category');
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -184,11 +239,16 @@ class CategoryController extends AdminController
      */
     public function destroy(Category $category)
     {
-        $languageSave = LanguageSave::select('element_id')->where('main_id', $category->category_id)->first();
+        try {
+            $categoryModel = new Category();
+            $categoryModel->where('category_id', $category->category_id)
+                ->delete();
 
-        Category::whereIn('category_id', explode(',', $languageSave->element_id))
-            ->delete();
-
-        return redirect('admin/categories');
+        } catch (\Exception $e) {
+            Error::setErrorMessage('Lỗi xảy ra khi xóa danh mục: dữ liệu xóa không hợp lệ.');
+            Log::error('http->admin->categoryController->destroy: Lỗi xảy tra trong quá trình xóa danh mục');
+        } finally {
+            return redirect('admin/categories');
+        }
     }
 }

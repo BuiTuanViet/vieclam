@@ -17,6 +17,13 @@ body {
 .layout-boxed body {
   height: 100%;
 }
+.gioihan {
+	height: 300px;
+	overflow: hidden;
+}
+.gioihan img {
+	width: 100%;
+}
 body {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -1528,15 +1535,10 @@ a:focus {
  */
 .box {
   position: relative;
-  border-radius: 3px;
   background: #ffffff;
-  border-top: 3px solid #d2d6de;
+  border-left: 3px solid #3c8dbc;
   margin-bottom: 20px;
   width: 100%;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-}
-.box.box-primary {
-  border-top-color: #3c8dbc;
 }
 .box.box-info {
   border-top-color: #00c0ef;
@@ -3235,10 +3237,11 @@ table.text-center th {
  */
 .login-logo,
 .register-logo {
-  font-size: 35px;
-  text-align: center;
-  margin-bottom: 25px;
-  font-weight: 300;
+	font-size: 35px;
+	text-align: center;
+	margin-bottom: 25px;
+	font-weight: bold;
+	text-transform: uppercase;
 }
 .login-logo a,
 .register-logo a {
@@ -4975,4 +4978,47 @@ table.text-center th {
     white-space: normal !important;
   }
 }
+
+#reports button{
+  background: none;
+  border: none;
+  color: white;
+  font-size: 28px;
+}
+#reports ul {
+  width: 600px;
+  height: auto;
+  padding: 8px;
+}
+#reports ul li {
+  font-size: 20px;
+}
+.blue {
+  background: #edf2fa;
+}
+.white {
+  background: white;
+}
+.dropdown-menu > li > a {
+  color: #777;
+  padding: 12px;
+  border: 1px solid pink;
+}
+.badge {
+  display: inline-block;
+  min-width: 10px;
+  padding: 3px 9px;
+  margin: -20px 10px 5px -20px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-color: red;
+  border-radius: 10px;
+}
+
+
 
