@@ -5903,7 +5903,8 @@ footer.footer .copyright a:hover, footer.footer .copyright a:focus {
 }
 
 .slick-slide img {
-    display: block
+    display: block;
+    width: 100%;
 }
 
 .slick-slide.slick-loading img {
